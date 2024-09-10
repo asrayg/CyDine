@@ -18,7 +18,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Button signupButton;
     private CheckBox rememberMeCheckBox;
-    private ProgressBar loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         signupButton = findViewById(R.id.login_signup_btn);
         rememberMeCheckBox = findViewById(R.id.remember_me_checkbox); // new checkbox for "Remember Me"
-        loadingSpinner = findViewById(R.id.loading_spinner); // new loading spinner
 
         /* click listener on login button */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -44,16 +42,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                loadingSpinner.setVisibility(View.VISIBLE); // show loading animation
-
-                // Simulate loading (e.g., API call, login verification)
-                loginButton.postDelayed(() -> {
-                    loadingSpinner.setVisibility(View.GONE);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("USERNAME", username);
-                    startActivity(intent);
-                }, 2000);
             }
         });
 

@@ -30,7 +30,6 @@ public class SignupActivity extends AppCompatActivity {
         confirmEditText = findViewById(R.id.signup_confirm_edt);
         loginButton = findViewById(R.id.signup_login_btn);
         signupButton = findViewById(R.id.signup_signup_btn);
-        loadingSpinner = findViewById(R.id.signup_loading_spinner); // loading spinner for feedback
 
         /* click listener on login button */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -55,9 +54,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 if (password.equals(confirm)) {
-                    loadingSpinner.setVisibility(View.VISIBLE);  // show loading animation
                     signupButton.postDelayed(() -> {
-                        loadingSpinner.setVisibility(View.GONE);  // hide loading spinner after signup
                         Toast.makeText(SignupActivity.this, "Account Created", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                         startActivity(intent);
