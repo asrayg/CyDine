@@ -23,7 +23,9 @@
         android:textAlignment="center"
         android:textColor="#0000AA"
         android:textSize="30dp"
-        android:textStyle="bold|italic"></TextView>
+        android:textStyle="bold|italic">
+
+    </TextView>
 
     <Button
         android:id="@+id/myButton"
