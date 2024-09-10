@@ -7,15 +7,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;  // define username edittext variable
-    private EditText passwordEditText;  // define password edittext variable
-    private EditText confirmEditText;   // define confirm edittext variable
-    private Button loginButton;         // define login button variable
-    private Button signupButton;        // define signup button variable
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private EditText confirmEditText;
+    private Button loginButton;
+    private Button signupButton;
+    private ProgressBar loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,38 +25,45 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         /* initialize UI elements */
-        usernameEditText = findViewById(R.id.signup_username_edt);  // link to username edtext in the Signup activity XML
-        passwordEditText = findViewById(R.id.signup_password_edt);  // link to password edtext in the Signup activity XML
-        confirmEditText = findViewById(R.id.signup_confirm_edt);    // link to confirm edtext in the Signup activity XML
-        loginButton = findViewById(R.id.signup_login_btn);    // link to login button in the Signup activity XML
-        signupButton = findViewById(R.id.signup_signup_btn);  // link to signup button in the Signup activity XML
+        usernameEditText = findViewById(R.id.signup_username_edt);
+        passwordEditText = findViewById(R.id.signup_password_edt);
+        confirmEditText = findViewById(R.id.signup_confirm_edt);
+        loginButton = findViewById(R.id.signup_login_btn);
+        signupButton = findViewById(R.id.signup_signup_btn);
+        loadingSpinner = findViewById(R.id.signup_loading_spinner); // loading spinner for feedback
 
-        /* click listener on login button pressed */
+        /* click listener on login button */
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                /* when login button is pressed, use intent to switch to Login Activity */
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);  // go to LoginActivity
+                startActivity(intent);
             }
         });
 
-        /* click listener on signup button pressed */
+        /* click listener on signup button */
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                /* grab strings from user inputs */
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
                 String confirm = confirmEditText.getText().toString();
 
-                if (password.equals(confirm)){
-                    Toast.makeText(getApplicationContext(), "Signing up", Toast.LENGTH_LONG).show();
+                if (password.length() < 8) {
+                    Toast.makeText(SignupActivity.this, "Password must be at least 8 characters", Toast.LENGTH_LONG).show();
+                    return;
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "Password don't match", Toast.LENGTH_LONG).show();
+
+                if (password.equals(confirm)) {
+                    loadingSpinner.setVisibility(View.VISIBLE);  // show loading animation
+                    signupButton.postDelayed(() -> {
+                        loadingSpinner.setVisibility(View.GONE);  // hide loading spinner after signup
+                        Toast.makeText(SignupActivity.this, "Account Created", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }, 2000);
+                } else {
+                    Toast.makeText(SignupActivity.this, "Passwords do not match", Toast.LENGTH_LONG).show();
                 }
             }
         });

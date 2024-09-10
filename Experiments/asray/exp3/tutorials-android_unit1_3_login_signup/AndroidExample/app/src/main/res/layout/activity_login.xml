@@ -95,5 +95,21 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/remember_me_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remember Me"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal" />
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>
