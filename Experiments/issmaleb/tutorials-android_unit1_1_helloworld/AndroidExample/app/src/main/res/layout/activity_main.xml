@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:foregroundTint="#E91E63"
+    android:foregroundTint="#FF0000"
     android:foregroundTintMode="screen"
     android:orientation="vertical"
     tools:context=".MainActivity">
