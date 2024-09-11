@@ -34,7 +34,7 @@ public class PeopleController {
     // Springboot automatically converts the list to JSON format 
     // in this case because of @ResponseBody
     // Note: To LIST, we use the GET method
-    @GetMapping("/people")
+    @GetMapping("/person")
     public  HashMap<String,Person> getAllPersons() {
         return peopleList;
     }
@@ -89,4 +89,5 @@ public class PeopleController {
         return peopleList;
     }
 }
+
 
