@@ -8,6 +8,7 @@
     android:foregroundTintMode="screen"
     android:orientation="vertical"
     android:background="#FF0000"
+    android:gravity="center"
     tools:context=".SecondActivity">
 
     <TextView
@@ -36,6 +37,14 @@
         android:text="Go back"
         tools:layout_editor_absoluteX="150dp"
         tools:layout_editor_absoluteY="400dp"/>
+
+    <ImageView
+        android:id="@+id/myImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="sunset"
+        android:src="@drawable/sunset"/>
 
 
 
