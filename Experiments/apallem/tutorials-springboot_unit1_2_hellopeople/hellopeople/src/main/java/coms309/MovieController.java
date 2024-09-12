@@ -34,7 +34,7 @@ public class MovieController {
     // in this case because of @ResponseBody
     // Note: To CREATE we use POST method
     @PostMapping("/movie")
-    public  String createPerson(@RequestBody Movies movie) {
+    public  String createMovie(@RequestBody Movies movie) {
         System.out.println(movie);
         movieList.put(movie.getFirstName(), movie);
         return "New movie "+ movie.getFirstName() + " Saved";
