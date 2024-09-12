@@ -1,6 +1,8 @@
 package coms309;
 
 public class Movies {
+    private String year;
+
     private String firstName;
 
     private String lastName;
@@ -13,11 +15,12 @@ public class Movies {
 
     }
 
-    public Movies(String firstName, String lastName, String movie, String rating){
+    public Movies(String firstName, String lastName, String movie, String rating, String year){
         this.firstName = firstName;
         this.lastName = lastName;
         this.movie = movie;
         this.rating = rating;
+        this.year = year;
     }
 
     public String getFirstName() {
@@ -28,6 +31,13 @@ public class Movies {
         this.firstName = firstName;
     }
 
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getYear() {
+        return this.year;
+    }
     public String getLastName() {
         return this.lastName;
     }
@@ -57,6 +67,7 @@ public class Movies {
         return firstName + " "
                 + lastName + " "
                 + movie + " "
+                + year + " "
                 + rating;
     }
 }

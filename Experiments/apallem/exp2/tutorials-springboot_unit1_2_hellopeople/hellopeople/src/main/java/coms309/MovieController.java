@@ -60,7 +60,7 @@ public class MovieController {
     // in this case because of @ResponseBody
     // Note: To UPDATE we use PUT method
     @PutMapping("/movie/{firstName}")
-    public Movies updatePerson(@PathVariable String firstName, @RequestBody Movies m) {
+    public Movies updateMovie(@PathVariable String firstName, @RequestBody Movies m) {
         movieList.replace(firstName, m);
         return movieList.get(firstName);
     }
