@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
-            messageText.setText("Intent Example");
+            messageText.setText("Counting");
         } else {
             String number = extras.getString("NUM");  // this will come from LoginActivity
             messageText.setText("The number was " + number);
