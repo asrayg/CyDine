@@ -3,6 +3,7 @@ package com.example.androidexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView usernameText;  // define username textview variable
     private Button loginButton;     // define login button variable
     private Button signupButton;    // define signup button variable
+    private Button logoutButton;
+
+    private static final String PREFS_NAME = "MyPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         usernameText = findViewById(R.id.main_username_txt);// link to username textview in the Main activity XML
         loginButton = findViewById(R.id.main_login_btn);    // link to login button in the Main activity XML
         signupButton = findViewById(R.id.main_signup_btn);  // link to signup button in the Main activity XML
+        logoutButton = findViewById(R.id.logout_btn);
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
             loginButton.setVisibility(View.INVISIBLE);              // set login button invisible
             signupButton.setVisibility(View.INVISIBLE);             // set signup button invisible
+            logoutButton.setVisibility(View.VISIBLE);               // show logout button
         }
 
         /* click listener on login button pressed */
@@ -59,6 +65,24 @@ public class MainActivity extends AppCompatActivity {
                 /* when signup button is pressed, use intent to switch to Signup Activity */
                 Intent intent = new Intent(MainActivity.this, SignupActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        /* click listener on logout button pressed */
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear the stored username and password from SharedPreferences
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();  // Clear saved user data
+                editor.apply();
+
+                // Redirect to the LoginActivity
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear backstack
+                startActivity(intent);
+                finish();  // End the current MainActivity
             }
         });
     }
