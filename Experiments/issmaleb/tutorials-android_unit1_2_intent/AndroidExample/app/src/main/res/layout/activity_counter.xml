@@ -6,7 +6,8 @@
     android:id="@+id/counter_activity_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#822222">
 
     <TextView
         android:id="@+id/number"

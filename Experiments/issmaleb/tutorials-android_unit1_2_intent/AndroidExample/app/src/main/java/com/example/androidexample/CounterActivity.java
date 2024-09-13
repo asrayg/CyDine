@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.view.View;
@@ -25,6 +26,9 @@ public class CounterActivity extends AppCompatActivity {
     private int counter = 0;    // counter variable
     private int highScore = 0;
     private int targetScore = -1;
+    private static final String PREFS_NAME = "CounterPrefs";
+    private static final String KEY_COUNTER = "counter";
+    private static final String KEY_HIGH_SCORE = "highScore";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,10 @@ public class CounterActivity extends AppCompatActivity {
         increaseBtn = findViewById(R.id.counter_increase_btn);
         decreaseBtn = findViewById(R.id.counter_decrease_btn);
         backBtn = findViewById(R.id.counter_back_btn);
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        counter = prefs.getInt(KEY_COUNTER, 0);
+        highScore = prefs.getInt(KEY_HIGH_SCORE, 0);
 
         numberTxt.setText(String.valueOf(counter));
         highScoreTxt.setText("High Score: " + highScore);
@@ -59,12 +67,12 @@ public class CounterActivity extends AppCompatActivity {
                 if(targetScore != -1 && targetScore == counter){
                     feedbackMessage.setText("Well done!");
                     Toast.makeText(CounterActivity.this, "Congratulations!", Toast.LENGTH_SHORT).show();
-                    counter = 0;
                     findViewById(R.id.counter_activity_layout).setBackgroundColor(Color.WHITE); // Reset background color
                     targetScore = -1; // Clear target score
                     targetScoreInput.setText(""); // Clear the target score input field
                     targetScoreInput.requestFocus(); // Set focus to the target score input field
                     feedbackMessage.setText("Please enter a new target score."); // Prompt user to enter a new target score
+                    counter = 0;
                 }
 
             }
@@ -99,5 +107,15 @@ public class CounterActivity extends AppCompatActivity {
             return true;
         });
 
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Save counter and high score to SharedPreferences when activity is destroyed
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(KEY_COUNTER, counter);
+        editor.putInt(KEY_HIGH_SCORE, highScore);
+        editor.apply();
     }
 }

@@ -34,14 +34,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /* click listener on counter button pressed */
-        counterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when counter button is pressed, use intent to switch to Counter Activity */
-                Intent intent = new Intent(MainActivity.this, CounterActivity.class);
-                startActivity(intent);
-            }
+        counterButton.setOnClickListener(v -> {
+            // When counter button is pressed, use intent to switch to CounterActivity
+            Intent intent = new Intent(MainActivity.this, CounterActivity.class);
+            startActivity(intent);
         });
     }
 }
