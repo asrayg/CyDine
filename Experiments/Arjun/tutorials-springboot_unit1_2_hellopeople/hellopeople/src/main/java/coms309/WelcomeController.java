@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-class WelcomeController {
+class zWelcomeController {
 
     @GetMapping("/")
     public String welcome() {
