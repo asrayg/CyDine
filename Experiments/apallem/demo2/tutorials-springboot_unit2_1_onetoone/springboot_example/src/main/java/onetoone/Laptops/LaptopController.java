@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import onetoone.Users.User;
-import onetoone.Users.UserRepository;
+import onetoone.Persons.Person;
+import onetoone.Persons.PersonRepository;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class LaptopController {
     LaptopRepository laptopRepository;
 
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
     
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -63,10 +63,10 @@ public class LaptopController {
     @DeleteMapping(path = "/laptops/{id}")
     String deleteLaptop(@PathVariable int id){
 
-        // Check if there is an object depending on user and then remove the dependency
-        User user = userRepository.findByLaptop_Id(id);
-        user.setLaptop(null);
-        userRepository.save(user);
+        // Check if there is an object depending on Person and then remove the dependency
+        Person person = personRepository.findByLaptop_Id(id);
+        person.setLaptop(null);
+        personRepository.save(person);
 
         // delete the laptop if the changes have not been reflected by the above statement
         laptopRepository.deleteById(id);

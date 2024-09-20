@@ -30,7 +30,7 @@ POST request:
         "manufacturer" : "apple",
         "cost" : "1000000"
     }
-    2. /users - Create a new User with laptop. Request Format : application/json
+    2. /Persons - Create a new Person with laptop. Request Format : application/json
     {
         "name" : "John",
         "email"  : "johndoe@somemail.com",
@@ -42,7 +42,7 @@ POST request:
             "cost" : "600"
         }
     }.
-    3. /users - Create user without laptop. Request Format : application / json
+    3. /Persons - Create Person without laptop. Request Format : application / json
     {
         "name" : "John",
         "email"  : "johndoe@somemail.com"
@@ -50,7 +50,7 @@ POST request:
 2. READ requests -
 GET request:
     1. /laptops/{id} - Get laptop object for provided id
-    2. /users/{id} - Get user object with associated laptop for provided user id
+    2. /Persons/{id} - Get Person object with associated laptop for provided Person id
 
 3. UPDATE requests -
 PUT request : 
@@ -62,7 +62,7 @@ PUT request :
         "manufacturer" : "apple",
         "cost" : "2000000"
     }
-    2. /users/{id} - Update User and optionally a lptop associated with him/her for id provided in the url
+    2. /Persons/{id} - Update Person and optionally a lptop associated with him/her for id provided in the url
     {
         "name" : "John",
         "email"  : "johndoe@newmail.com",
@@ -79,12 +79,12 @@ PUT request :
 4. DELETE a record - 
  DELETE request:
     1. /laptops/{id} - Delete the entry with id in te url
-    2. /users/{id} - delete a user with the id provided in the url
+    2. /Persons/{id} - delete a Person with the id provided in the url
 
 5. LIST all -  
 GET request
     1. /laptops - Get/List all the laptops stored in the db
-    2. /users - Get/List all the users along with their associated laptops
+    2. /Persons - Get/List all the Persons along with their associated laptops
 
 6. Other end points:
 GET request:  /oops   --- this shows you what happens when your code throws an exception.
@@ -93,7 +93,7 @@ GET request:  /oops   --- this shows you what happens when your code throws an e
 
 ### Note :
 ### 1. /laptops APIs are defined in Laptop/LaptopController, 
-### 2. /users API is defined in the User/UserController
+### 2. /Persons API is defined in the Person/PersonController
 
 # 
 ## Some helpful links:

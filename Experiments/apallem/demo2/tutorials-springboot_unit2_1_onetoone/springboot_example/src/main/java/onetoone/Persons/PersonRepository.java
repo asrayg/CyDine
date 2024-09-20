@@ -1,4 +1,4 @@
-package onetoone.Users;
+package onetoone.Persons;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */ 
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface PersonRepository extends JpaRepository<Person, Long> {
     
-    User findById(int id);
+    Person findById(int id);
 
     void deleteById(int id);
 
-    User findByLaptop_Id(int id);
+    Person findByLaptop_Id(int id);
 }
