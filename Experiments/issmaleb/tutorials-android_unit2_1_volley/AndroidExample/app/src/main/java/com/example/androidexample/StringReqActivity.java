@@ -20,9 +20,11 @@ import java.util.Map;
 public class StringReqActivity extends AppCompatActivity {
 
     private Button btnStringReq;
+    private Button btnStringPOSTReq;
     private TextView msgResponse;
 
     private static final String URL_STRING_REQ = "https://jsonplaceholder.typicode.com/users/1";
+    private static final String URL_STRING_POST_REQ = "https://jsonplaceholder.typicode.com/users";
     //   public static final String URL_STRING_REQ = "https://2aa87adf-ff7c-45c8-89bc-f3fbfaa16d15.mock.pstmn.io/users/1";
     //   public static final String URL_STRING_REQ = "http://10.0.2.2:8080/users/1";
 
@@ -33,6 +35,7 @@ public class StringReqActivity extends AppCompatActivity {
 
         btnStringReq = (Button) findViewById(R.id.btnStringReq);
         msgResponse = (TextView) findViewById(R.id.msgResponse);
+        btnStringPOSTReq = (Button) findViewById(R.id.btnStringPOSTReq);
 
         btnStringReq.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,8 +43,50 @@ public class StringReqActivity extends AppCompatActivity {
                 makeStringReq();
             }
         });
+        btnStringPOSTReq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePOSTReq();
+            }
+        });
     }
 
+    private void makePOSTReq(){
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                URL_STRING_POST_REQ,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Volley POST Response", response);
+                        msgResponse.append("\nPOST Response:\n" + response); // Append POST response
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley POST Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            public byte[] getBody() {
+                String requestBody = "{\"name\":\"Issmale Graham\",\"username\":\"Bret\",\"email\":\"Sincere@april.biz\",\"address\":{\"street\":\"Kulas Light\",\"suite\":\"Apt. 556\",\"city\":\"Gwenborough\",\"zipcode\":\"92998-3874\",\"geo\":{\"lat\":\"-37.3159\",\"lng\":\"81.1496\"}},\"phone\":\"1-770-736-8031 x56442\",\"website\":\"hildegard.org\",\"company\":{\"name\":\"Romaguera-Crona\",\"catchPhrase\":\"Multi-layered client-server neural-net\",\"bs\":\"harness real-time e-markets\"}}";
+                return requestBody.getBytes();
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+
+    }
 
     /**
      * Making string request
@@ -66,23 +111,24 @@ public class StringReqActivity extends AppCompatActivity {
                         Log.e("Volley Error", error.toString());
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
+        );
+//        {
+//            @Override
+//            public Map<String, String> getHeaders() {
+//                Map<String, String> headers = new HashMap<>();
+////                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+////                headers.put("Content-Type", "application/json");
+//                return headers;
+//            }
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+////                params.put("param1", "value1");
+////                params.put("param2", "value2");
+//                return params;
+//            }
+//        };
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);

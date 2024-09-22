@@ -14,6 +14,13 @@
         android:layout_marginTop="10dp"
         android:text="String Request" />
 
+    <Button
+        android:id="@+id/btnStringPOSTReq"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="POST request"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
