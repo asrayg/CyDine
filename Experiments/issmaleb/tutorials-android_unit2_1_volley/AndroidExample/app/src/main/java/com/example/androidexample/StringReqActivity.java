@@ -76,9 +76,13 @@ public class StringReqActivity extends AppCompatActivity {
                 return headers;
             }
 
-            @Override
             public byte[] getBody() {
-                String requestBody = "{\"name\":\"Issmale Bekri\",\"email\":\"issmale@iastate.edu\"}";
+                // Construct the JSON body with dynamic user inputs
+                String requestBody = "{\"name\":\"Issmale Bekri\"," +
+                        "\"email\":\"issmale@iastate.edu\"," +
+                        "\"major\":\"Computer Science\"," +
+                        "\"year\":\"Junior\"," +
+                        "\"phone\":\"" + "23231" + "\"}"; // Inject the phone number
                 return requestBody.getBytes();
             }
         };
