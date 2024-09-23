@@ -23,8 +23,8 @@ public class StringReqActivity extends AppCompatActivity {
     private Button btnStringPOSTReq;
     private TextView msgResponse;
 
-    private static final String URL_STRING_REQ = "https://jsonplaceholder.typicode.com/users/1";
-    private static final String URL_STRING_POST_REQ = "https://jsonplaceholder.typicode.com/users";
+    private static final String URL_STRING_REQ = "https://6de1b4f1-66e3-457b-8bd7-a939440434ff.mock.pstmn.io/get";
+    private static final String URL_STRING_POST_REQ = "https://6de1b4f1-66e3-457b-8bd7-a939440434ff.mock.pstmn.io/create";
     //   public static final String URL_STRING_REQ = "https://2aa87adf-ff7c-45c8-89bc-f3fbfaa16d15.mock.pstmn.io/users/1";
     //   public static final String URL_STRING_REQ = "http://10.0.2.2:8080/users/1";
 
@@ -51,7 +51,7 @@ public class StringReqActivity extends AppCompatActivity {
         });
     }
 
-    private void makePOSTReq(){
+    private void makePOSTReq() {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 URL_STRING_POST_REQ,
@@ -78,14 +78,13 @@ public class StringReqActivity extends AppCompatActivity {
 
             @Override
             public byte[] getBody() {
-                String requestBody = "{\"name\":\"Issmale Graham\",\"username\":\"Bret\",\"email\":\"Sincere@april.biz\",\"address\":{\"street\":\"Kulas Light\",\"suite\":\"Apt. 556\",\"city\":\"Gwenborough\",\"zipcode\":\"92998-3874\",\"geo\":{\"lat\":\"-37.3159\",\"lng\":\"81.1496\"}},\"phone\":\"1-770-736-8031 x56442\",\"website\":\"hildegard.org\",\"company\":{\"name\":\"Romaguera-Crona\",\"catchPhrase\":\"Multi-layered client-server neural-net\",\"bs\":\"harness real-time e-markets\"}}";
+                String requestBody = "{\"name\":\"Issmale Bekri\",\"email\":\"issmale@iastate.edu\"}";
                 return requestBody.getBytes();
             }
         };
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-
     }
 
     /**
