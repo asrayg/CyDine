@@ -1,4 +1,4 @@
-package onetoone.Users;
+package org.example.Users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,13 +1,6 @@
-package onetoone.Users;
+package org.example.Users;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.*;
 import onetoone.Laptops.Laptop;
 
 /**
@@ -81,14 +74,6 @@ public class User {
 
     public void setIfActive(boolean ifActive){
         this.ifActive = ifActive;
-    }
-
-    public Laptop getLaptop(){
-        return laptop;
-    }
-
-    public void setLaptop(Laptop laptop){
-        this.laptop = laptop;
     }
     
 }
