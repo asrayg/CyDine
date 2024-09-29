@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity">
+    tools:context=".SignUpActivity"
+    android:background="#EFBF04">
 
     <!-- App Name -->
 
@@ -17,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CyDine"
+        android:textStyle="bold"
         android:textSize="35sp"
         app:layout_constraintBottom_toTopOf="@+id/first_view_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +34,8 @@
         android:layout_marginTop="56dp"
         android:layout_marginEnd="8dp"
         android:text="First Name:"
-        android:textSize="20sp"
+        android:textSize="18sp"
+        android:textColor="#BD2031"
         app:layout_constraintEnd_toStartOf="@id/first_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name" />
@@ -62,7 +65,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="Last Name:"
-        android:textSize="20sp"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/last_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/first_view_name" />
@@ -92,7 +96,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="Email:"
-        android:textSize="20sp"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/last_view_name" />
@@ -122,7 +127,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="Password:"
-        android:textSize="20sp"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_view_name" />
@@ -152,7 +158,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="Confirm Password:"
-        android:textSize="20sp"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/confirm_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/password_view_name" />
@@ -178,8 +185,23 @@
         android:layout_marginTop="40dp"
         android:text="Sign Up"
         android:textSize="30sp"
+        android:backgroundTint="#BD2031"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirm_password_view_name" />
+
+    <TextView
+        android:id="@+id/already_have_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Already have an account? Login"
+        android:textSize="16sp"
+        android:textColor="#007BFF"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signup_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
