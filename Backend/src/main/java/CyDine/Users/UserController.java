@@ -2,6 +2,7 @@ package CyDine.Users;
 
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,11 +61,7 @@ public class UserController {
         userRepository.save(request);
         return userRepository.findById(id);
     }
-
-
-
-
-
+    @Transactional
     @DeleteMapping(path = "/users/{id}")
     String deleteUser(@PathVariable int id, @RequestBody String password){
         System.out.println(userRepository.findById(id).getPassword());
