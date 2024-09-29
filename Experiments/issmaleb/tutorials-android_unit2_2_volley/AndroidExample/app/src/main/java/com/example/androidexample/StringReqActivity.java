@@ -45,7 +45,7 @@ public class StringReqActivity extends AppCompatActivity {
 
     /** Uncomment to use: if sending a [POST] StringRequest */
     /** Use backend: https://git.las.iastate.edu/cs309/tutorials/-/tree/springboot_unit2_1_onetoone */
-    public static final String URL_STRING_REQ = "http://10.0.2.2:8080/users";
+    public static final String URL_STRING_REQ = "https://6de1b4f1-66e3-457b-8bd7-a939440434ff.mock.pstmn.io/get";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,7 @@ public class StringReqActivity extends AppCompatActivity {
                     jsonBody.put("name", "MY NAME");
                     jsonBody.put("emailId", 1);
                     jsonBody.put("ifActive", true);
+                    jsonBody.put("phone", "123-456-7890");  // Add phone number here
                     makeStringReqWithBody(jsonBody);
 
                 } catch (JSONException e) {
