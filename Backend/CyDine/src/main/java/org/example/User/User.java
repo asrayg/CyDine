@@ -1,11 +1,12 @@
 package org.example.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_info")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +17,7 @@ public class User {
     @Column(nullable = false)
     private String password; // Store as hashed
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private LocalDateTime createdAt;
