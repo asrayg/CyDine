@@ -63,9 +63,16 @@ public class UserController {
 
 
 
+
+
     @DeleteMapping(path = "/users/{id}")
-    String deleteUser(@PathVariable int id){
-        userRepository.deleteById(id);
-        return success;
+    String deleteUser(@PathVariable int id, @RequestBody String password){
+        System.out.println(userRepository.findById(id).getPassword());
+        System.out.println("------------------------------------------------------");
+        if(userRepository.findById(id).getPassword().equals(password)){
+            userRepository.deleteById(id);
+            return success;
+        }
+        return failure;
     }
 }

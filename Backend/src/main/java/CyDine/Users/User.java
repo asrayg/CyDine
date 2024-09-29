@@ -22,6 +22,8 @@ public class User {
     private String name;
     private String emailId;
     private boolean ifActive;
+    private String password;
+
 
     /*
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
@@ -30,10 +32,11 @@ public class User {
      * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
      */
 
-    public User(String name, String emailId) {
+    public User(String name, String emailId, String password) {
         this.name = name;
         this.emailId = emailId;
         this.ifActive = true;
+        this.password = password;
     }
 
     public User() {
@@ -47,6 +50,13 @@ public class User {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+    public String getPassword(){
+        return password;
     }
 
     public String getName(){
