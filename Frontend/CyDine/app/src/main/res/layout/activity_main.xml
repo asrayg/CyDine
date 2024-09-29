@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#EFBF04">
 
     <TextView
         android:id="@+id/app_name"
@@ -13,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="CyDine"
         android:textSize="35dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome"
+        android:textStyle="bold"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +41,7 @@
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:textSize="30dp"
+        android:backgroundTint="#BD2031"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -51,6 +55,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textSize="30dp"
+        android:backgroundTint="#BD2031"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
