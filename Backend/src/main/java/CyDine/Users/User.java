@@ -7,12 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Entity
 public class User {
 
-     /* 
+    private static final Logger log = LoggerFactory.getLogger(User.class);
+    /*
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
@@ -23,7 +26,7 @@ public class User {
     private String emailId;
     private boolean ifActive;
     private String password;
-    private int logintoken = 0;
+    private int logintoken;
 
 
     /*
@@ -38,6 +41,7 @@ public class User {
         this.emailId = emailId;
         this.ifActive = true;
         this.password = password;
+        logintoken = 0;
     }
 
     public User() {

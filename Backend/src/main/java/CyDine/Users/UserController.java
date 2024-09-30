@@ -36,7 +36,8 @@ public class UserController {
 
     @GetMapping(path = "/users/{id}")
     User getUserById( @PathVariable int id){
-        return userRepository.findById(id);
+        User user = userRepository.findById(id);
+        return user;
     }
 
     @PostMapping(path = "/users")
@@ -75,17 +76,21 @@ public class UserController {
         return failure;
     }
 
+    @Transactional
     @PostMapping(path ="/users/login/{id}")
     String loginUser(@PathVariable int id, @RequestBody String password){
-        if(userRepository.findById(id).getPassword().equals(password)){
-            userRepository.findById(id).setIfActive(true);
+        User user = userRepository.findById(id);
+        if(user.getPassword().equals(password)){
+            user.setIfActive(false);
             Random rand = new Random();
-            userRepository.findById(id).setLogintoken(rand.nextInt(2^30));
+            user.setLogintoken(rand.nextInt(999999999));
+            System.out.println(user.getLogintoken());
             return success;
         }
         return failure;
     }
 
+    @Transactional
     @PostMapping(path ="/users/logout/{id}")
     String logoutUser(@PathVariable int id, @RequestBody String token){
         if(userRepository.findById(id).getLogintoken() == Integer.parseInt(token) && userRepository.findById(id).getIsActive()){
