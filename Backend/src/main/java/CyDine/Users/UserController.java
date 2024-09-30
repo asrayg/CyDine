@@ -40,11 +40,14 @@ public class UserController {
         return user;
     }
 
+    @Transactional
     @PostMapping(path = "/users")
     String createUser(@RequestBody User user){
         if (user == null)
             return failure;
         userRepository.save(user);
+        Random rand = new Random();
+        userRepository.findById(user.getId()).setLogintoken(rand.nextInt(9999999));
         return success;
     }
 
