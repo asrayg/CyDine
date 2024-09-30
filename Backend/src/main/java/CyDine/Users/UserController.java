@@ -1,6 +1,7 @@
 package CyDine.Users;
 
 import java.util.List;
+import java.util.Random;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class UserController {
         userRepository.save(request);
         return userRepository.findById(id);
     }
+
     @Transactional
     @DeleteMapping(path = "/users/{id}")
     String deleteUser(@PathVariable int id, @RequestBody String password){
@@ -72,4 +74,25 @@ public class UserController {
         }
         return failure;
     }
+
+    @PostMapping(path ="/users/login/{id}")
+    String loginUser(@PathVariable int id, @RequestBody String password){
+        if(userRepository.findById(id).getPassword().equals(password)){
+            userRepository.findById(id).setIfActive(true);
+            Random rand = new Random();
+            userRepository.findById(id).setLogintoken(rand.nextInt(2^30));
+            return success;
+        }
+        return failure;
+    }
+
+    @PostMapping(path ="/users/logout/{id}")
+    String logoutUser(@PathVariable int id, @RequestBody String token){
+        if(userRepository.findById(id).getLogintoken() == Integer.parseInt(token) && userRepository.findById(id).getIsActive()){
+            userRepository.findById(id).setIfActive(false);
+            return success;
+        }
+        return failure;
+    }
+
 }

@@ -23,6 +23,7 @@ public class User {
     private String emailId;
     private boolean ifActive;
     private String password;
+    private int logintoken = 0;
 
 
     /*
@@ -82,5 +83,12 @@ public class User {
     public void setIfActive(boolean ifActive){
         this.ifActive = ifActive;
     }
-    
+
+    public int getLogintoken() {
+        return logintoken;
+    }
+
+    public void setLogintoken(int logintoken) {
+        this.logintoken = logintoken;
+    }
 }
