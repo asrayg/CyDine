@@ -1,5 +1,9 @@
 package CyDine.Users;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Random;
 
@@ -42,12 +46,18 @@ public class UserController {
 
     @Transactional
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user){
+    String createUser(@RequestBody User user) throws ClassNotFoundException, SQLException {
         if (user == null)
             return failure;
         userRepository.save(user);
         Random rand = new Random();
         userRepository.findById(user.getId()).setLogintoken(rand.nextInt(9999999));
+
+//        Class.forName("com.mysql.jdbc.Driver");
+//        Connection con = DriverManager.getConnection(
+//                "jdbc:mysql://coms-3090-020.class.las.iastate.edu:3306/mydatabase", "root", "123");
+//        Statement stmt = con.createStatement();
+
         return success;
     }
 
