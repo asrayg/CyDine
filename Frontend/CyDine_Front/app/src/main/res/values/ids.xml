@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="first_name" type="id" />
+    <item name="last_name" type="id" />
+    <item name="email" type="id" />
+    <item name="password" type="id" />
+    <item name="confirm_password" type="id" />
+    <item name="already_have_account" type="id" />
+</resources>

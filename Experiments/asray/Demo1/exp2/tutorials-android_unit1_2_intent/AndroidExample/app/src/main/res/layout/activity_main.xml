@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Message Display TextView -->
+    <TextView
+        android:id="@+id/main_msg_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to the App"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="16dp" />
+
+    <!-- Input Field for Custom Message -->
+    <EditText
+        android:id="@+id/input_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter a message"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Update Message Button -->
+    <Button
+        android:id="@+id/update_msg_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Message"
+        android:layout_gravity="center"/>
+
+    <!-- Counter Activity Button -->
+    <Button
+        android:id="@+id/main_counter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Counter"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp" />
+
+    <!-- Random Number Button -->
+    <Button
+        android:id="@+id/random_num_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Generate Random Number"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp" />
+
+    <!-- Dark Mode Switch -->
+    <Switch
+        android:id="@+id/theme_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark Mode"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
