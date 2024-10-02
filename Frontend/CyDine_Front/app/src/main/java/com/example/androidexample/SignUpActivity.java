@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.androidexample.VolleySingleton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +61,12 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    private boolean isValidEmail(String email) {
+        // Basic regex for email validation
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
+
     private boolean validateInput() {
         String firstNameStr = firstName.getText().toString().trim();
         String lastNameStr = lastName.getText().toString().trim();
@@ -69,6 +76,10 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (firstNameStr.isEmpty() || lastNameStr.isEmpty() || emailStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty()) {
             Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isValidEmail(emailStr)) {
+            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (!passwordStr.equals(confirmPasswordStr)) {
@@ -123,6 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }
+
         };
 
         // Add the request to the Volley request queue
