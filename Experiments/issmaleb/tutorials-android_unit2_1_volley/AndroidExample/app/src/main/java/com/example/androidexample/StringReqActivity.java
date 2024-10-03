@@ -78,7 +78,7 @@ public class StringReqActivity extends AppCompatActivity {
 
             public byte[] getBody() {
                 // Construct the JSON body with dynamic user inputs
-                String requestBody = "{\"name\":\"Issmale Bekri\"," +
+                String requestBody = "{\"name\":\"Bekri Bekri\"," +
                         "\"email\":\"issmale@iastate.edu\"," +
                         "\"major\":\"Computer Science\"," +
                         "\"year\":\"Junior\"," +
