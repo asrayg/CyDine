@@ -116,6 +116,22 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 }
         ) {
+
+            @Override
+            public byte[] getBody() {
+                // Create a JSON object with the user input fields
+                String requestBody = "{\"first_name\":\"" + firstName.getText().toString().trim() + "\","
+                        + "\"last_name\":\"" + lastName.getText().toString().trim() + "\","
+                        + "\"email\":\"" + email.getText().toString().trim() + "\","
+                        + "\"password\":\"" + password.getText().toString().trim() + "\"}";
+
+                // Log the body being sent for debugging purposes
+                Log.d("SignUpRequestBody", requestBody);
+
+                // Return the request body as a byte array (UTF-8 encoded)
+                return requestBody.getBytes();
+            }
+
             @Override
             protected Map<String, String> getParams() {
                 // Send form data as key-value pairs to the mock server
