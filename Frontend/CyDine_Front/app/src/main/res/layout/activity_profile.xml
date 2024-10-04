@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity"
+    android:background="#EFBF04">
+
+    <!-- App Name -->
+
+    <!-- First Name Label -->
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="CyDine"
+        android:textColor="#BD2031"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/profile_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Profile"
+        android:textColor="#BD2031"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_name" />
+
+    <TextView
+        android:id="@+id/first_view_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:text="First Name:"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/edit_first_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_message" />
+
+    <!-- First Name EditText -->
+    <EditText
+        android:id="@+id/edit_first_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="First Name"
+        android:inputType="textPersonName"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/first_view_name"
+        app:layout_constraintBottom_toBottomOf="@id/first_view_name"
+        app:layout_constraintStart_toEndOf="@id/first_view_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Last Name Label -->
+    <TextView
+        android:id="@+id/last_view_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:text="Last Name:"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/edit_last_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_first_name" />
+
+    <!-- Last Name EditText -->
+    <EditText
+        android:id="@+id/edit_last_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Last Name"
+        android:inputType="textPersonName"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/last_view_name"
+        app:layout_constraintBottom_toBottomOf="@id/last_view_name"
+        app:layout_constraintStart_toEndOf="@id/last_view_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Email Label -->
+    <TextView
+        android:id="@+id/email_view_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:text="Email:"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/edit_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_last_name" />
+
+    <!-- Email EditText -->
+    <EditText
+        android:id="@+id/edit_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/email_view_name"
+        app:layout_constraintBottom_toBottomOf="@id/email_view_name"
+        app:layout_constraintStart_toEndOf="@id/email_view_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Password Label -->
+    <TextView
+        android:id="@+id/password_view_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:text="Password:"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/edit_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_email" />
+
+    <!-- Password EditText -->
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/password_view_name"
+        app:layout_constraintBottom_toBottomOf="@id/password_view_name"
+        app:layout_constraintStart_toEndOf="@id/password_view_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Save Changes Button -->
+
+    <!-- Delete Account Button -->
+
+    <!-- Centered -->
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#BD2031"
+        android:text="Save Changes"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_password" />
+
+    <Button
+        android:id="@+id/button_delete_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#BD2031"
+        android:text="Delete Account"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.626"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_save" /> <!-- Centered -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

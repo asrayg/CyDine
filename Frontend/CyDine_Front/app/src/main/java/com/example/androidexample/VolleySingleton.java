@@ -2,6 +2,7 @@ package com.example.androidexample;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.Request;
@@ -65,6 +66,7 @@ public class VolleySingleton {
 
     // Method to add a request to the request queue
     public <T> void addToRequestQueue(Request<T> req) {
+        Log.d("VolleySingleton", "Adding request to queue: " + req.getUrl());
         getRequestQueue().add(req);
     }
 
