@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
 
     // Mock server POST URL for login
-    private static final String LOGIN_URL = "https://9aa89b97-07c9-45c0-8b97-da676a641a5d.mock.pstmn.io/login";
+    private static final String LOGIN_URL = "https://ea906bde-9d8c-444d-b333-aa2d4ea647fc.mock.pstmn.io/login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,7 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText firstName, lastName, email, password, confirmPassword;
 
     // Mock server POST URL for sign-up
-    private static final String SIGNUP_URL = "https://9aa89b97-07c9-45c0-8b97-da676a641a5d.mock.pstmn.io/info";
+    private static final String SIGNUP_URL = "https://ea906bde-9d8c-444d-b333-aa2d4ea647fc.mock.pstmn.io/POST";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
