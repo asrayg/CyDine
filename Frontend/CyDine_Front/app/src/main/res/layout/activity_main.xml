@@ -10,13 +10,11 @@
     <!-- App Name (CyDine) -->
 
     <!-- Welcome Message -->
-
-
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:fontFamily="cursive"
         android:letterSpacing="0.1"
         android:text="CyDine"
@@ -24,56 +22,70 @@
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Empty Space -->
     <TextView
         android:id="@+id/welcome_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="cursive"
         android:text="Welcome"
         android:textColor="#BD2031"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintHorizontal_bias="0.109"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name" />
 
-    <Button
-        android:id="@+id/signup_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#BD2031"
-        android:text="Sign Up"
-        android:textSize="30sp"
-        android:textColor="#EFBF04"
-        android:fontFamily="cursive"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.937"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.742" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/welcome_message"
+        app:layout_constraintBottom_toTopOf="@+id/button_layout"
+        android:layout_weight="1"/>
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+    <!-- Button Layout -->
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#BD2021"
-        android:text="Sign In"
-        android:textSize="30sp"
-        android:textColor="#EFBF04"
-        android:fontFamily="cursive"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.918"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.846" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@android:color/black"
+        android:padding="8dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2021"
+            android:text="Sign In"
+            android:textSize="30sp"
+            android:textColor="#EFBF04"
+            android:fontFamily="cursive"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/signup_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2031"
+            android:text="Sign Up"
+            android:textSize="30sp"
+            android:textColor="#EFBF04"
+            android:fontFamily="cursive"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
