@@ -16,6 +16,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +26,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
 
-    // Mock server POST URL for login
-    private static final String LOGIN_URL = "https://ea906bde-9d8c-444d-b333-aa2d4ea647fc.mock.pstmn.io/login";
+    // Server URL for login
+    private static final String LOGIN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Keep the original URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,43 +90,80 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle response from the mock server
+                        // Log the raw server response
                         Log.d("LoginResponse", response);
-
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        // Redirect to MainActivity
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        parseResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error from the mock server
-                        Log.e("LoginError", error.toString());
-                        Toast.makeText(LoginActivity.this, "Error logging in: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        // Enhanced error logging
+                        String errorMessage = "Unknown error occurred";
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            String responseBody = new String(error.networkResponse.data);
+                            errorMessage = "Error " + statusCode + ": " + responseBody;
+                        }
+                        Log.e("LoginError", errorMessage);
+                        Toast.makeText(LoginActivity.this, "Error logging in: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
             @Override
-            protected Map<String, String> getParams() {
-                // Send form data as key-value pairs to the mock server
-                Map<String, String> params = new HashMap<>();
-                params.put("email", email.getText().toString().trim());
-                params.put("password", password.getText().toString().trim());
-                return params;
+            public byte[] getBody() {
+                // Create a JSON object with the user input fields
+                String requestBody = "{\"emailId\":\"" + email.getText().toString().trim() + "\","
+                        + "\"password\":\"" + password.getText().toString().trim() + "\"}";
+
+                // Log the body being sent for debugging purposes
+                Log.d("LoginRequestBody", requestBody);
+
+                // Return the request body as a byte array (UTF-8 encoded)
+                return requestBody.getBytes();
             }
 
             @Override
             public Map<String, String> getHeaders() {
-                // Set Content-Type as form-urlencoded
+                // Set Content-Type as JSON
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
         };
 
         // Add the request to the Volley request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(loginRequest);
+    }
+
+    private void parseResponse(String response) {
+        try {
+            // Log the full response to see its structure
+            Log.d("ResponseParsed", response);
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // Check for a known structure in the response
+            if (jsonResponse.has("success")) {
+                boolean success = jsonResponse.getBoolean("success");
+
+                if (success) {
+                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    // Redirect to MainActivity after successful login
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                }
+            } else if (jsonResponse.has("error")) { // Handle error messages from the server
+                String errorMessage = jsonResponse.getString("error");
+                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+            } else {
+                // Handle unexpected response structure
+                Toast.makeText(LoginActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(LoginActivity.this, "Error parsing server response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
