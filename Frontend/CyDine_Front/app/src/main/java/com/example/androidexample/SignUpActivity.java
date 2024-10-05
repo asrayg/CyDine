@@ -24,8 +24,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText firstName, lastName, email, password, confirmPassword;
 
-    // Mock server POST URL for sign-up
-    private static final String SIGNUP_URL = "https://ea906bde-9d8c-444d-b333-aa2d4ea647fc.mock.pstmn.io/POST";
+    // Server POST URL for sign-up
+    private static final String SIGNUP_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle response from the mock server
+                        // Handle response from the server
                         Log.d("SignUpResponse", response);
 
                         Toast.makeText(SignUpActivity.this, "Sign up successful!", Toast.LENGTH_SHORT).show();
@@ -110,19 +110,17 @@ public class SignUpActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error from the mock server
+                        // Handle error from the server
                         Log.e("SignUpError", error.toString());
                         Toast.makeText(SignUpActivity.this, "Error signing up: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         ) {
-
             @Override
             public byte[] getBody() {
                 // Create a JSON object with the user input fields
-                String requestBody = "{\"first_name\":\"" + firstName.getText().toString().trim() + "\","
-                        + "\"last_name\":\"" + lastName.getText().toString().trim() + "\","
-                        + "\"email\":\"" + email.getText().toString().trim() + "\","
+                String requestBody = "{\"name\":\"" + firstName.getText().toString().trim() + "\","
+                        + "\"emailId\":\"" + email.getText().toString().trim() + "\","
                         + "\"password\":\"" + password.getText().toString().trim() + "\"}";
 
                 // Log the body being sent for debugging purposes
@@ -133,24 +131,12 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            protected Map<String, String> getParams() {
-                // Send form data as key-value pairs to the mock server
-                Map<String, String> params = new HashMap<>();
-                params.put("first_name", firstName.getText().toString().trim());
-                params.put("last_name", lastName.getText().toString().trim());
-                params.put("email", email.getText().toString().trim());
-                params.put("password", password.getText().toString().trim());
-                return params;
-            }
-
-            @Override
             public Map<String, String> getHeaders() {
-                // Set Content-Type as form-urlencoded
+                // Set Content-Type as JSON
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
-
         };
 
         // Add the request to the Volley request queue
