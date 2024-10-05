@@ -2,20 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:background="#EFBF04">
 
-    <Button
-        android:id="@+id/food_menus_button"
+    <!-- Welcome Text -->
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Food Menus"
-        android:layout_marginBottom="20dp"/>
+        android:layout_gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp"
+        android:text="Welcome to CyDine!"
+        android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/profile_button"
-        android:layout_width="wrap_content"
+    <!-- Empty Space -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Navigation Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profile" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@android:color/black"
+        android:padding="8dp"
+        android:elevation="4dp">
+
+        <Button
+            android:id="@+id/food_menus_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#BD2031"
+            android:text="Food Menu"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/profile_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#BD2031"
+            android:text="Profile"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
 </LinearLayout>
