@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
 
     // Server URL for login
-    private static final String LOGIN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Keep the original URL
+    private static final String LOGIN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +84,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void makeLoginRequest() {
-        // Create a POST request for login
+        // Create a GET request to fetch users
         StringRequest loginRequest = new StringRequest(
-                Request.Method.POST,
+                Request.Method.GET,
                 LOGIN_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -109,28 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Error logging in: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
-        ) {
-            @Override
-            public byte[] getBody() {
-                // Create a JSON object with the user input fields
-                String requestBody = "{\"emailId\":\"" + email.getText().toString().trim() + "\","
-                        + "\"password\":\"" + password.getText().toString().trim() + "\"}";
-
-                // Log the body being sent for debugging purposes
-                Log.d("LoginRequestBody", requestBody);
-
-                // Return the request body as a byte array (UTF-8 encoded)
-                return requestBody.getBytes();
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                // Set Content-Type as JSON
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
+        );
 
         // Add the request to the Volley request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(loginRequest);
@@ -138,29 +118,37 @@ public class LoginActivity extends AppCompatActivity {
 
     private void parseResponse(String response) {
         try {
-            // Log the full response to see its structure
-            Log.d("ResponseParsed", response);
-            JSONObject jsonResponse = new JSONObject(response);
+            // Parse the response as a JSON array
+            JSONArray jsonArray = new JSONArray(response);
 
-            // Check for a known structure in the response
-            if (jsonResponse.has("success")) {
-                boolean success = jsonResponse.getBoolean("success");
+            String emailInput = email.getText().toString().trim();
+            String passwordInput = password.getText().toString().trim();
+            boolean loginSuccess = false;
 
-                if (success) {
-                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    // Redirect to MainActivity after successful login
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject user = jsonArray.getJSONObject(i);
+
+                // Extract user details
+                String emailId = user.getString("emailId");
+                String password = user.getString("password");
+
+                // Check if the email and password match and the user is active
+                if (emailId.equals(emailInput) && password.equals(passwordInput)) {
+                        loginSuccess = true;
+                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+
+                        // Redirect to MainActivity
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish(); // Finish LoginActivity so user can't go back
+                        break;
                 }
-            } else if (jsonResponse.has("error")) { // Handle error messages from the server
-                String errorMessage = jsonResponse.getString("error");
-                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-            } else {
-                // Handle unexpected response structure
-                Toast.makeText(LoginActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
             }
+
+            if (!loginSuccess) {
+                Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(LoginActivity.this, "Error parsing server response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
