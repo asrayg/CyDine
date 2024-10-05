@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@RestController
 public class MealController {
 
     @Autowired
@@ -54,23 +54,6 @@ public class MealController {
         return success;
     }
 
-    @DeleteMapping(path = "/mealplans/{id}")
-    String deleteMealPlan(@PathVariable int id) {
-        if (mealRepository.findById(id) != null) {
-            mealRepository.deleteById(id);
-            return success;
-        }
-        return failure;
-    }
 
-    @PutMapping("/mealplans/{id}")
-    MealPlans updateMealPlan(@PathVariable int id, @RequestBody MealPlans request) {
-        MealPlans mealPlan = mealRepository.findById(id);
-        if (mealPlan == null) {
-            throw new RuntimeException("Meal plan id does not exist");
-        }
-        mealRepository.save(request);
-        return mealRepository.findById(id);
-    }
 
 }
