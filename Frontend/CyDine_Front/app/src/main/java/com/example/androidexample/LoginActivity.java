@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
                         // Redirect to MainActivity
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                         startActivity(intent);
                         finish(); // Finish LoginActivity so user can't go back
                         break;

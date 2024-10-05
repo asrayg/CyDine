@@ -41,6 +41,9 @@
             android:name=".ProfileActivity"
             android:exported="false"/>
 
+        <activity android:name=".HomeScreenActivity" />
+        <activity android:name=".FoodMenusActivity" />
+
 
     </application>
 
