@@ -8,6 +8,7 @@ public class MealPlans {
     private int carbs = 0;
     private int finalCalories = 0;
     private int fat = 0;
+    private int id = 0;
 
     public void addFoodItems(FoodItems foodItems) {
         foodItemsList.add(foodItems);

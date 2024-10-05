@@ -1,9 +1,10 @@
 package CyDine.Meals;
 
+import CyDine.Meals.MealPlans;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public class MealRepository {
-    public interface MealRepository extends JpaRepository<MealPlans, Long> {
+public interface MealRepository {
+    public interface UserRepository extends JpaRepository<MealPlans, Long> {
 
         MealPlans findById(int id);
 

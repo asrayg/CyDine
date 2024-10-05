@@ -6,8 +6,9 @@ public class FoodItems {
     private int carbs;
     private int fat;
     private int calories;
+    private int id;
 
-    public FoodItems(String name, int protein, int carbs, int fat, int calories) {
+    public FoodItems(String name, int protein, int carbs, int fat, int calories, int id) {
         this.name = name;
         this.protein = protein;
         this.carbs = carbs;
@@ -34,4 +35,14 @@ public class FoodItems {
     public int getCalories() {
         return calories;
     }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+
 }
