@@ -26,12 +26,19 @@ public class FoodItems implements Serializable {
     private int fat;
     private int calories;
 
+
+
     public FoodItems(String name, int protein, int carbs, int fat, int calories, int id) {
         this.name = name;
         this.protein = protein;
         this.carbs = carbs;
         this.fat = fat;
         this.calories = calories;
+
+    }
+
+    public FoodItems() {
+
     }
 
     public String getName() {
