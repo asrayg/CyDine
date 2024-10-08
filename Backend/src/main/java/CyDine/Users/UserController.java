@@ -78,8 +78,6 @@ public class UserController {
     @Transactional
     @DeleteMapping(path = "/users/{id}")
     String deleteUser(@PathVariable int id, @RequestBody passwordObj password){
-        System.out.println(password.getPassword());
-        System.out.println("------------------------------------------------------");
         if(userRepository.existsById((long)id)) {
             if (userRepository.findById(id).getPassword().equals(password.getPassword())) {
                 userRepository.deleteById(id);

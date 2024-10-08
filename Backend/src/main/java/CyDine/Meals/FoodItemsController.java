@@ -26,31 +26,21 @@ public class FoodItemsController {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
-    @GetMapping(path = "/mealplans")
-    List<MealPlans> getAllMealPlans() {
+    @GetMapping(path = "/FoodItem")
+    List<FoodItems> getAllFoods() {
         return foodRepository.findAll();
     }
 
-    @GetMapping(path = "/mealplans/{id}")
-    MealPlans getMealPlanById(@PathVariable int id) {
+    @GetMapping(path = "/FoodItem/{id}")
+    FoodItems getFoodsById(@PathVariable int id) {
         return foodRepository.findById(id);
     }
 
-    @PostMapping(path = "/mealplans")
-    String createMealPlan(@RequestBody MealPlans mealPlan) {
-        if (mealPlan == null)
+    @PostMapping(path = "/FoodItem")
+    String createFoodsPlan(@RequestBody FoodItems food) {
+        if (food == null)
             return failure;
-        foodRepository.save(mealPlan);
-        return success;
-    }
-
-    @PostMapping(path = "/mealplans/{id}/fooditems")
-    String addFoodItemToMealPlan(@PathVariable int id, @RequestBody FoodItems foodItem) {
-        MealPlans mealPlan = foodRepository.findById(id);
-        if (mealPlan == null)
-            return failure;
-        mealPlan.addFoodItems(foodItem);
-        foodRepository.save(mealPlan);
+        foodRepository.save(food);
         return success;
     }
 
@@ -64,10 +54,10 @@ public class FoodItemsController {
     }
 
     @PutMapping("/mealplans/{id}")
-    MealPlans updateMealPlan(@PathVariable int id, @RequestBody MealPlans request) {
-        MealPlans mealPlan = foodRepository.findById(id);
-        if (mealPlan == null) {
-            throw new RuntimeException("Meal plan id does not exist");
+    FoodItems updateMealPlan(@PathVariable int id, @RequestBody MealPlans request) {
+        FoodItems foodItem = foodRepository.findById(id);
+        if (foodItem == null) {
+            throw new RuntimeException("food id does not exist");
         }
         foodRepository.save(request);
         return foodRepository.findById(id);
