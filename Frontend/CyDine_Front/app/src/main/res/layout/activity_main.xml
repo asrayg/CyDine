@@ -5,16 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/gold_cardinal_background">
+    android:background="#EFBF04">
 
     <!-- App Name (CyDine) -->
 
     <!-- Welcome Message -->
+
+    <!-- Empty Space -->
+
+    <!-- Button Layout -->
+
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="44dp"
         android:fontFamily="cursive"
         android:letterSpacing="0.1"
         android:text="CyDine"
@@ -22,23 +27,21 @@
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Empty Space -->
     <TextView
         android:id="@+id/welcome_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="cursive"
         android:text="Welcome"
         android:textColor="#BD2031"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.109"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name" />
 
@@ -47,11 +50,12 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/welcome_message"
+        android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/button_layout"
-        android:layout_weight="1"/>
+        app:layout_constraintTop_toBottomOf="@id/welcome_message"
+        app:layout_constraintVertical_bias="0.125"
+        tools:layout_editor_absoluteX="0dp" />
 
-    <!-- Button Layout -->
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
