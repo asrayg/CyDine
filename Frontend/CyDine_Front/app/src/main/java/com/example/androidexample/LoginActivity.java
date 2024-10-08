@@ -294,7 +294,6 @@ public class LoginActivity extends AppCompatActivity {
                     String userId = user.getString("id");
                     String userName = user.getString("name");  // Ensure name is extracted
                     String userEmail = user.getString("emailId");
-
                     Toast.makeText(LoginActivity.this, "Login successful! Your ID is: " + userId, Toast.LENGTH_LONG).show();
 
                     // Pass name, email, and ID to HomeScreenActivity
@@ -302,6 +301,7 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("userId", userId);
                     intent.putExtra("userName", userName); // Make sure this field is passed
                     intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("password", password);
                     startActivity(intent);
                     finish();
                     break;

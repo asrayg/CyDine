@@ -37,6 +37,7 @@ public class HomeScreenActivity extends AppCompatActivity {
                 intent.putExtra("userId", getIntent().getStringExtra("userId"));
                 intent.putExtra("userName", getIntent().getStringExtra("userName"));
                 intent.putExtra("userEmail", getIntent().getStringExtra("userEmail"));
+                intent.putExtra("password", getIntent().getStringExtra("password"));
                 startActivity(intent);
             }
         });
