@@ -1,4 +1,4 @@
-package CyDine.Meals;
+package CyDine.tmpObjs;
 
 public class passwordObj {
     private String password;

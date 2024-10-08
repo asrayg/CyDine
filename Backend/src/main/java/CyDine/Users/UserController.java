@@ -1,15 +1,11 @@
 package CyDine.Users;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Random;
 
-import CyDine.Meals.passwordObj;
+import CyDine.tmpObjs.passwordObj;
 import jakarta.transaction.Transactional;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,9 +80,11 @@ public class UserController {
     String deleteUser(@PathVariable int id, @RequestBody passwordObj password){
         System.out.println(password.getPassword());
         System.out.println("------------------------------------------------------");
-        if(userRepository.findById(id).getPassword().equals(password.getPassword())){
-            userRepository.deleteById(id);
-            return success;
+        if(userRepository.existsById((long)id)) {
+            if (userRepository.findById(id).getPassword().equals(password.getPassword())) {
+                userRepository.deleteById(id);
+                return success;
+            }
         }
         return failure;
     }
