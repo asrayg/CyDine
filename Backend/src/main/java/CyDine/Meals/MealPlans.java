@@ -2,13 +2,9 @@ package CyDine.Meals;
 
 import java.sql.Array;
 import java.util.ArrayList;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import java.util.List;
+
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +16,10 @@ public class MealPlans {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    ArrayList<Integer> foodItemsList = new ArrayList<>();
+
+    @OneToMany
+    private List<FoodItems> foods;
+
     private int protein = 0;
     private int carbs = 0;
     private int finalCalories = 0;
@@ -28,15 +27,16 @@ public class MealPlans {
 
 
     public MealPlans(ArrayList<Integer> ids) {
-        this.foodItemsList.addAll(ids);
+        foods = new ArrayList<>();
     }
 
-    public void addFoodItems(FoodItems foodItems) {
-        foodItemsList.add(foodItems);
-        protein += foodItems.getProtein();
-        carbs += foodItems.getCarbs();
-        fat += foodItems.getFat();
-        finalCalories += foodItems.getCalories();
+    public void addFoodItem(FoodItems foodItem) {
+        foods.add(foodItem);
+        protein += foodItem.getProtein();
+        carbs += foodItem.getCarbs();
+        fat += foodItem.getFat();
+        finalCalories += foodItem.getCalories();
     }
+
 
 }

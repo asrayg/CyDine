@@ -49,7 +49,7 @@ public class MealController {
         MealPlans mealPlan = mealRepository.findById(id);
         if (mealPlan == null)
             return failure;
-        mealPlan.addFoodItems(foodItem);
+        mealPlan.addFoodItem(foodItem);
         mealRepository.save(mealPlan);
         return success;
     }
