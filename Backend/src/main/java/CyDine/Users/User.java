@@ -35,10 +35,10 @@ public class User {
     private int dietary_restrictions;
     private int fitness_goal;
 
-    @OneToMany(mappedBy="mealplans")
-    private ArrayList<MealPlans> mealPlans;
-    @OneToMany(mappedBy="dailyMeal")
-    private ArrayList<MealPlans> dailyMeals;
+//    @OneToMany(mappedBy="mealplans")
+//    private ArrayList<MealPlans> mealPlans;
+//    @OneToMany(mappedBy="dailyMeal")
+//    private ArrayList<MealPlans> dailyMeals;
 
 
     /*

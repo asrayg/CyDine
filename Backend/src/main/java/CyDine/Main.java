@@ -21,8 +21,8 @@ import java.util.Arrays;
 class Main {
 
     public static void main(String[] args) {
-        Scrape t = new Scrape();
-        System.out.println(Arrays.toString(t.getPlaces()));
+//        Scrape t = new Scrape();
+//        System.out.println(Arrays.toString(t.getPlaces()));
         SpringApplication.run(Main.class, args);
     }
 
