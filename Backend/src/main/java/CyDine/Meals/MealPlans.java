@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 @Entity
 public class MealPlans {
 
-    private static final Logger logger = LoggerFactory.getLogger(MealPlans.class);
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
