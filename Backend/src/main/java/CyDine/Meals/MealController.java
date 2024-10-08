@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@RestController
 public class MealController {
 
     @Autowired
@@ -72,7 +72,5 @@ public class MealController {
         mealRepository.save(request);
         return mealRepository.findById(id);
     }
-
-
 
 }

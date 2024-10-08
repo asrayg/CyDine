@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Bean;
 
 import CyDine.Users.User;
 import CyDine.Users.UserRepository;
+import CyDine.Scraper.Scrape;
+
+import java.util.Arrays;
 
 /**
  * 
@@ -18,6 +21,8 @@ import CyDine.Users.UserRepository;
 class Main {
 
     public static void main(String[] args) {
+        Scrape t = new Scrape();
+        System.out.println(Arrays.toString(t.getPlaces()));
         SpringApplication.run(Main.class, args);
     }
 

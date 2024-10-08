@@ -9,8 +9,6 @@
     android:background="#EFBF04">
 
     <!-- App Name -->
-
-    <!-- First Name Label -->
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
@@ -24,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Profile Title -->
     <TextView
         android:id="@+id/profile_message"
         android:layout_width="wrap_content"
@@ -34,68 +33,39 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name" />
 
+    <!-- Name Label -->
     <TextView
-        android:id="@+id/first_view_name"
+        android:id="@+id/name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
-        android:text="First Name:"
+        android:text="Name:"
         android:textColor="#BD2031"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/edit_first_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_message" />
 
-    <!-- First Name EditText -->
+    <!-- Name EditText -->
     <EditText
-        android:id="@+id/edit_first_name"
+        android:id="@+id/edit_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="First Name"
+        android:hint="Name"
         android:inputType="textPersonName"
         android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="@id/first_view_name"
-        app:layout_constraintBottom_toBottomOf="@id/first_view_name"
-        app:layout_constraintStart_toEndOf="@id/first_view_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="32dp" />
-
-    <!-- Last Name Label -->
-    <TextView
-        android:id="@+id/last_view_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
-        android:text="Last Name:"
-        android:textColor="#BD2031"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/edit_last_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_first_name" />
-
-    <!-- Last Name EditText -->
-    <EditText
-        android:id="@+id/edit_last_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Last Name"
-        android:inputType="textPersonName"
-        android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="@id/last_view_name"
-        app:layout_constraintBottom_toBottomOf="@id/last_view_name"
-        app:layout_constraintStart_toEndOf="@id/last_view_name"
+        app:layout_constraintTop_toTopOf="@id/name_label"
+        app:layout_constraintBottom_toBottomOf="@id/name_label"
+        app:layout_constraintStart_toEndOf="@id/name_label"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="32dp" />
 
     <!-- Email Label -->
     <TextView
-        android:id="@+id/email_view_name"
+        android:id="@+id/email_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -103,9 +73,8 @@
         android:text="Email:"
         android:textColor="#BD2031"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/edit_email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_last_name" />
+        app:layout_constraintTop_toBottomOf="@id/edit_name" />
 
     <!-- Email EditText -->
     <EditText
@@ -115,15 +84,15 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="@id/email_view_name"
-        app:layout_constraintBottom_toBottomOf="@id/email_view_name"
-        app:layout_constraintStart_toEndOf="@id/email_view_name"
+        app:layout_constraintTop_toTopOf="@id/email_label"
+        app:layout_constraintBottom_toBottomOf="@id/email_label"
+        app:layout_constraintStart_toEndOf="@id/email_label"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="32dp" />
 
     <!-- Password Label -->
     <TextView
-        android:id="@+id/password_view_name"
+        android:id="@+id/password_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -131,7 +100,6 @@
         android:text="Password:"
         android:textColor="#BD2031"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/edit_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_email" />
 
@@ -143,18 +111,13 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="@id/password_view_name"
-        app:layout_constraintBottom_toBottomOf="@id/password_view_name"
-        app:layout_constraintStart_toEndOf="@id/password_view_name"
+        app:layout_constraintTop_toTopOf="@id/password_label"
+        app:layout_constraintBottom_toBottomOf="@id/password_label"
+        app:layout_constraintStart_toEndOf="@id/password_label"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="32dp" />
 
     <!-- Save Changes Button -->
-
-    <!-- Delete Account Button -->
-
-    <!-- Centered -->
-
     <Button
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
@@ -165,10 +128,10 @@
         android:text="Save Changes"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_password" />
 
+    <!-- Delete Account Button -->
     <Button
         android:id="@+id/button_delete_account"
         android:layout_width="wrap_content"
@@ -179,8 +142,7 @@
         android:text="Delete Account"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.626"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_save" /> <!-- Centered -->
+        app:layout_constraintTop_toBottomOf="@id/button_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,9 @@ public class HomeScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Start ProfileActivity
                 Intent intent = new Intent(HomeScreenActivity.this, ProfileActivity.class);
+                intent.putExtra("userId", getIntent().getStringExtra("userId"));
+                intent.putExtra("userName", getIntent().getStringExtra("userName"));
+                intent.putExtra("userEmail", getIntent().getStringExtra("userEmail"));
                 startActivity(intent);
             }
         });

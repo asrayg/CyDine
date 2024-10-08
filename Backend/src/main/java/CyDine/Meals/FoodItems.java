@@ -1,12 +1,32 @@
 package CyDine.Meals;
 
-public class FoodItems {
+
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
+@Entity
+public class FoodItems implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String name;
     private int protein;
     private int carbs;
     private int fat;
     private int calories;
-    private int id;
+
+
 
     public FoodItems(String name, int protein, int carbs, int fat, int calories, int id) {
         this.name = name;
@@ -14,6 +34,11 @@ public class FoodItems {
         this.carbs = carbs;
         this.fat = fat;
         this.calories = calories;
+
+    }
+
+    public FoodItems() {
+
     }
 
     public String getName() {
