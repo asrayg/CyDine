@@ -24,7 +24,7 @@ public class UserModAdminActivity extends AppCompatActivity {
         user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserModAdminActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(UserModAdminActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -32,7 +32,7 @@ public class UserModAdminActivity extends AppCompatActivity {
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserModAdminActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(UserModAdminActivity.this, AdminActivity.class);
                 startActivity(intent);
             }
         });
@@ -40,7 +40,7 @@ public class UserModAdminActivity extends AppCompatActivity {
         mod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserModAdminActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(UserModAdminActivity.this, ModActivity.class);
                 startActivity(intent);
             }
         });

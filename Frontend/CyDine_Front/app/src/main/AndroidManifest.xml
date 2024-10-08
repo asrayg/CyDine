@@ -45,6 +45,14 @@
             android:name=".UserModAdminActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ModActivity"
+            android:exported="false"/>
+
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />
 
