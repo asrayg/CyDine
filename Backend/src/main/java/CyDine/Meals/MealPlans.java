@@ -28,8 +28,7 @@ public class MealPlans {
 
 
     public MealPlans(ArrayList<Integer> ids) {
-        return;
-
+        this.foodItemsList.addAll(ids);
     }
 
     public void addFoodItems(FoodItems foodItems) {
