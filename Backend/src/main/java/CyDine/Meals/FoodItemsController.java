@@ -44,8 +44,8 @@ public class FoodItemsController {
         return success;
     }
 
-    @DeleteMapping(path = "/mealplans/{id}")
-    String deleteMealPlan(@PathVariable int id) {
+    @DeleteMapping(path = "/food/{id}")
+    String deleteFood(@PathVariable int id) {
         if (foodRepository.findById(id) != null) {
             foodRepository.deleteById(id);
             return success;
@@ -53,8 +53,8 @@ public class FoodItemsController {
         return failure;
     }
 
-    @PutMapping("/mealplans/{id}")
-    FoodItems updateMealPlan(@PathVariable int id, @RequestBody MealPlans request) {
+    @PutMapping("/food/{id}")
+    FoodItems updateFood(@PathVariable int id, @RequestBody FoodItems request) {
         FoodItems foodItem = foodRepository.findById(id);
         if (foodItem == null) {
             throw new RuntimeException("food id does not exist");
