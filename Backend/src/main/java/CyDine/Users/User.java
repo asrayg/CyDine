@@ -1,14 +1,11 @@
 package CyDine.Users;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import CyDine.Meals.MealPlans;
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 
 @Entity
@@ -27,6 +24,21 @@ public class User {
     private boolean ifActive;
     private String password;
     private int logintoken;
+    private int Height;
+    private int Weight;
+    private int age;
+    private boolean IsMod;
+    private boolean IsAdmin;
+    private boolean IsBanned;
+    private ArrayList<String>previous_moderation;
+    private int dietary_preference;
+    private int dietary_restrictions;
+    private int fitness_goal;
+
+    @OneToMany(mappedBy="mealplans")
+    private ArrayList<MealPlans> mealPlans;
+    @OneToMany(mappedBy="dailyMeal")
+    private ArrayList<MealPlans> dailyMeals;
 
 
     /*
