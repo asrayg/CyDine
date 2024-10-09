@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Entity
 public class MealPlans {
@@ -27,9 +25,7 @@ public class MealPlans {
     // Constructor with parameters
     public MealPlans(ArrayList<FoodItems> foodItems) {
         this.foodItemsList.addAll(foodItems);
-        for (FoodItems item : foodItems) {
-            addFoodItems(item);
-        }
+
     }
 
     public void addFoodItems(FoodItems foodItems) {
