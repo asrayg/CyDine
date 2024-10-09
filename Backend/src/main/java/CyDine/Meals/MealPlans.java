@@ -40,4 +40,28 @@ public class MealPlans {
     public int getId() {
         return id;
     }
+
+    public int getCarbs() {
+        return carbs;
+    }
+
+    public int getFat() {
+        return fat;
+    }
+
+    public int getFinalCalories() {
+        return finalCalories;
+    }
+
+    public int getProtein() {
+        return protein;
+    }
+
+    public String getFoods() {
+        StringBuilder funtime = new StringBuilder();
+        for(FoodItems i : foods){
+            funtime.append(i.getId()).append(",");
+        }
+        return funtime.toString();
+    }
 }
