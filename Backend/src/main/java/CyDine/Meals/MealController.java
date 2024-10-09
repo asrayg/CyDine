@@ -23,6 +23,9 @@ public class MealController {
     @Autowired
     MealRepository mealRepository;
 
+    @Autowired
+    FoodRepository foodRepository;
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -37,19 +40,21 @@ public class MealController {
     }
 
     @PostMapping(path = "/mealplans")
-    String createMealPlan(@RequestBody MealPlans mealPlan) {
-        if (mealPlan == null)
-            return failure;
+    int createMealPlan() {
+        MealPlans mealPlan = new MealPlans();
         mealRepository.save(mealPlan);
-        return success;
+        MealPlans mp = mealRepository.save(mealPlan);
+        return mp.getId();
     }
 
     @PostMapping(path = "/mealplans/{id}/fooditems")
-    String addFoodItemToMealPlan(@PathVariable int id, @RequestBody FoodItems foodItem) {
+    String addFoodItemToMealPlan(@PathVariable int id, @RequestBody String Vaibhav) {
         MealPlans mealPlan = mealRepository.findById(id);
         if (mealPlan == null)
             return failure;
-        mealPlan.addFoodItem(foodItem);
+        for(String i : Vaibhav.split(",")){
+            mealPlan.addFoodItem(foodRepository.findById(Integer.parseInt(i)));
+        }
         mealRepository.save(mealPlan);
         return success;
     }

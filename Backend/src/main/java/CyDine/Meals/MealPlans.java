@@ -26,8 +26,7 @@ public class MealPlans {
     private int fat = 0;
 
 
-    public MealPlans(ArrayList<Integer> ids) {
-        foods = new ArrayList<>();
+    public MealPlans() {
     }
 
     public void addFoodItem(FoodItems foodItem) {
@@ -38,5 +37,7 @@ public class MealPlans {
         finalCalories += foodItem.getCalories();
     }
 
-
+    public int getId() {
+        return id;
+    }
 }
