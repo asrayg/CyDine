@@ -1,10 +1,14 @@
 package CyDine.Meals;
 
+import java.sql.Array;
 import java.util.ArrayList;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.List;
+
+import jakarta.persistence.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 @Entity
 public class MealPlans {
@@ -12,27 +16,27 @@ public class MealPlans {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private ArrayList<FoodItems> foodItemsList = new ArrayList<>();
+
+    @OneToMany
+    private List<FoodItems> foods;
+
     private int protein = 0;
     private int carbs = 0;
     private int finalCalories = 0;
     private int fat = 0;
 
-    // No-argument constructor for JPA
-    public MealPlans() {
+
+    public MealPlans(ArrayList<Integer> ids) {
+        foods = new ArrayList<>();
     }
 
-    // Constructor with parameters
-    public MealPlans(ArrayList<FoodItems> foodItems) {
-        this.foodItemsList.addAll(foodItems);
-
+    public void addFoodItem(FoodItems foodItem) {
+        foods.add(foodItem);
+        protein += foodItem.getProtein();
+        carbs += foodItem.getCarbs();
+        fat += foodItem.getFat();
+        finalCalories += foodItem.getCalories();
     }
 
-    public void addFoodItems(FoodItems foodItems) {
-        foodItemsList.add(foodItems);
-        protein += foodItems.getProtein();
-        carbs += foodItems.getCarbs();
-        fat += foodItems.getFat();
-        finalCalories += foodItems.getCalories();
-    }
+
 }
