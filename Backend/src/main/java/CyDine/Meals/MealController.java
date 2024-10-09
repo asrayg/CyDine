@@ -48,8 +48,8 @@ public class MealController {
     }
 
     @GetMapping(path = "/mealplans/{id}/date")
-    MealPlans getDate(@PathVariable int id) {
-        return mealRepository.findById(id).get;
+    String getDate(@PathVariable int id) {
+        return mealRepository.findById(id).getDate().toString();
     }
 
 
