@@ -50,12 +50,6 @@ public class UserController {
         userRepository.save(user);
         Random rand = new Random();
         userRepository.findById(user.getId()).setLogintoken(rand.nextInt(9999999));
-
-//        Class.forName("com.mysql.jdbc.Driver");
-//        Connection con = DriverManager.getConnection(
-//                "jdbc:mysql://coms-3090-020.class.las.iastate.edu:3306/mydatabase", "root", "123");
-//        Statement stmt = con.createStatement();
-
         return success;
     }
 
@@ -77,9 +71,9 @@ public class UserController {
 
     @Transactional
     @DeleteMapping(path = "/users/{id}")
-    String deleteUser(@PathVariable int id, @RequestBody passwordObj password){
+    String deleteUser(@PathVariable int id, @RequestBody String password){
         if(userRepository.existsById((long)id)) {
-            if (userRepository.findById(id).getPassword().equals(password.getPassword())) {
+            if (userRepository.findById(id).getPassword().equals(password)) {
                 userRepository.deleteById(id);
                 return success;
             }

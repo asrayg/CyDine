@@ -37,11 +37,12 @@ public class FoodItemsController {
     }
 
     @PostMapping(path = "/FoodItem")
-    String createFoodsPlan(@RequestBody FoodItems food) {
+    int createFood(@RequestBody FoodItems food) {
         if (food == null)
-            return failure;
+            return -0;
         foodRepository.save(food);
-        return success;
+        FoodItems savedFood = foodRepository.save(food);
+        return savedFood.getId();
     }
 
     @DeleteMapping(path = "/food/{id}")
