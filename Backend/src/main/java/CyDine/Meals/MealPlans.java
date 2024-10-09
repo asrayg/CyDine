@@ -3,10 +3,10 @@ package CyDine.Meals;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 import jakarta.persistence.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 
@@ -24,9 +24,12 @@ public class MealPlans {
     private int carbs = 0;
     private int finalCalories = 0;
     private int fat = 0;
+    LocalDate today;
+
 
 
     public MealPlans() {
+        today = LocalDate.now();
     }
 
     public void addFoodItem(FoodItems foodItem) {
@@ -35,10 +38,15 @@ public class MealPlans {
         carbs += foodItem.getCarbs();
         fat += foodItem.getFat();
         finalCalories += foodItem.getCalories();
+
     }
 
     public int getId() {
         return id;
+    }
+
+    public LocalDate getDate(){
+        return today;
     }
 
     public int getCarbs() {

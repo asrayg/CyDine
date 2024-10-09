@@ -47,6 +47,12 @@ public class MealController {
         return mp.getId();
     }
 
+    @GetMapping(path = "/mealplans/{id}/date")
+    MealPlans getDate(@PathVariable int id) {
+        return mealRepository.findById(id).get;
+    }
+
+
     @PostMapping(path = "/mealplans/{id}/fooditems")
     String addFoodItemToMealPlan(@PathVariable int id, @RequestBody String Vaibhav) {
         MealPlans mealPlan = mealRepository.findById(id);

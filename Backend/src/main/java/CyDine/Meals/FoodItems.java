@@ -67,5 +67,4 @@ public class FoodItems implements Serializable {
         this.id = id;
     }
 
-
 }
