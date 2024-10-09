@@ -39,6 +39,7 @@ public class MealController {
         return mealRepository.findById(id);
     }
 
+    @Transactional
     @PostMapping(path = "/mealplans")
     int createMealPlan() {
         MealPlans mealPlan = new MealPlans();
@@ -52,7 +53,7 @@ public class MealController {
         return mealRepository.findById(id).getDate().toString();
     }
 
-
+    @Transactional
     @PostMapping(path = "/mealplans/{id}/fooditems")
     String addFoodItemToMealPlan(@PathVariable int id, @RequestBody String Vaibhav) {
         MealPlans mealPlan = mealRepository.findById(id);
@@ -65,6 +66,7 @@ public class MealController {
         return success;
     }
 
+    @Transactional
     @DeleteMapping(path = "/mealplans/{id}")
     String deleteMealPlan(@PathVariable int id) {
         if (mealRepository.findById(id) != null) {
@@ -74,6 +76,7 @@ public class MealController {
         return failure;
     }
 
+    @Transactional
     @PutMapping("/mealplans/{id}")
     MealPlans updateMealPlan(@PathVariable int id, @RequestBody MealPlans request) {
         MealPlans mealPlan = mealRepository.findById(id);

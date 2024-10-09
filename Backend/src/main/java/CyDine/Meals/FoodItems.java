@@ -67,4 +67,23 @@ public class FoodItems implements Serializable {
         this.id = id;
     }
 
+    public void setCalories(int calories) {
+        this.calories = calories;
+    }
+
+    public void setCarbs(int carbs) {
+        this.carbs = carbs;
+    }
+
+    public void setFat(int fat) {
+        this.fat = fat;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProtein(int protein) {
+        this.protein = protein;
+    }
 }

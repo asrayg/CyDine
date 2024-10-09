@@ -41,6 +41,14 @@ public class MealPlans {
 
     }
 
+    public void removeFoodItem(FoodItems foodItem){
+        foods.remove(foodItem);
+        protein -= foodItem.getProtein();
+        carbs -= foodItem.getCarbs();
+        fat -= foodItem.getFat();
+        finalCalories -= foodItem.getCalories();
+    }
+
     public int getId() {
         return id;
     }

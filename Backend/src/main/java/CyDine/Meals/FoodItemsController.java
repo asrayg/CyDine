@@ -23,6 +23,9 @@ public class FoodItemsController {
     @Autowired
     FoodRepository foodRepository;
 
+    @Autowired
+    MealRepository mealRepository;
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -36,6 +39,7 @@ public class FoodItemsController {
         return foodRepository.findById(id);
     }
 
+    @Transactional
     @PostMapping(path = "/FoodItem")
     int createFood(@RequestBody FoodItems food) {
         if (food == null)
@@ -45,7 +49,8 @@ public class FoodItemsController {
         return savedFood.getId();
     }
 
-    @DeleteMapping(path = "/food/{id}")
+    @Transactional
+    @DeleteMapping(path = "/FoodItem/{id}")
     String deleteFood(@PathVariable int id) {
         if (foodRepository.findById(id) != null) {
             foodRepository.deleteById(id);
@@ -54,13 +59,18 @@ public class FoodItemsController {
         return failure;
     }
 
-    @PutMapping("/food/{id}")
+    @Transactional
+    @PutMapping("/FoodItem/{id}")
     FoodItems updateFood(@PathVariable int id, @RequestBody FoodItems request) {
         FoodItems foodItem = foodRepository.findById(id);
         if (foodItem == null) {
             throw new RuntimeException("food id does not exist");
         }
-        foodRepository.save(request);
+        foodItem.setCalories(request.getCalories());
+        foodItem.setCarbs(request.getCarbs());
+        foodItem.setFat(request.getFat());
+        foodItem.setName(request.getName());
+        foodItem.setProtein(request.getProtein());
         return foodRepository.findById(id);
     }
 
