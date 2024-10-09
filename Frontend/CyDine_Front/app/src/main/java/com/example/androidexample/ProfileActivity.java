@@ -299,7 +299,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (userPassword.isEmpty()) {
                     Toast.makeText(ProfileActivity.this, "Please enter your password to delete the account.", Toast.LENGTH_SHORT).show();
                 } else {
-                    deleteUserAccount(userId, userPassword);  // Pass both userId and userPassword
+                    deleteUserAccount(userId);  // Pass both userId and userPassword
                 }
             }
         });
@@ -410,61 +410,48 @@ public class ProfileActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(updateRequest);
     }
 
-    private void deleteUserAccount(String userId, String userPassword) {
+    private void deleteUserAccount(String userId) {
         String deleteUrl = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId;
 
-        Log.d("DeleteRequestURL", deleteUrl);  // Log the full URL
-
-        // Create the JSON object with the password only
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("password", userPassword);  // This reflects your Postman structure
-        } catch (JSONException e) {
-            Log.e("DeleteError", "Error creating JSON body", e);
-        }
-
-        // Create JsonObjectRequest instead of StringRequest
-        JsonObjectRequest deleteRequest = new JsonObjectRequest(
+        StringRequest deleteRequest = new StringRequest(
                 Request.Method.DELETE,
                 deleteUrl,
-                jsonObject,  // JSON body to send
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("DeleteResponse", response.toString());
-                        Toast.makeText(ProfileActivity.this, "User account deleted!", Toast.LENGTH_SHORT).show();
-
-                        // Redirect to LoginActivity after successful deletion
+                    public void onResponse(String response) {
+                        // Success response
+                        Log.d("DeleteResponse", response);
+                        Toast.makeText(getApplicationContext(), "User deleted successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                         startActivity(intent);
-                        finish(); // Finish current activity to prevent going back to deleted account
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("DeleteError", error.toString());
+                        // Enhanced error logging
+                        String errorMessage = "Unknown error occurred";
                         if (error.networkResponse != null) {
-                            String errorData = new String(error.networkResponse.data);
-                            Log.e("DeleteErrorDetails", errorData);
-                            Toast.makeText(ProfileActivity.this, "Error deleting account: " + errorData, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            int statusCode = error.networkResponse.statusCode;
+                            String responseBody = new String(error.networkResponse.data);
+                            errorMessage = "Error " + statusCode + ": " + responseBody;
                         }
+                        Log.e("DeleteError", errorMessage);
+                        Toast.makeText(getApplicationContext(), "Error deleting user: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
+
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                Log.d("DeleteRequestHeaders", headers.toString());
-                return headers;
+            public String getBodyContentType() {
+                return "application/json";
             }
         };
 
-        // Add request to queue
-        Volley.newRequestQueue(this).add(deleteRequest);
+        // Add request to queue using your Volley singleton
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(deleteRequest);
     }
+
 }
 
