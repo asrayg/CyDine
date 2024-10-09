@@ -15,8 +15,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
         // Find buttons
+        Button mealPlanButton = findViewById(R.id.meal_plan_button);
         Button foodMenusButton = findViewById(R.id.food_menus_button);
         Button profileButton = findViewById(R.id.profile_button);
+
 
         // Set listener for Food Menus button
         foodMenusButton.setOnClickListener(new View.OnClickListener() {
@@ -41,5 +43,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        mealPlanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeScreenActivity.this, MealPlanActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

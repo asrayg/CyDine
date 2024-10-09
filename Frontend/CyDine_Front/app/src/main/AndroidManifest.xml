@@ -53,6 +53,10 @@
             android:name=".ModActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".MealPlanActivity"
+            android:exported="false"/>
+
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />
 

@@ -32,6 +32,19 @@
         android:padding="8dp"
         android:elevation="4dp">
 
+        <!-- Meal Plan Button -->
+        <Button
+            android:id="@+id/meal_plan_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#BD2031"
+            android:text="Meal Plan"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Food Menu Button -->
         <Button
             android:id="@+id/food_menus_button"
             android:layout_width="0dp"
@@ -43,6 +56,7 @@
             android:textSize="16sp"
             android:layout_marginEnd="8dp"/>
 
+        <!-- Profile Button -->
         <Button
             android:id="@+id/profile_button"
             android:layout_width="0dp"
