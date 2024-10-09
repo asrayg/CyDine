@@ -69,9 +69,8 @@ public class MealController {
     @Transactional
     @DeleteMapping(path = "/mealplans/{id}")
     String deleteMealPlan(@PathVariable int id) {
-        if (mealRepository.findById(id) != null) {
-            mealRepository.deleteById(id);
-            return success;
+        if (mealRepository.existsById((long) id)) {
+            mealRepository.deleteById((long) id);
         }
         return failure;
     }
