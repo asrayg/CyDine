@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MealPlanActivity extends AppCompatActivity {
 
@@ -31,17 +32,81 @@ public class MealPlanActivity extends AppCompatActivity {
     private static final String FOOD_ITEM_URL = "http://coms-3090-020.class.las.iastate.edu:8080/fooditems";  // Base URL for food items
 
     private LinearLayout mealPlanContainer;
+    private int lastMealPlanId = 0; // Initialize with 0 to be updated dynamically
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal_plan);
+        Button addMealPlanButton = findViewById(R.id.add_meal_plan_button);
 
         mealPlanContainer = findViewById(R.id.meal_plan_container);
 
         // Fetch meal plans
         fetchMealPlans();
+        addMealPlanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewMealPlan();  // Call method to handle POST request for new meal plan
+            }
+        });
     }
+
+    private void addNewMealPlan() {
+        // Increment the last known meal plan ID
+        int newMealPlanId = lastMealPlanId + 1;
+        lastMealPlanId = newMealPlanId;
+
+        // Create a POST request to add a new meal plan
+        StringRequest addMealPlanRequest = new StringRequest(
+                Request.Method.POST,
+                MEAL_PLAN_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle successful response
+                        Log.d("AddMealPlanResponse", response);
+                        Toast.makeText(MealPlanActivity.this, "New Meal Plan added successfully!", Toast.LENGTH_SHORT).show();
+
+                        // Optionally display the newly created meal plan in the UI
+                        addMealPlanToUI(newMealPlanId, "No Foods", 0, 0, 0, 0, "Newly Created");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("AddMealPlanError", error.toString());
+                        Toast.makeText(MealPlanActivity.this, "Error adding new meal plan: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            public byte[] getBody() {
+                // Build the request body for the new meal plan, including the new ID
+                String requestBody = "{\"id\":" + newMealPlanId + ","
+                        + "\"foods\":\"\","
+                        + "\"protein\":0,"
+                        + "\"carbs\":0,"
+                        + "\"fat\":0,"
+                        + "\"finalCalories\":0}";
+
+                Log.d("AddMealPlanRequestBody", requestBody);  // Log the request body
+                return requestBody.getBytes();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                // Set headers for the request (Content-Type: JSON)
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(this).add(addMealPlanRequest);
+    }
+
 
     private void fetchMealPlans() {
         StringRequest mealPlanRequest = new StringRequest(
@@ -66,6 +131,11 @@ public class MealPlanActivity extends AppCompatActivity {
                                 int fat = mealPlan.getInt("fat");
                                 int finalCalories = mealPlan.getInt("finalCalories");
                                 String date = mealPlan.optString("date", "No date");
+
+                                // Update lastMealPlanId to the highest id found
+                                if (id > lastMealPlanId) {
+                                    lastMealPlanId = id;
+                                }
 
                                 // Fetch food items based on the food IDs
                                 fetchFoodItems(foods, id, protein, carbs, fat, finalCalories, date);
