@@ -1,16 +1,12 @@
-package CyDine.Meals;
+package CyDine.MealPlans;
 
-import CyDine.Meals.MealPlans;
+import CyDine.MealPlans.MealPlans;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface MealRepository extends JpaRepository<MealPlans, Long> {
-
+public interface MealPlansRepository extends JpaRepository<MealPlans,Integer> {
     MealPlans findById(int id);
-
     void deleteById(int id);
-
     List<MealPlans> findAll();
 
 }
-

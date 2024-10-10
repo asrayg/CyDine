@@ -1,6 +1,5 @@
 package CyDine.Scraper;
 
-
 import org.json.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class Scrape {
+public class Scraper {
     public String[] getSlugs(){
         String urlString = "https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-all-locations"; // Replace with your URL
         JSONArray json = getJson(urlString);
@@ -60,3 +59,4 @@ public class Scrape {
 
 
 }
+
