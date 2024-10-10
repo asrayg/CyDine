@@ -1,11 +1,11 @@
-package CyDine.Meals;
+package CyDine.FoodItems;
 
-import CyDine.Meals.FoodItems;
+import CyDine.FoodItems.FoodItems;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface FoodRepository extends JpaRepository<FoodItems, Long> {
+public interface FoodItemsRepository extends JpaRepository<FoodItems, Long> {
 
     FoodItems findById(int id);
 
@@ -13,5 +13,5 @@ public interface FoodRepository extends JpaRepository<FoodItems, Long> {
 
     List<FoodItems> findAll();
 
-
 }
+

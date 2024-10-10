@@ -1,11 +1,6 @@
-package CyDine.Meals;
+package CyDine.FoodItems;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
-import java.util.Random;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,61 +13,47 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class FoodItemsController {
+public class FoodItemsController{
 
     @Autowired
-    FoodRepository foodRepository;
-
-    @Autowired
-    MealRepository mealRepository;
+    FoodItemsRepository foodItemsRepository;
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
     @GetMapping(path = "/FoodItem")
     List<FoodItems> getAllFoods() {
-        return foodRepository.findAll();
+        return foodItemsRepository.findAll();
     }
 
     @GetMapping(path = "/FoodItem/{id}")
     FoodItems getFoodsById(@PathVariable int id) {
-        return foodRepository.findById(id);
+        return foodItemsRepository.findById(id);
     }
 
-    @Transactional
     @PostMapping(path = "/FoodItem")
     int createFood(@RequestBody FoodItems food) {
-        if (food == null)
-            return -0;
-        foodRepository.save(food);
-        FoodItems savedFood = foodRepository.save(food);
-        return savedFood.getId();
+        return foodItemsRepository.save(food).getId();
     }
 
     @Transactional
     @DeleteMapping(path = "/FoodItem/{id}")
     String deleteFood(@PathVariable int id) {
-        if (foodRepository.findById(id) != null) {
-            foodRepository.deleteById(id);
+        if (foodItemsRepository.findById(id) != null) {
+            foodItemsRepository.deleteById(id);
             return success;
         }
         return failure;
     }
 
-    @Transactional
     @PutMapping("/FoodItem/{id}")
     FoodItems updateFood(@PathVariable int id, @RequestBody FoodItems request) {
-        FoodItems foodItem = foodRepository.findById(id);
+        FoodItems foodItem = foodItemsRepository.findById(id);
         if (foodItem == null) {
             throw new RuntimeException("food id does not exist");
         }
-        foodItem.setCalories(request.getCalories());
-        foodItem.setCarbs(request.getCarbs());
-        foodItem.setFat(request.getFat());
-        foodItem.setName(request.getName());
-        foodItem.setProtein(request.getProtein());
-        return foodRepository.findById(id);
+        foodItemsRepository.save(request);
+        return foodItemsRepository.findById(id);
     }
 
 }
-
