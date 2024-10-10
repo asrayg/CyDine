@@ -1,20 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Button Background Color -->
-    <solid android:color="#BD2031" /> <!-- Iowa State Cardinal -->
-
-    <!-- Rounded Corners -->
-    <corners android:radius="25dp" />
-
-    <!-- Padding for Inner Content -->
-    <padding
-        android:left="16dp"
-        android:top="10dp"
-        android:right="16dp"
-        android:bottom="10dp" />
-
-    <!-- Button Border (Optional) -->
-    <stroke
-        android:width="2dp"
-        android:color="#FFFFFF" /> <!-- Optional white border for a polished look -->
+<!-- res/drawable/rounded_button.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/white"/>
+    <corners android:radius="16dp"/>
 </shape>
