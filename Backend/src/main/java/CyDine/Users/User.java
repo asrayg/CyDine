@@ -19,10 +19,7 @@ import CyDine.MealPlans.MealPlans;
 @Entity
 public class User {
 
-    /* 
-     * The annotation @ID marks the field below as the primary key for the table created by springboot
-     * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
-     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
