@@ -1,5 +1,6 @@
 package com.example.androidexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.toolbox.StringRequest;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FoodMenusActivity extends AppCompatActivity {
 
@@ -32,15 +37,26 @@ public class FoodMenusActivity extends AppCompatActivity {
     private int totalProtein = 0, totalCarbs = 0, totalFat = 0; // Track macros
     private TextView caloriesTextView, proteinTextView, carbsTextView, fatTextView;
 
-    // Track the highest ID locally
+    private List<Integer> selectedFoodIds = new ArrayList<>();
+    private int totalSelectedProtein = 0;
+    private int totalSelectedCarbs = 0;
+    private int totalSelectedFat = 0;
+    private int totalSelectedCalories = 0;
+
     private int lastId = 0;
+
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(new Date());
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_menus);
 
-        // Initialize UI components
         foodListLayout = findViewById(R.id.food_list);
         caloriesTextView = findViewById(R.id.calories_text);
         proteinTextView = findViewById(R.id.protein_text);
@@ -48,24 +64,21 @@ public class FoodMenusActivity extends AppCompatActivity {
         fatTextView = findViewById(R.id.fat_text);
         Button doneButton = findViewById(R.id.done_button);
 
-        // Initialize calories and macros display
         caloriesTextView.setText(String.valueOf(currentCalories));
         proteinTextView.setText(String.valueOf(totalProtein));
         carbsTextView.setText(String.valueOf(totalCarbs));
         fatTextView.setText(String.valueOf(totalFat));
 
-        // Fetch food items from the API and display them
         fetchFoodItemsFromAPI();
 
-        // Setup add food functionality
         setupAddFoodItem();
 
-        // Set up Done button click listener
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle Done button (hook up to backend later)
-                handleDoneButtonClick();
+                postEmptyMealPlan();
+                Intent intent = new Intent(FoodMenusActivity.this, HomeScreenActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -86,7 +99,7 @@ public class FoodMenusActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        // Sort the food list by ID in descending order
+
                         foodList.sort((f1, f2) -> {
                             try {
                                 return f2.getInt("id") - f1.getInt("id");
@@ -96,7 +109,6 @@ public class FoodMenusActivity extends AppCompatActivity {
                             return 0;
                         });
 
-                        // Get the last ID from the list
                         if (!foodList.isEmpty()) {
                             try {
                                 lastId = foodList.get(0).getInt("id");
@@ -105,7 +117,6 @@ public class FoodMenusActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Display the sorted food items
                         for (JSONObject food : foodList) {
                             try {
                                 addFoodToUI(food.getString("name"),
@@ -113,7 +124,7 @@ public class FoodMenusActivity extends AppCompatActivity {
                                         food.getInt("carbs"),
                                         food.getInt("fat"),
                                         food.getInt("calories"),
-                                        food.getInt("id")); // Pass the 'id' field as the last parameter
+                                        food.getInt("id"));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -140,7 +151,6 @@ public class FoodMenusActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Retrieve and validate input data
                 String name = nameInput.getText().toString().trim();
                 String proteinStr = proteinInput.getText().toString().trim();
                 String carbsStr = carbsInput.getText().toString().trim();
@@ -148,7 +158,7 @@ public class FoodMenusActivity extends AppCompatActivity {
                 String caloriesStr = caloriesInput.getText().toString().trim();
 
                 if (name.isEmpty() || proteinStr.isEmpty() || carbsStr.isEmpty() || fatStr.isEmpty() || caloriesStr.isEmpty()) {
-                    return; // Optionally show an error message
+                    return;
                 }
 
                 int protein, carbs, fat, calories;
@@ -158,10 +168,9 @@ public class FoodMenusActivity extends AppCompatActivity {
                     fat = Integer.parseInt(fatStr);
                     calories = Integer.parseInt(caloriesStr);
                 } catch (NumberFormatException e) {
-                    return; // Optionally show an error message
+                    return;
                 }
 
-                // Create JSON object for the new food item
                 JSONObject newFoodItem = new JSONObject();
                 try {
                     newFoodItem.put("name", name);
@@ -173,10 +182,8 @@ public class FoodMenusActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // Send the new food item to the backend
                 sendFoodItemToAPI(newFoodItem);
 
-                // Clear the input fields after adding
                 nameInput.setText("");
                 proteinInput.setText("");
                 carbsInput.setText("");
@@ -189,15 +196,13 @@ public class FoodMenusActivity extends AppCompatActivity {
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem";
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // Add the item to the UI immediately
         try {
-            // Manually add to the UI (optimistic UI update)
             addFoodToUI(newFoodItem.getString("name"),
                     newFoodItem.getInt("protein"),
                     newFoodItem.getInt("carbs"),
                     newFoodItem.getInt("fat"),
                     newFoodItem.getInt("calories"),
-                    -1); // Pass the 'id' field as the last parameter
+                    -1);
 
 
         } catch (JSONException e) {
@@ -209,7 +214,6 @@ public class FoodMenusActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Handle the response from the server if needed
                         try {
                             // Add the new food item to the UI
                             addFoodToUI(response.getString("name"),
@@ -217,7 +221,7 @@ public class FoodMenusActivity extends AppCompatActivity {
                                     response.getInt("carbs"),
                                     response.getInt("fat"),
                                     response.getInt("calories"),
-                                    response.getInt("id")); // Pass the 'id' field as the last parameter
+                                    response.getInt("id"));
 
 
                         } catch (JSONException e) {
@@ -228,7 +232,6 @@ public class FoodMenusActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle the error if the request fails
                         error.printStackTrace();
                     }
                 });
@@ -238,13 +241,11 @@ public class FoodMenusActivity extends AppCompatActivity {
 
 
     private void addFoodToUI(String name, int protein, int carbs, int fat, int calories, int foodId) {
-        // Create a vertical layout for each food item
         LinearLayout foodItemLayout = new LinearLayout(this);
         foodItemLayout.setOrientation(LinearLayout.VERTICAL);
         foodItemLayout.setPadding(16, 16, 16, 16);
-        foodItemLayout.setBackgroundColor(getResources().getColor(R.color.red)); // Ensure R.color.red is defined
+        foodItemLayout.setBackgroundColor(getResources().getColor(R.color.red));
 
-        // TextView to display food item details with line breaks
         TextView foodTextView = new TextView(this);
         foodTextView.setText("Name: " + name +
                 "\nProtein: " + protein +
@@ -252,14 +253,13 @@ public class FoodMenusActivity extends AppCompatActivity {
                 "\nFat: " + fat +
                 "\nCalories: " + calories);
         foodTextView.setTextSize(16);
-        foodTextView.setPadding(0, 0, 0, 8); // Add spacing below the text
+        foodTextView.setPadding(0, 0, 0, 8);
 
         // Buttons layout
         LinearLayout buttonsLayout = new LinearLayout(this);
         buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonsLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        // "+" Button to update macros and calories
         Button addMacroButton = new Button(this);
         addMacroButton.setText("+");
         addMacroButton.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -267,11 +267,11 @@ public class FoodMenusActivity extends AppCompatActivity {
         addMacroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedFoodIds.add(foodId);
                 updateMacros(protein, carbs, fat, calories);
             }
         });
 
-        // "-" Button to reverse macros and calories
         Button subtractMacroButton = new Button(this);
         subtractMacroButton.setText("-");
         subtractMacroButton.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -279,11 +279,11 @@ public class FoodMenusActivity extends AppCompatActivity {
         subtractMacroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedFoodIds.remove(Integer.valueOf(foodId));
                 reverseMacros(protein, carbs, fat, calories);
             }
         });
 
-        // "Edit" Button to edit the food item
         Button editButton = new Button(this);
         editButton.setText("Edit");
         editButton.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -296,7 +296,6 @@ public class FoodMenusActivity extends AppCompatActivity {
             }
         });
 
-        // "Delete" Button to remove the food item
         Button deleteButton = new Button(this);
         deleteButton.setText("Delete");
         deleteButton.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -309,24 +308,20 @@ public class FoodMenusActivity extends AppCompatActivity {
             }
         });
 
-        // Add buttons to the buttons layout
         buttonsLayout.addView(addMacroButton);
         buttonsLayout.addView(subtractMacroButton);
         buttonsLayout.addView(editButton);
         buttonsLayout.addView(deleteButton);
 
-        // Add the TextView and buttons layout to the food item layout
         foodItemLayout.addView(foodTextView);
         foodItemLayout.addView(buttonsLayout);
 
-        // Add the food item layout to the parent layout
         foodListLayout.addView(foodItemLayout);
     }
 
     private void sendDeleteRequestToAPI(int foodId, LinearLayout foodItemLayout) {
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem/" + foodId; // Construct the DELETE URL with the foodId
 
-        // Send DELETE request to the backend to remove the food item
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest deleteRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
@@ -351,42 +346,46 @@ public class FoodMenusActivity extends AppCompatActivity {
 
 
     private void updateMacros(int protein, int carbs, int fat, int calories) {
-        // Update the total protein, carbs, and fat counters
         totalProtein += protein;
         totalCarbs += carbs;
         totalFat += fat;
+        totalSelectedProtein = totalProtein;
+        totalSelectedCarbs = totalCarbs;
+        totalSelectedFat = totalFat;
 
-        // Update macros TextViews
+
         proteinTextView.setText(String.valueOf(totalProtein));
         carbsTextView.setText(String.valueOf(totalCarbs));
         fatTextView.setText(String.valueOf(totalFat));
 
-        // Update the calorie count
         currentCalories -= calories;
+        totalSelectedCalories += calories;
+
         caloriesTextView.setText(String.valueOf(currentCalories));
     }
 
     private void reverseMacros(int protein, int carbs, int fat, int calories) {
-        // Reverse the total protein, carbs, and fat counters
         totalProtein -= protein;
         totalCarbs -= carbs;
         totalFat -= fat;
 
-        // Update macros TextViews
+        totalSelectedProtein = totalProtein;
+        totalSelectedCarbs = totalCarbs;
+        totalSelectedFat = totalFat;
+
         proteinTextView.setText(String.valueOf(totalProtein));
         carbsTextView.setText(String.valueOf(totalCarbs));
         fatTextView.setText(String.valueOf(totalFat));
 
-        // Restore the calorie count
         currentCalories += calories;
+        totalSelectedCalories -= calories;
+
         caloriesTextView.setText(String.valueOf(currentCalories));
     }
 
     private void openEditDialog(LinearLayout foodItemLayout, TextView foodTextView, String currentName, int currentProtein, int currentCarbs, int currentFat, int oldCalories, int foodId) {
-        // Remove current views
         foodItemLayout.removeAllViews();
 
-        // Create EditTexts for editing
         EditText nameInput = new EditText(this);
         nameInput.setHint("Name");
         nameInput.setText(currentName);
@@ -407,11 +406,9 @@ public class FoodMenusActivity extends AppCompatActivity {
         caloriesInput.setHint("Calories");
         caloriesInput.setText(String.valueOf(oldCalories));
 
-        // Button to save changes
         Button saveButton = new Button(this);
         saveButton.setText("Save");
 
-        // Set up the layout for editing
         LinearLayout editLayout = new LinearLayout(this);
         editLayout.setOrientation(LinearLayout.VERTICAL);
         editLayout.setPadding(8, 8, 8, 8);
@@ -423,10 +420,8 @@ public class FoodMenusActivity extends AppCompatActivity {
         editLayout.addView(caloriesInput);
         editLayout.addView(saveButton);
 
-        // Add the edit layout to the food item layout
         foodItemLayout.addView(editLayout);
 
-        // Handle save button click
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -447,20 +442,17 @@ public class FoodMenusActivity extends AppCompatActivity {
                     newFat = Integer.parseInt(fatStr);
                     newCalories = Integer.parseInt(caloriesStr);
                 } catch (NumberFormatException e) {
-                    return; // Optionally show an error message
+                    return;
                 }
 
-                // Update the food item text in the UI
                 foodTextView.setText("Name: " + newName +
                         "\nProtein: " + newProtein +
                         "\nCarbs: " + newCarbs +
                         "\nFat: " + newFat +
                         "\nCalories: " + newCalories);
 
-                // Send updated food item to the backend, pass the foodId along with other parameters
                 sendUpdatedFoodToAPI(newName, newProtein, newCarbs, newFat, newCalories, foodId);
 
-                // Restore buttons after saving
                 foodItemLayout.removeAllViews();
                 addFoodToUI(newName, newProtein, newCarbs, newFat, newCalories, foodId);
             }
@@ -468,10 +460,8 @@ public class FoodMenusActivity extends AppCompatActivity {
     }
 
     private void sendUpdatedFoodToAPI(String name, int protein, int carbs, int fat, int calories, int foodId) {
-        // Construct the URL to update the specific item by ID
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem/" + foodId;
 
-        // Create JSON object for the updated food item
         JSONObject updatedFoodItem = new JSONObject();
         try {
             updatedFoodItem.put("name", name);
@@ -483,7 +473,6 @@ public class FoodMenusActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Send PUT request to update the food item on the backend
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedFoodItem,
@@ -504,10 +493,103 @@ public class FoodMenusActivity extends AppCompatActivity {
     }
 
 
-    private void handleDoneButtonClick() {
-        // This function will handle the Done button click.
-        // In the future, this can submit the selected food items to the backend.
-        // For now, you can optionally show a message or perform another action.
+    private void postEmptyMealPlan() {
+        JSONObject emptyMealPlan = new JSONObject();
+        try {
+            emptyMealPlan.put("protein", 0);
+            emptyMealPlan.put("carbs", 0);
+            emptyMealPlan.put("fat", 0);
+            emptyMealPlan.put("finalCalories", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            int mealPlanId = Integer.parseInt(response.trim());
+                            Log.d("API_RESPONSE", "Empty meal plan created with ID: " + mealPlanId);
+                            updateMealPlan(mealPlanId);
+                        } catch (NumberFormatException e) {
+                            Log.e("API_ERROR", "Failed to parse meal plan ID", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("API_ERROR", "Failed to post empty meal plan", error);
+                    }
+                }) {
+            @Override
+            public byte[] getBody() {
+                return emptyMealPlan.toString().getBytes();
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+        };
+
+        queue.add(postRequest);
+    }
+
+
+    private void updateMealPlan(int mealPlanId) {
+        StringBuilder foodIdsBuilder = new StringBuilder();
+        for (int foodId : selectedFoodIds) {
+            if (foodIdsBuilder.length() > 0) {
+                foodIdsBuilder.append(",");
+            }
+            foodIdsBuilder.append(foodId);
+        }
+
+        Log.d("MEAL_PLAN", "Selected food IDs: " + foodIdsBuilder.toString());
+        Log.d("MEAL_PLAN", "Protein: " + totalSelectedProtein);
+        Log.d("MEAL_PLAN", "Carbs: " + totalSelectedCarbs);
+        Log.d("MEAL_PLAN", "Fat: " + totalSelectedFat);
+        Log.d("MEAL_PLAN", "Final Calories: " + totalSelectedCalories);
+
+        JSONObject mealPlanUpdate = new JSONObject();
+        try {
+            mealPlanUpdate.put("foodItems", foodIdsBuilder.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + mealPlanId + "/fooditems/add/byId";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("API_RESPONSE", "Meal plan updated successfully: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("API_ERROR", "Failed to update meal plan", error);
+                    }
+                }) {
+            @Override
+            public byte[] getBody() {
+                return foodIdsBuilder.toString().getBytes();
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+        };
+
+        queue.add(putRequest);
     }
 }
-
