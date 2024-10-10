@@ -1,6 +1,7 @@
 package CyDine;
 
 import CyDine.FoodItems.FoodItems;
+import CyDine.FoodItems.FoodItemsRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 import CyDine.Users.User;
 import CyDine.Users.UserRepository;
+
 
 import java.util.Arrays;
 
@@ -23,7 +25,7 @@ class Main {
 
 
     @Bean
-    CommandLineRunner initUser(UserRepository userRepository) {
+    CommandLineRunner initUser(UserRepository userRepository, FoodItemsRepository foodItemsRepository) {
         return args -> {
             User user1 = new User("John", "john@somemail.com", "Hey");
             User user2 = new User("Jane", "jane@somemail.com", "Hey");
@@ -34,6 +36,9 @@ class Main {
             FoodItems food1 = new FoodItems("Chicken", 1, 2, 3, 4, 5);
             FoodItems food2 = new FoodItems("Peas", 1, 2, 3, 4, 5);
             FoodItems food3 = new FoodItems("Taco", 1, 2, 3, 4, 5);
+            foodItemsRepository.save(food1);
+            foodItemsRepository.save(food2);
+            foodItemsRepository.save(food3);
 
         };
     }
