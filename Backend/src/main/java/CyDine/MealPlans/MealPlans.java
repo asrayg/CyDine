@@ -56,7 +56,6 @@ public class MealPlans {
         fat += foodItem.getFat();
         finalCalories += foodItem.getCalories();
         System.out.println(foodItem.getCalories());
-
     }
 
     public void removeFoodItem(FoodItems foodItem){
@@ -74,9 +73,7 @@ public class MealPlans {
         fat += foodItem.getFat();
         finalCalories += foodItem.getCalories();
         System.out.println(foodItem.getCalories());
-
     }
-
 
     public List<FoodItems> getFoodItems() {
         return foodItems;

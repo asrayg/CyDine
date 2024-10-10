@@ -1,5 +1,6 @@
 package CyDine;
 
+import CyDine.FoodItems.FoodItems;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -30,6 +31,9 @@ class Main {
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
+            FoodItems food1 = new FoodItems("Chicken", 1, 2, 3, 4, 5);
+            FoodItems food2 = new FoodItems("Peas", 1, 2, 3, 4, 5);
+            FoodItems food3 = new FoodItems("Taco", 1, 2, 3, 4, 5);
 
         };
     }
