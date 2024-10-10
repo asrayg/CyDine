@@ -176,7 +176,7 @@ public class MealPlanActivity extends AppCompatActivity {
     }
 
     private void updateMealPlan(int mealPlanId, String foods, int protein, int fat, int carbs, int finalCalories) {
-        String updateUrl = MEAL_PLAN_URL + "/" + mealPlanId; // Ensure you're hitting the correct URL with the meal plan ID
+        String updateUrl = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/"+mealPlanId+"/fooditems/add/byName"; // Ensure you're hitting the correct URL with the meal plan ID
 
         StringRequest updateRequest = new StringRequest(
                 Request.Method.PUT,
@@ -204,13 +204,13 @@ public class MealPlanActivity extends AppCompatActivity {
                 try {
                     JSONObject requestBody = new JSONObject();
                     requestBody.put("foods", foods); // If foods is expected as a string, otherwise send an array
-                    requestBody.put("protein", protein);
-                    requestBody.put("carbs", carbs);
-                    requestBody.put("fat", fat);
-                    requestBody.put("finalCalories", finalCalories);
+//                    requestBody.put("protein", protein);
+//                    requestBody.put("carbs", carbs);
+//                    requestBody.put("fat", fat);
+//                    requestBody.put("finalCalories", finalCalories);
 
                     Log.d("UpdateMealPlanRequestBody", requestBody.toString()); // Log the request body for debugging
-                    return requestBody.toString().getBytes();
+                    return foods.getBytes();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return null;
