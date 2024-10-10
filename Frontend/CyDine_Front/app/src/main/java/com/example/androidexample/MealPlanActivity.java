@@ -16,22 +16,21 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MealPlanActivity extends AppCompatActivity {
 
     private static final String MEAL_PLAN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans";
-    private static final String FOOD_ITEM_URL = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem";
+    private static final String FOOD_ITEM_URL = "http://coms-3090-020.class.las.iastate.edu:8080/fooditems";  // Base URL for food items
+
     private LinearLayout mealPlanContainer;
-    private Button addMealPlanButton;
-    private int mealPlanCount = 1; // To keep track of the meal plan number
-    private Map<Integer, String> foodItemsMap = new HashMap<>(); // Map to store food items
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,146 +38,192 @@ public class MealPlanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meal_plan);
 
         mealPlanContainer = findViewById(R.id.meal_plan_container);
-        addMealPlanButton = findViewById(R.id.add_meal_plan_button);
 
-        // Fetch food items and meal plans when the activity is created
-        fetchFoodItems();
+        // Fetch meal plans
         fetchMealPlans();
-
-        // Set click listener on the button to add meal plan manually
-        addMealPlanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMealPlan();
-            }
-        });
-    }
-
-    private void fetchFoodItems() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, FOOD_ITEM_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            // Parse the JSON response for food items
-                            JSONArray foodItemsArray = new JSONArray(response);
-                            for (int i = 0; i < foodItemsArray.length(); i++) {
-                                JSONObject foodItemObject = foodItemsArray.getJSONObject(i);
-                                int id = foodItemObject.getInt("id");
-                                String name = foodItemObject.getString("name");
-                                foodItemsMap.put(id, name); // Store in the map
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(MealPlanActivity.this, "Error parsing food items", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MealPlanActivity.this, "Error fetching food items", Toast.LENGTH_SHORT).show();
-                        Log.e("VolleyError", "Error: " + error.getMessage());
-                    }
-                });
-
-        // Add the request to the request queue
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     private void fetchMealPlans() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, MEAL_PLAN_URL,
+        StringRequest mealPlanRequest = new StringRequest(
+                Request.Method.GET,
+                MEAL_PLAN_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            // Parse the JSON response for meal plans
-                            JSONArray mealPlansArray = new JSONArray(response);
-                            for (int i = 0; i < mealPlansArray.length(); i++) {
-                                JSONObject mealPlanObject = mealPlansArray.getJSONObject(i);
-                                String foods = mealPlanObject.getString("foods");
-                                int protein = mealPlanObject.getInt("protein");
-                                int carbs = mealPlanObject.getInt("carbs");
-                                int finalCalories = mealPlanObject.getInt("finalCalories");
-                                int fat = mealPlanObject.getInt("fat");
-                                String date = mealPlanObject.optString("date", "No date available");
+                            // Parse the response JSON array of meal plans
+                            JSONArray mealPlanArray = new JSONArray(response);
 
-                                // Convert food IDs to names
-                                String foodNames = convertFoodIdsToNames(foods);
+                            // Loop through each meal plan and add it to the UI
+                            for (int i = 0; i < mealPlanArray.length(); i++) {
+                                JSONObject mealPlan = mealPlanArray.getJSONObject(i);
 
-                                // Create and display the meal plan
-                                displayMealPlan(mealPlanObject.getInt("id"), foodNames, protein, carbs, finalCalories, fat, date);
+                                // Extract meal plan details
+                                int id = mealPlan.getInt("id");
+                                String foods = mealPlan.getString("foods");  // Food item IDs as a string
+                                int protein = mealPlan.getInt("protein");
+                                int carbs = mealPlan.getInt("carbs");
+                                int fat = mealPlan.getInt("fat");
+                                int finalCalories = mealPlan.getInt("finalCalories");
+                                String date = mealPlan.optString("date", "No date");
+
+                                // Fetch food items based on the food IDs
+                                fetchFoodItems(foods, id, protein, carbs, fat, finalCalories, date);
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(MealPlanActivity.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MealPlanActivity.this, "Error parsing meal plan data", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MealPlanActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
-                        Log.e("VolleyError", "Error: " + error.getMessage());
+                        Log.e("MealPlanError", error.toString());
+                        Toast.makeText(MealPlanActivity.this, "Error fetching meal plans: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
-
-        // Add the request to the request queue
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-    }
-
-    private String convertFoodIdsToNames(String foodIds) {
-        StringBuilder foodNames = new StringBuilder();
-        String[] ids = foodIds.split(",");
-
-        for (String idStr : ids) {
-            if (!idStr.isEmpty()) {
-                int id = Integer.parseInt(idStr);
-                String foodName = foodItemsMap.get(id); // Get food name from map
-                if (foodName != null) {
-                    foodNames.append(foodName).append(", "); // Append food name
                 }
-            }
-        }
+        );
 
-        // Remove trailing comma and space if present
-        if (foodNames.length() > 0) {
-            foodNames.setLength(foodNames.length() - 2);
-        }
-        return foodNames.toString();
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(this).add(mealPlanRequest);
     }
 
-    private void displayMealPlan(int mealPlanId, String foods, int protein, int carbs, int calories, int fat, String date) {
-        // Inflate the meal plan layout
-        View mealPlanView = LayoutInflater.from(this).inflate(R.layout.meal_plan_item, mealPlanContainer, false);
+    // Fetch food items based on the food IDs
+    private void fetchFoodItems(final String foodIDs, final int mealPlanId, final int protein, final int carbs, final int fat, final int finalCalories, final String date) {
+        if (foodIDs == null || foodIDs.isEmpty()) {
+            addMealPlanToUI(mealPlanId, "No Foods", protein, carbs, fat, finalCalories, date);
+            return;
+        }
 
-        // Set the meal plan header
+        String[] foodIdArray = foodIDs.split(",");
+        final StringBuilder foodNamesBuilder = new StringBuilder();
+
+        for (String foodIdStr : foodIdArray) {
+            int foodId = Integer.parseInt(foodIdStr.trim());
+
+            // Fetch each food item by its ID
+            StringRequest foodItemRequest = new StringRequest(
+                    Request.Method.GET,
+                    FOOD_ITEM_URL + "/" + foodId,  // Get food item by ID
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                // Parse the food item JSON object
+                                JSONObject foodItem = new JSONObject(response);
+                                String foodName = foodItem.getString("name");
+
+                                // Append the food name to the StringBuilder
+                                foodNamesBuilder.append(foodName).append(", ");
+
+                                // Once all food items are fetched, update the UI
+                                if (foodNamesBuilder.length() > 0 && foodNamesBuilder.toString().endsWith(", ")) {
+                                    foodNamesBuilder.setLength(foodNamesBuilder.length() - 2);  // Remove trailing comma and space
+                                }
+
+                                // Add the meal plan to the UI with the fetched food names
+                                addMealPlanToUI(mealPlanId, foodNamesBuilder.toString(), protein, carbs, fat, finalCalories, date);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(MealPlanActivity.this, "Error parsing food item data", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("FoodItemError", error.toString());
+                            Toast.makeText(MealPlanActivity.this, "Error fetching food item: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+
+            // Add the request to the Volley request queue for each food item
+            Volley.newRequestQueue(this).add(foodItemRequest);
+        }
+    }
+
+    private void addMealPlanToUI(int id, String foods, int protein, int carbs, int fat, int finalCalories, String date) {
+        // Inflate a new meal plan item layout
+        View mealPlanView = LayoutInflater.from(this).inflate(R.layout.meal_plan_item, null);
+
+        // Find and set the views in the layout
         TextView mealPlanHeader = mealPlanView.findViewById(R.id.meal_plan_header);
-        mealPlanHeader.setText("Meal Plan " + mealPlanId);
-
-        // Set the food items
         EditText mealNameEditText = mealPlanView.findViewById(R.id.meal_name);
-        mealNameEditText.setText(foods.isEmpty() ? "No food items" : foods);
+        EditText proteinValueEditText = mealPlanView.findViewById(R.id.protein_value);
+        EditText fatValueEditText = mealPlanView.findViewById(R.id.fat_value);
+        EditText carbsValueEditText = mealPlanView.findViewById(R.id.carbs_value);
+        EditText caloriesValueEditText = mealPlanView.findViewById(R.id.calories_value);
+        Button saveButton = mealPlanView.findViewById(R.id.save_button);
+        Button deleteButton = mealPlanView.findViewById(R.id.delete_button);
 
-        // Set the nutritional values
-        EditText proteinEditText = mealPlanView.findViewById(R.id.protein_value);
-        proteinEditText.setText(String.valueOf(protein));
+        // Set meal plan details from API data
+        mealPlanHeader.setText("Meal Plan " + id);
+        mealNameEditText.setText(foods);  // Display food names instead of IDs
+        proteinValueEditText.setText(String.valueOf(protein));
+        fatValueEditText.setText(String.valueOf(fat));
+        carbsValueEditText.setText(String.valueOf(carbs));
+        caloriesValueEditText.setText(String.valueOf(finalCalories));
 
-        EditText fatEditText = mealPlanView.findViewById(R.id.fat_value);
-        fatEditText.setText(String.valueOf(fat));
+        // Add save button listener (example to show Toast for now)
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the save functionality here
+                Toast.makeText(MealPlanActivity.this, "Meal Plan " + id + " saved!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        EditText carbsEditText = mealPlanView.findViewById(R.id.carbs_value);
-        carbsEditText.setText(String.valueOf(carbs));
+        // Add delete button listener
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send DELETE request when delete button is clicked
+                deleteMealPlan(id, mealPlanView);  // Call the method to delete meal plan
+            }
+        });
 
-        EditText caloriesEditText = mealPlanView.findViewById(R.id.calories_value);
-        caloriesEditText.setText(String.valueOf(calories));
-
-        // Add the meal plan view to the container
+        // Add the dynamically created meal plan view to the mealPlanContainer
         mealPlanContainer.addView(mealPlanView);
     }
 
-    private void addMealPlan() {
-        // You can implement adding a meal plan manually if needed
-        Toast.makeText(this, "Adding a new meal plan manually is not implemented.", Toast.LENGTH_SHORT).show();
+    private void deleteMealPlan(final int mealPlanId, final View mealPlanView) {
+        String deleteUrl = MEAL_PLAN_URL + "/" + mealPlanId;  // Construct delete URL with meal plan ID
+
+        StringRequest deleteRequest = new StringRequest(
+                Request.Method.DELETE,
+                deleteUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Success response
+                        Log.d("DeleteMealPlan", "Meal Plan " + mealPlanId + " deleted successfully");
+                        Toast.makeText(MealPlanActivity.this, "Meal Plan " + mealPlanId + " deleted!", Toast.LENGTH_SHORT).show();
+
+                        // Remove the meal plan view from the container
+                        mealPlanContainer.removeView(mealPlanView);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Enhanced error logging
+                        String errorMessage = "Unknown error occurred";
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            String responseBody = new String(error.networkResponse.data);
+                            errorMessage = "Error " + statusCode + ": " + responseBody;
+                        }
+                        Log.e("DeleteMealPlanError", errorMessage);
+                        Toast.makeText(MealPlanActivity.this, "Error deleting meal plan: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(this).add(deleteRequest);
     }
 }
