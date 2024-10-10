@@ -34,7 +34,6 @@ class Main {
             FoodItems food1 = new FoodItems("Chicken", 1, 2, 3, 4, 5);
             FoodItems food2 = new FoodItems("Peas", 1, 2, 3, 4, 5);
             FoodItems food3 = new FoodItems("Taco", 1, 2, 3, 4, 5);
-            FoodItems food4 = new FoodItems("Pizza", 1, 2, 3, 4, 5);
 
         };
     }
