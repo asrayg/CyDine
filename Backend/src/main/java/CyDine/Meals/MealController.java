@@ -54,7 +54,7 @@ public class MealController {
     }
 
     @Transactional
-    @PostMapping(path = "/mealplans/{id}/fooditems")
+    @PutMapping(path = "/mealplans/{id}/fooditems")
     String addFoodItemToMealPlan(@PathVariable int id, @RequestBody String Vaibhav) {
         MealPlans mealPlan = mealRepository.findById(id);
         if (mealPlan == null)

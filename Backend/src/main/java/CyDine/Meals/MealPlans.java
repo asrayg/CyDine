@@ -17,7 +17,7 @@ public class MealPlans {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany
+    @ManyToMany
     private List<FoodItems> foods;
 
     private int protein = 0;
@@ -38,6 +38,7 @@ public class MealPlans {
         carbs += foodItem.getCarbs();
         fat += foodItem.getFat();
         finalCalories += foodItem.getCalories();
+        System.out.println(foodItem.getCalories());
 
     }
 
