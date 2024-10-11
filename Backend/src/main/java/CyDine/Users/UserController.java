@@ -70,6 +70,15 @@ public class UserController {
         return success;
     }
 
+    @DeleteMapping("/users/{id}")
+    String deleteUser(@PathVariable int id){
+        User user = userRepository.findById(id);
+        if(user == null)
+            return failure;
+        userRepository.deleteById(id);
+        return success;
+    }
+
     @DeleteMapping(path = "/users/{id}/mealplan/{mealPlanId}")
     String deleteMealPlan(@PathVariable int id, @PathVariable int mealPlanId){
         userRepository.findById(id).removeMealPlans(mealPlansRepository.findById(mealPlanId));
