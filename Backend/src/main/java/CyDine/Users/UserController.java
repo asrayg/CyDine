@@ -4,6 +4,7 @@ import java.util.List;
 
 import CyDine.MealPlans.MealPlans;
 import CyDine.MealPlans.MealPlansRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,6 +71,7 @@ public class UserController {
         return success;
     }
 
+    @Transactional
     @DeleteMapping("/users/{id}")
     String deleteUser(@PathVariable int id){
         User user = userRepository.findById(id);
