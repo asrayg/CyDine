@@ -161,11 +161,7 @@ public class MealPlanActivity extends AppCompatActivity {
         caloriesValueEditText.setText(String.valueOf(finalCalories));
 
         saveButton.setOnClickListener(v -> {
-            updateMealPlan(id, mealNameEditText.getText().toString(),
-                    Integer.parseInt(proteinValueEditText.getText().toString()),
-                    Integer.parseInt(fatValueEditText.getText().toString()),
-                    Integer.parseInt(carbsValueEditText.getText().toString()),
-                    Integer.parseInt(caloriesValueEditText.getText().toString()));
+            updateMealPlan(id, mealNameEditText.getText().toString());
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -175,7 +171,7 @@ public class MealPlanActivity extends AppCompatActivity {
         mealPlanContainer.addView(mealPlanView);
     }
 
-    private void updateMealPlan(int mealPlanId, String foods, int protein, int fat, int carbs, int finalCalories) {
+    private void updateMealPlan(int mealPlanId, String foods) {
         String updateUrl = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/"+mealPlanId+"/fooditems/add/byName"; // Ensure you're hitting the correct URL with the meal plan ID
 
         StringRequest updateRequest = new StringRequest(
@@ -204,11 +200,6 @@ public class MealPlanActivity extends AppCompatActivity {
                 try {
                     JSONObject requestBody = new JSONObject();
                     requestBody.put("foods", foods); // If foods is expected as a string, otherwise send an array
-//                    requestBody.put("protein", protein);
-//                    requestBody.put("carbs", carbs);
-//                    requestBody.put("fat", fat);
-//                    requestBody.put("finalCalories", finalCalories);
-
                     Log.d("UpdateMealPlanRequestBody", requestBody.toString()); // Log the request body for debugging
                     return foods.getBytes();
                 } catch (JSONException e) {
