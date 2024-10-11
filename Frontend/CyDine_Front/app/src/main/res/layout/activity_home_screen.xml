@@ -7,6 +7,8 @@
     android:background="#EFBF04">
 
     <!-- Welcome Text -->
+
+    <!-- Empty Space -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,13 +18,18 @@
         android:text="Welcome to CyDine!"
         android:textSize="24sp" />
 
-    <!-- Empty Space -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
     <!-- Navigation Buttons -->
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/iowa_state_cyclones_logo_svg" />
+
+    <View
+        android:layout_width="464dp"
+        android:layout_height="429dp"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
