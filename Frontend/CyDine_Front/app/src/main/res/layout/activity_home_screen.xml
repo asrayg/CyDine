@@ -46,9 +46,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:backgroundTint="#BD2031"
-            android:text="Meal Plan"
+            android:text="Meals"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:layout_marginEnd="8dp"/>
 
         <!-- Food Menu Button -->
@@ -58,12 +58,23 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:backgroundTint="#BD2031"
-            android:text="Food Menu"
+            android:text="Food"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:layout_marginEnd="8dp"/>
 
         <!-- Profile Button -->
+        <Button
+            android:id="@+id/water_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2031"
+            android:text="Water"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
         <Button
             android:id="@+id/profile_button"
             android:layout_width="0dp"
@@ -72,7 +83,7 @@
             android:backgroundTint="#BD2031"
             android:text="Profile"
             android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+            android:textSize="15sp"/>
     </LinearLayout>
 
 </LinearLayout>
