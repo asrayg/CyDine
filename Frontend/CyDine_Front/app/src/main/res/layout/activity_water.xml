@@ -3,25 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#E0F7FA">
 
     <TextView
         android:id="@+id/water_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Water Activity"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:text="Daily Water Tracker"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#00796B"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/water_goal_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Goal: 2000 ml"
+        android:textSize="18sp"
+        android:textColor="#004D40"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="10dp"/>
+
+    <ProgressBar
+        android:id="@+id/water_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="2000"
+        android:progress="0"
+        android:progressTint="#00796B"
+        android:background="#B2DFDB"
+        android:layout_marginBottom="20dp"/>
 
     <EditText
         android:id="@+id/water_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter water amount (ml)" />
+        android:hint="Enter water amount (ml)"
+        android:inputType="number"
+<!--        android:background="@drawable/edittext_background"-->
+        android:padding="10dp"/>
 
-    <Button
-        android:id="@+id/submit_button"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Water"
+<!--            android:background="@drawable/button_background"-->
+            android:textColor="#FFFFFF"
+            android:padding="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+<!--            android:background="@drawable/button_background"-->
+            android:textColor="#FFFFFF"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/remaining_water_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="Remaining: 2000 ml"
+        android:textSize="16sp"
+        android:textColor="#004D40"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="20dp"/>
+
 </LinearLayout>
