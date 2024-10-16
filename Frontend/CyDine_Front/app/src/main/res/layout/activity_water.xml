@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#EFBF04">
@@ -32,27 +31,39 @@
         android:layout_gravity="center_horizontal"
         android:paddingBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/water_goal_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Goal: 2000 ml"
-        android:textSize="18sp"
-        android:textColor="#004D40"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="10dp"/>
+    <!-- Circular Goal Layout -->
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
 
-    <ProgressBar
-        android:id="@+id/water_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="2000"
-        android:progress="0"
-        android:progressTint="#00796B"
-        android:background="#B2DFDB"
-        android:layout_marginBottom="20dp"/>
+        <!-- Circular ProgressBar -->
+        <ProgressBar
+            android:id="@+id/water_goal_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:max="2000"
+            android:progress="500"
+            android:progressDrawable="@drawable/circular_progress_drawable"
+            android:visibility="visible"
+            android:layout_gravity="center"/>
 
+        <!-- Goal Text in the Center of the Circular ProgressBar -->
+        <TextView
+            android:id="@+id/water_goal_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Goal: 500/2000 ml"
+            android:textColor="#004D40"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- Water Input -->
     <EditText
         android:id="@+id/water_input"
         android:layout_width="match_parent"
@@ -60,8 +71,10 @@
         android:hint="Enter water amount (ml)"
         android:inputType="number"
         android:background="@drawable/edittext_background"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:layout_marginTop="16dp"/>
 
+    <!-- Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,7 +108,7 @@
         android:id="@+id/remaining_water_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remaining: 2000 ml"
+        android:text="Remaining: 1500 ml"
         android:textSize="16sp"
         android:textColor="#004D40"
         android:layout_gravity="center_horizontal"
