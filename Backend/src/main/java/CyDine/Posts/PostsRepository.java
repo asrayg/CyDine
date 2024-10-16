@@ -1,4 +1,4 @@
 package CyDine.Posts;
 
-public class PostsRepository {
+public interface PostsRepository {
 }
