@@ -22,15 +22,15 @@ public class WaterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_water);
 
         // Initialize views
-        waterProgress = findViewById(R.id.water_progress);
+        waterProgress = findViewById(R.id.water_goal_progress);
         remainingWaterText = findViewById(R.id.remaining_water_text);
         waterGoalText = findViewById(R.id.water_goal_text);
         waterInput = findViewById(R.id.water_input);
         Button addButton = findViewById(R.id.add_button);
         Button resetButton = findViewById(R.id.reset_button);
 
-        // Set up goal text
-        waterGoalText.setText("Goal: " + waterGoal + " ml");
+        // Set up initial goal text
+        updateProgress();
 
         // Add Water Button Click
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +39,7 @@ public class WaterActivity extends AppCompatActivity {
                 String waterAmount = waterInput.getText().toString();
                 if (!waterAmount.isEmpty()) {
                     int amount = Integer.parseInt(waterAmount);
-                    addWater(amount);
+                    adjustWaterIntake(amount);
                 } else {
                     Toast.makeText(WaterActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
                 }
@@ -55,24 +55,33 @@ public class WaterActivity extends AppCompatActivity {
         });
     }
 
-    private void addWater(int amount) {
+    // Adjust water intake, allowing both adding and removing water
+    private void adjustWaterIntake(int amount) {
         currentWaterIntake += amount;
+
+        // Ensure the intake does not exceed the goal or go below zero
         if (currentWaterIntake > waterGoal) {
-            currentWaterIntake = waterGoal; // Cap at goal
+            currentWaterIntake = waterGoal;
+        } else if (currentWaterIntake < 0) {
+            currentWaterIntake = 0;
         }
+
         updateProgress();
         waterInput.setText("");
     }
 
+    // Reset water intake to 0
     private void resetWaterIntake() {
         currentWaterIntake = 0;
         updateProgress();
     }
 
+    // Update the progress bar and remaining text
     private void updateProgress() {
         waterProgress.setProgress(currentWaterIntake);
         int remaining = waterGoal - currentWaterIntake;
         remainingWaterText.setText("Remaining: " + remaining + " ml");
+        waterGoalText.setText("Goal: " + currentWaterIntake + "/" + waterGoal + " ml");
 
         if (currentWaterIntake >= waterGoal) {
             Toast.makeText(this, "Congratulations! You've reached your water goal!", Toast.LENGTH_LONG).show();
