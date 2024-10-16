@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F7DC6F">
+    android:background="#EFBF04">
 
     <!-- Center the CyDine text at the top -->
     <TextView
@@ -28,7 +28,7 @@
         android:text="Daily Water Tracker"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#00796B"
+        android:textColor="#BD2031"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="16dp"/>
 
@@ -69,22 +69,24 @@
         android:gravity="center"
         android:layout_marginTop="16dp">
 
+        <!-- Add Water button with #BD2031 color -->
         <Button
             android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Water"
-            android:background="@drawable/button_background"
+            android:backgroundTint="#BD2031"
             android:textColor="#FFFFFF"
             android:padding="10dp"
             android:layout_marginEnd="8dp"/>
 
+        <!-- Reset button with #BD2031 color -->
         <Button
             android:id="@+id/reset_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reset"
-            android:background="@drawable/button_background"
+            android:backgroundTint="#BD2031"
             android:textColor="#FFFFFF"
             android:padding="10dp"/>
     </LinearLayout>
