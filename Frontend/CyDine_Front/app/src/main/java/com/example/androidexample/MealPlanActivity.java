@@ -22,11 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MealPlanActivity extends AppCompatActivity {
 
+
+    private Map<String, JSONObject> foodItemMap = new HashMap<>();
     private static final String MEAL_PLAN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans";
     private static final String FOOD_ITEM_URL = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem";
 
@@ -41,6 +47,7 @@ public class MealPlanActivity extends AppCompatActivity {
 
         // Fetch meal plans
         fetchMealPlans();
+        fetchFoodItems();
 
         addMealPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +55,37 @@ public class MealPlanActivity extends AppCompatActivity {
                 addNewMealPlan();
             }
         });
+    }
+
+    private void fetchFoodItems() {
+        StringRequest foodItemRequest = new StringRequest(
+                Request.Method.GET,
+                FOOD_ITEM_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray foodItemArray = new JSONArray(response);
+                            for (int i = 0; i < foodItemArray.length(); i++) {
+                                JSONObject foodItem = foodItemArray.getJSONObject(i);
+                                String foodName = foodItem.getString("name").toLowerCase();
+                                foodItemMap.put(foodName, foodItem); // Store food item in the map
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MealPlanActivity.this, "Error parsing food items", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("FoodItemError", error.toString());
+                        Toast.makeText(MealPlanActivity.this, "Error fetching food items: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        Volley.newRequestQueue(this).add(foodItemRequest);
     }
 
     private void addNewMealPlan() {
@@ -161,8 +199,43 @@ public class MealPlanActivity extends AppCompatActivity {
         caloriesValueEditText.setText(String.valueOf(finalCalories));
 
         saveButton.setOnClickListener(v -> {
+            String foodItemsText = mealNameEditText.getText().toString();
+            // Convert the food items into a list
+            List<String> foodItems = Arrays.asList(foodItemsText.split(","));
+            // Remove duplicates by using a LinkedHashSet to preserve the order
+
+
+            // Reset the fields for recalculation
+            int totalProtein = 0, totalFat = 0, totalCarbs = 0, totalCalories = 0;
+
+            // Loop through the unique food items and retrieve their nutritional values
+            for (String food : foodItems) {
+                food = food.trim().toLowerCase(); // Normalize the food name
+                JSONObject foodItem = foodItemMap.get(food);
+                if (foodItem != null) {
+                    try {
+                        totalProtein += foodItem.getInt("protein");
+                        totalFat += foodItem.getInt("fat");
+                        totalCarbs += foodItem.getInt("carbs");
+                        totalCalories += foodItem.getInt("calories");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(MealPlanActivity.this, "Unknown food item: " + food, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            mealNameEditText.setText(String.join(", ", foodItems));
+            proteinValueEditText.setText(String.valueOf(totalProtein));
+            fatValueEditText.setText(String.valueOf(totalFat));
+            carbsValueEditText.setText(String.valueOf(totalCarbs));
+            caloriesValueEditText.setText(String.valueOf(totalCalories));
+
+            // Now pass the updated values to updateMealPlan
             updateMealPlan(id, mealNameEditText.getText().toString());
         });
+
 
         deleteButton.setOnClickListener(v -> {
             deleteMealPlan(id, mealPlanView);
@@ -182,7 +255,7 @@ public class MealPlanActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("UpdateMealPlanResponse", response);
                         Toast.makeText(MealPlanActivity.this, "Meal Plan updated successfully!", Toast.LENGTH_SHORT).show();
-                        fetchMealPlans(); // Refresh the meal plans to show the update
+                        //fetchMealPlans(); // Refresh the meal plans to show the update
                     }
                 },
                 new Response.ErrorListener() {
@@ -199,8 +272,11 @@ public class MealPlanActivity extends AppCompatActivity {
                 // Ensure you're sending the correct fields that the server expects for an update
                 try {
                     JSONObject requestBody = new JSONObject();
-                    requestBody.put("foods", foods); // If foods is expected as a string, otherwise send an array
-                    Log.d("UpdateMealPlanRequestBody", requestBody.toString()); // Log the request body for debugging
+                    String[] foodItems = foods.split(",");
+                    for(String food: foodItems){
+                        requestBody.put("foods", food);
+                        Log.d("UpdateMealPlanRequestBody", requestBody.toString());
+                    }
                     return foods.getBytes();
                 } catch (JSONException e) {
                     e.printStackTrace();
