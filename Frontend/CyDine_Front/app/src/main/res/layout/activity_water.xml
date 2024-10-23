@@ -63,6 +63,18 @@
             android:textStyle="bold" />
     </FrameLayout>
 
+    <!-- Water Goal Input (Initially Hidden) -->
+    <EditText
+        android:id="@+id/goal_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your water goal (ml)"
+        android:inputType="number"
+        android:visibility="gone"
+        android:background="@drawable/edittext_background"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"/>
+
     <!-- Water Input -->
     <EditText
         android:id="@+id/water_input"
@@ -103,6 +115,29 @@
             android:textColor="#FFFFFF"
             android:padding="10dp"/>
     </LinearLayout>
+
+    <!-- Set Goal Button -->
+    <Button
+        android:id="@+id/set_goal_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Water Goal"
+        android:backgroundTint="#BD2031"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Confirm Goal Button (Initially Hidden) -->
+    <Button
+        android:id="@+id/confirm_goal_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Goal"
+        android:backgroundTint="#BD2031"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/remaining_water_text"

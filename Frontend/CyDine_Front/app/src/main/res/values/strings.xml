@@ -1,3 +1,29 @@
 <resources>
+    <!-- Existing app name string -->
     <string name="app_name">AndroidExample</string>
+
+    <!-- Labels for Profile Input Fields -->
+    <string name="dietary_preference">Dietary Preference</string>
+    <string name="height">Height (cm)</string>
+    <string name="weight">Weight (kg)</string>
+    <string name="age">Age</string>
+
+    <!-- Array for Fitness Goals -->
+    <string-array name="fitness_goals_array">
+        <item>Bulking</item>
+        <item>Cutting</item>
+        <item>Maintaining</item>
+    </string-array>
+
+    <!-- Array for Dietary Preferences -->
+    <string-array name="dietary_restrictions_array">
+        <item>None</item>
+        <item>Vegan</item>
+        <item>Vegetarian</item>
+        <item>Gluten-Free</item>
+        <item>Nut-Free</item>
+        <item>Dairy-Free</item>
+        <item>Keto</item>
+        <item>Paleo</item>
+    </string-array>
 </resources>
