@@ -60,9 +60,13 @@
         <activity android:name=".WaterActivity"
             android:exported="false"/>
 
+        <activity android:name=".AdminLoginActivity"
+            android:exported="false"/>
+
 
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />
+
 
 
     </application>
