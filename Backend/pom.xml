@@ -31,6 +31,12 @@
         <artifactId>mysql-connector-java</artifactId>
         <version>8.0.32</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
     <!-- Spring Boot Web dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -67,6 +73,8 @@
       </plugin>
     </plugins>
   </build>
+
+
   
 
 </project>
