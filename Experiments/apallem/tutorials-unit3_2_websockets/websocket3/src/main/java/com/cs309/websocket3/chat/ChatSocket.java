@@ -157,6 +157,17 @@ public class ChatSocket {
 		return sb.toString();
 	}
 
+	private void deleteMessage(String messageIdStr, String username) {
+		// Fetch the message by ID
+		Long messageId = Long.parseLong(messageIdStr);
+		Message messageToDelete = msgRepo.findById(messageId).orElse(null); // Adjust based on your repository method
 
+		if (messageToDelete != null && messageToDelete.getUserName().equals(username)) {
+			msgRepo.delete(messageToDelete);
+			broadcast(username + " deleted a message");
+		} else {
+			sendMessageToPArticularUser(username, "You can only delete your own messages or the message does not exist.");
+		}
+	}
 
 } // end of Class
