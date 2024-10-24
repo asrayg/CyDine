@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground">
+
+    <!-- Server 1 Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Server 1 URL (default):"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/serverEdt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="ws://10.0.2.2:8080/chat/1/"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:background="@drawable/edittext_background"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/unameEdt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Username"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:background="@drawable/edittext_background"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/connectBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to chat server #1"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/black"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to chat server #1"
+        android:textColor="@android:color/black"
+        android:backgroundTint="@color/design_default_color_background"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+    <!-- Server 2 Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Server 2 URL (default):"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/serverEdt2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="ws://10.0.2.2:8080/chat/2/"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:background="@drawable/edittext_background"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/unameEdt2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Username"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:background="@drawable/edittext_background"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/connectBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to chat server #2"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/material_dynamic_primary20"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/backBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to chat server #2"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
