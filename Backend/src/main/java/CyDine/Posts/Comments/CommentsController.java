@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CommentsController {
 
-    @Autowired
-    private CommentsController commentsController;
+  /*  @Autowired
+    private CommentsController commentsController;*/
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";

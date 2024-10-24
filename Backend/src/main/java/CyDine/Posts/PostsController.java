@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PostsController {
 
-    @Autowired
-    private PostsController postsController;
+    /*@Autowired
+    private PostsController postsController;*/
 
 
     private String success = "{\"message\":\"success\"}";
