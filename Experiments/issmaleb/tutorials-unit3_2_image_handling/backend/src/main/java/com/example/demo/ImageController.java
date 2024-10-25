@@ -12,8 +12,8 @@ import java.nio.file.Files;
 @RestController
 public class ImageController {
 
-    // replace this! careful with the operating system in use
-    private static String directory = "/Users/hobian/";
+    // Set directory path to user home + /uploads
+    private static String directory = System.getProperty("user.home") + "/uploads";
 
     @Autowired
     private ImageRepository imageRepository;
@@ -27,10 +27,16 @@ public class ImageController {
 
     @PostMapping("images")
     public String handleFileUpload(@RequestParam("image") MultipartFile imageFile)  {
+        File directoryPath = new File(directory);
+
+        // Create directory if it doesn't exist
+        if (!directoryPath.exists()) {
+            directoryPath.mkdirs();
+        }
 
         try {
-            File destinationFile = new File(directory + File.separator + imageFile.getOriginalFilename());
-            imageFile.transferTo(destinationFile);  // save file to disk
+            File destinationFile = new File(directoryPath, imageFile.getOriginalFilename());
+            imageFile.transferTo(destinationFile);  // Save file to disk
 
             Image image = new Image();
             image.setFilePath(destinationFile.getAbsolutePath());
@@ -41,5 +47,4 @@ public class ImageController {
             return "Failed to upload file: " + e.getMessage();
         }
     }
-
 }
