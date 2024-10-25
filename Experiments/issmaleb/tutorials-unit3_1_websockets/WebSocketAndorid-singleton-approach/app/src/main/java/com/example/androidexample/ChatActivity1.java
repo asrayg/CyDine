@@ -1,81 +1,80 @@
 package com.example.androidexample;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import org.java_websocket.handshake.ServerHandshake;
 
-public class ChatActivity1 extends AppCompatActivity implements WebSocketListener{
+public class ChatActivity1 extends AppCompatActivity implements WebSocketListener {
 
     private Button sendBtn, backMainBtn;
     private EditText msgEtx;
-    private TextView msgTv;
+    private TextView msgTv, messageStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat1);
 
-        /* initialize UI elements */
-        sendBtn = (Button) findViewById(R.id.sendBtn);
-        backMainBtn = (Button) findViewById(R.id.backMainBtn);
-        msgEtx = (EditText) findViewById(R.id.msgEdt);
-        msgTv = (TextView) findViewById(R.id.tx1);
+        // Initialize UI elements
+        sendBtn = findViewById(R.id.sendBtn);
+        backMainBtn = findViewById(R.id.backMainBtn);
+        msgEtx = findViewById(R.id.msgEdt);
+        msgTv = findViewById(R.id.tx1);
+        messageStatus = findViewById(R.id.messageStatus);
 
-        /* connect this activity to the websocket instance */
-        WebSocketManager1.getInstance().setWebSocketListener(ChatActivity1.this);
+        // Connect to WebSocket
+        WebSocketManager1.getInstance().setWebSocketListener(this);
 
-        /* send button listener */
+        // Send button listener
         sendBtn.setOnClickListener(v -> {
+            String message = msgEtx.getText().toString().trim();
+            if (message.isEmpty()) {
+                msgEtx.setError("Message cannot be empty");
+                return; // Prevent sending empty messages
+            }
             try {
-                // send message
-                WebSocketManager1.getInstance().sendMessage(msgEtx.getText().toString());
+                WebSocketManager1.getInstance().sendMessage(message);
+                messageStatus.setText("Delivered"); // Set status to "Delivered"
+                msgEtx.setText(""); // Clear input field
             } catch (Exception e) {
-                Log.d("ExceptionSendMessage:", e.getMessage().toString());
+                Log.d("ExceptionSendMessage:", e.getMessage());
             }
         });
 
-        /* back button listener */
+        // Back button listener
         backMainBtn.setOnClickListener(view -> {
-            // got to chat activity
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         });
     }
 
-
     @Override
     public void onWebSocketMessage(String message) {
-        /**
-         * In Android, all UI-related operations must be performed on the main UI thread
-         * to ensure smooth and responsive user interfaces. The 'runOnUiThread' method
-         * is used to post a runnable to the UI thread's message queue, allowing UI updates
-         * to occur safely from a background or non-UI thread.
-         */
         runOnUiThread(() -> {
-            String s = msgTv.getText().toString();
-            msgTv.setText(s + "\n"+message);
+            String existingMessages = msgTv.getText().toString();
+            msgTv.setText(existingMessages + "\n" + message);
+            messageStatus.setText("Read"); // Set status to "Read" when a message is received
         });
     }
 
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
-        String closedBy = remote ? "server" : "local";
-        runOnUiThread(() -> {
-            String s = msgTv.getText().toString();
-            msgTv.setText(s + "---\nconnection closed by " + closedBy + "\nreason: " + reason);
-        });
+        Log.d("WebSocketClose", "Code: " + code + ", Reason: " + reason);
+        // Handle connection close (optional)
     }
 
     @Override
-    public void onWebSocketOpen(ServerHandshake handshakedata) {}
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+        Log.d("WebSocketOpen", "Connection established");
+    }
 
     @Override
-    public void onWebSocketError(Exception ex) {}
+    public void onWebSocketError(Exception ex) {
+        Log.d("WebSocketError", "Error: " + ex.getMessage());
+    }
 }
