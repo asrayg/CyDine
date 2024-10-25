@@ -7,6 +7,31 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
+    <!-- Profile Image and Status at the top -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/profileImage2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:contentDescription="Profile Image" />
+
+        <TextView
+            android:id="@+id/statusIndicator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Offline"
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <!-- Message Input and Send Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,11 +50,10 @@
             android:id="@+id/sendBtn2" />
     </LinearLayout>
 
-
-
+    <!-- Conversation Display Area -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="650dp">
+        android:layout_height="500dp">
 
         <TextView
             android:id="@+id/tx2"
@@ -40,5 +64,14 @@
             android:textSize="20dp" />
     </ScrollView>
 
+    <!-- Read and Delivered Status TextView -->
+    <TextView
+        android:id="@+id/messageStatus2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delivered"
+        android:layout_marginTop="5dp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
