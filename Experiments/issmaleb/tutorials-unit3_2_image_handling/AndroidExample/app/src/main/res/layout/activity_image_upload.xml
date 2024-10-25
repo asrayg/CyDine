@@ -11,19 +11,24 @@
         android:layout_height="wrap_content"
         android:text="SELECT IMAGE" />
 
-
     <ImageView
         android:id="@+id/imageSelView"
         android:layout_width="300sp"
         android:layout_height="300sp"
         android:layout_marginTop="50dp"/>
 
+    <!-- New ProgressBar for showing upload progress -->
+    <ProgressBar
+        android:id="@+id/uploadProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/uploadBtn"
         android:layout_marginTop="150dp"
         android:layout_width="180sp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:text="UPLOAD" />
-
 </LinearLayout>
