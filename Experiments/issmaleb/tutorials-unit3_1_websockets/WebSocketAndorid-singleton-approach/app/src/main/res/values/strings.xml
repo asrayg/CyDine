@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AndroidExample</string>
+    <string-array name="status_options">
+        <item>Online</item>
+        <item>Busy</item>
+        <item>Offline</item>
+        <item>Away</item>
+    </string-array>
 </resources>
