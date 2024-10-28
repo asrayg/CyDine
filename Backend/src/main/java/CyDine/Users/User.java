@@ -61,7 +61,6 @@ public class User {
         this.ifActive = true;
         this.height = height;
         this.weight = weight;
-//        TODO: add what ever frount end is senting rn
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
     }
