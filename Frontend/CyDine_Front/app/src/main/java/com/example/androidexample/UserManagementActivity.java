@@ -2,6 +2,7 @@ package com.example.androidexample;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+
 import com.google.android.material.button.MaterialButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +40,8 @@ public class UserManagementActivity extends AppCompatActivity {
     private EditText searchBar;
     private Button searchButton;
     private MaterialButton deleteButton;
+
+    private static final String USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Replace with your actual user URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +60,9 @@ public class UserManagementActivity extends AppCompatActivity {
         // Initialize user lists
         userList = new ArrayList<>();
         filteredUserList = new ArrayList<>();
-        populateDummyUsers();
+
+        // Fetch user data from the server
+        fetchUsers();
 
         // Set up adapter
         userAdapterActivity = new UserAdapterActivity(filteredUserList, this::checkForSelectedUsers);
@@ -63,17 +78,50 @@ public class UserManagementActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(v -> deleteSelectedUsers());
     }
 
-    // Populate dummy users
-    private void populateDummyUsers() {
-        for (int i = 1; i <= 30; i++) {
-            Map<String, Object> user = new HashMap<>();
-            user.put("name", "User " + i);
-            user.put("email", "user" + i + "@example.com");
-            user.put("password", "password" + i);
-            user.put("selected", false); // Track selection state
-            userList.add(user);
+    // Function to fetch users from the server
+    private void fetchUsers() {
+        JsonArrayRequest userRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                USER_URL,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        parseUserData(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(UserManagementActivity.this, "Error fetching users: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Add request to queue using Volley Singleton
+        VolleySingleton.getInstance(this).addToRequestQueue(userRequest);
+    }
+
+    // Parse user data and populate the user list
+    private void parseUserData(JSONArray response) {
+        try {
+            userList.clear();
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject userJson = response.getJSONObject(i);
+                Map<String, Object> user = new HashMap<>();
+                user.put("id", userJson.getString("id"));  // Assuming the JSON has an "id" field
+                user.put("name", userJson.getString("name"));
+                user.put("email", userJson.getString("emailId"));
+                user.put("password", userJson.getString("password"));
+                user.put("selected", false); // Track selection state
+                userList.add(user);
+            }
+            filteredUserList.addAll(userList);
+            userAdapterActivity.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error parsing user data", Toast.LENGTH_SHORT).show();
         }
-        filteredUserList.addAll(userList);
     }
 
     // Filter users based on search input
@@ -113,11 +161,39 @@ public class UserManagementActivity extends AppCompatActivity {
         while (iterator.hasNext()) {
             Map<String, Object> user = iterator.next();
             if ((Boolean) user.get("selected")) {
+                String userId = (String) user.get("id");
+                deleteUserFromServer(userId);
                 iterator.remove();
             }
         }
         userAdapterActivity.notifyDataSetChanged();
         checkForSelectedUsers();
         Toast.makeText(this, "Selected users deleted.", Toast.LENGTH_SHORT).show();
+    }
+
+    // Function to delete a user from the server
+    private void deleteUserFromServer(String userId) {
+        String deleteUrl = USER_URL + "/" + userId;
+
+        StringRequest deleteRequest = new StringRequest(
+                Request.Method.DELETE,
+                deleteUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle response if needed
+                        Log.d("DeleteResponse", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(UserManagementActivity.this, "Error deleting user: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
+        // Add request to queue using Volley Singleton
+        VolleySingleton.getInstance(this).addToRequestQueue(deleteRequest);
     }
 }
