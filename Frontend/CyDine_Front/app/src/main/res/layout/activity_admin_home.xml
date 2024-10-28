@@ -123,18 +123,9 @@
 
                 <TextView
                     android:id="@+id/active_users_count"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Active Users: 0"
-                    android:layout_weight="1"
-                    android:textAlignment="center"/>
-
-                <TextView
-                    android:id="@+id/new_signups_count"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="New Sign-Ups: 0"
-                    android:layout_weight="1"
                     android:textAlignment="center"/>
             </LinearLayout>
         </LinearLayout>

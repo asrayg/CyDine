@@ -1,5 +1,6 @@
 package com.example.androidexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -181,8 +182,11 @@ public class UserManagementActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle response if needed
-                        Log.d("DeleteResponse", response);
+                        // Notify AdminActivity to refresh the active users count
+                        Intent intent = new Intent(UserManagementActivity.this, AdminActivity.class);
+                        intent.putExtra("updateActiveUserCount", true);
+                        startActivity(intent);
+                        finish(); // Optionally finish this activity
                     }
                 },
                 new Response.ErrorListener() {
