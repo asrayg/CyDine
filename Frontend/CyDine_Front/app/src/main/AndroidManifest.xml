@@ -63,6 +63,18 @@
         <activity android:name=".AdminLoginActivity"
             android:exported="false"/>
 
+        <activity android:name=".DiningHallDataActivity"
+            android:exported="false"/>
+
+        <activity android:name=".PendingReportsActivity"
+            android:exported="false"/>
+
+        <activity android:name=".UserManagementActivity"
+            android:exported="false"/>
+
+        <activity android:name=".UserAdapterActivity"
+            android:exported="false"/>
+
 
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />
