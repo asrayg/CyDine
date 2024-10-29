@@ -28,6 +28,7 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText name, email, password;
+    private EditText editHeight, editWeight, editAge;
     private static final String USER_DETAILS_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Assuming a GET /users/{id} API
     private static final String UPDATE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String DELETE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
@@ -41,6 +42,10 @@ public class ProfileActivity extends AppCompatActivity {
         name = findViewById(R.id.edit_name);
         email = findViewById(R.id.edit_email);
         password = findViewById(R.id.edit_password);
+        editHeight = findViewById(R.id.edit_height);
+        editWeight = findViewById(R.id.edit_weight);
+        editAge = findViewById(R.id.edit_age);
+
 
         // Get the userId from intent
         String userId = getIntent().getStringExtra("userId");
@@ -150,12 +155,23 @@ public class ProfileActivity extends AppCompatActivity {
                     String updatedEmail = email.getText().toString().trim();
                     String updatedPassword = password.getText().toString().trim();
 
+                    int height = Integer.parseInt(editHeight.getText().toString().trim());
+                    int weight = Integer.parseInt(editWeight.getText().toString().trim());
+                    int age = Integer.parseInt(editAge.getText().toString().trim());
+
+
                     // Create JSON object for the request body
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userId);  // Pass the userId explicitly
                     jsonObject.put("name", updatedName);
                     jsonObject.put("emailId", updatedEmail);
-                    jsonObject.put("password", updatedPassword);  // Always pass the current or updated password
+                    jsonObject.put("password", updatedPassword);
+                    jsonObject.put("ifActive", true);
+                    jsonObject.put("height", height);
+                    jsonObject.put("weight", weight);
+                    jsonObject.put("age", age);
+
+
 
                     String jsonString = jsonObject.toString();
                     Log.d("UpdateRequestBody", jsonString); // Log the request body for debugging

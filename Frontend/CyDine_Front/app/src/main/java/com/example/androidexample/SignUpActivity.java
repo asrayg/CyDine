@@ -119,7 +119,8 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public byte[] getBody() {
                 // Create a JSON object with the user input fields
-                String requestBody = "{\"name\":\"" + firstName.getText().toString().trim() + "\","
+                String fullName = firstName.getText().toString().trim() + " " + lastName.getText().toString().trim();
+                String requestBody = "{\"name\":\"" + fullName + "\","
                         + "\"emailId\":\"" + email.getText().toString().trim() + "\","
                         + "\"password\":\"" + password.getText().toString().trim() + "\"}";
 
