@@ -29,8 +29,8 @@ public class User {
     private boolean ifActive;
     private String password;
     private int logintoken;
-    private int Height;
-    private int Weight;
+    private int height;
+    private int weight;
     private int age;
     private boolean IsMod;
     private boolean IsAdmin;
@@ -54,12 +54,13 @@ public class User {
      // =============================== Constructors ================================== //
 
 
-    public User(String name, String emailId, String password) {
+    public User(String name, String emailId, String password, int height, int weight) {
         this.name = name;
         this.emailId = emailId;
         this.password = password;
         this.ifActive = true;
-//        TODO: add what ever frount end is senting rn
+        this.height = height;
+        this.weight = weight;
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
     }
@@ -127,19 +128,19 @@ public class User {
     }
 
     public int getHeight() {
-        return Height;
+        return height;
     }
 
     public void setHeight(int height) {
-        Height = height;
+        this.height = height;
     }
 
     public int getWeight() {
-        return Weight;
+        return weight;
     }
 
     public void setWeight(int weight) {
-        Weight = weight;
+        this.weight = weight;
     }
 
     public int getAge() {
