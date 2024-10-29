@@ -54,13 +54,16 @@ public class User {
      // =============================== Constructors ================================== //
 
 
-    public User(String name, String emailId, String password, int height, int weight) {
+    public User(String name, String emailId, String password, int height, int weight, String dietary_preference, String dietary_restrictions, String fitness_goal) {
         this.name = name;
         this.emailId = emailId;
         this.password = password;
         this.ifActive = true;
         this.height = height;
         this.weight = weight;
+        this.dietary_preference = dietary_preference;
+        this.dietary_restrictions = dietary_restrictions;
+        this.fitness_goal = fitness_goal;
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
     }
