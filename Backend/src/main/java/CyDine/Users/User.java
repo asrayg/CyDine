@@ -30,9 +30,9 @@ public class User {
     private boolean IsMod;
     private boolean IsAdmin;
     private boolean IsBanned;
-    private int dietary_preference;
-    private int dietary_restrictions;
-    private int fitness_goal;
+    private String dietary_preference;
+    private String dietary_restrictions;
+    private String fitness_goal;
 
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -170,27 +170,27 @@ public class User {
     }
 
 
-    public int getDietary_preference() {
+    public String getDietary_preference() {
         return dietary_preference;
     }
 
-    public void setDietary_preference(int dietary_preference) {
+    public void setDietary_preference(String dietary_preference) {
         this.dietary_preference = dietary_preference;
     }
 
-    public int getDietary_restrictions() {
+    public String getDietary_restrictions() {
         return dietary_restrictions;
     }
 
-    public void setDietary_restrictions(int dietary_restrictions) {
+    public void setDietary_restrictions(String dietary_restrictions) {
         this.dietary_restrictions = dietary_restrictions;
     }
 
-    public int getFitness_goal() {
+    public String getFitness_goal() {
         return fitness_goal;
     }
 
-    public void setFitness_goal(int fitness_goal) {
+    public void setFitness_goal(String fitness_goal) {
         this.fitness_goal = fitness_goal;
     }
 
