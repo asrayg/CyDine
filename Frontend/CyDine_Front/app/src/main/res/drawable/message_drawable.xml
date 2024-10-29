@@ -1,0 +1,10 @@
+<!-- message_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#6200EE" /> <!-- Background color of the message bubble -->
+    <corners android:radius="16dp" /> <!-- Rounded corners -->
+    <padding
+        android:top="8dp"
+        android:bottom="8dp"
+        android:left="12dp"
+        android:right="12dp" />
+</shape>
