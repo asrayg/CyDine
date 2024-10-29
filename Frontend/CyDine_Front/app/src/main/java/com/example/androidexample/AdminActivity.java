@@ -41,7 +41,6 @@ public class AdminActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminActivity.this, DiningHallDataActivity.class);
             startActivity(intent);
         });
-
         fetchActiveUsers();
     }
 
