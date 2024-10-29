@@ -6,6 +6,7 @@ import CyDine.MealPlans.MealPlans;
 import CyDine.MealPlans.MealPlansRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,6 +88,19 @@ public class UserController {
         mealPlansRepository.deleteById(mealPlanId);
         return success;
     }
+
+    @PutMapping("/users/password/")
+    String changePassword(@RequestBody UserPass request){
+        User user = userRepository.findByemailId(request.getEmailId());
+        if(user == null)
+            return failure;
+        user.setPassword(request.getPassword());
+        System.out.println(request.getPassword());
+        userRepository.save(user);
+        return success;
+    }
+
+
 
 
 }
