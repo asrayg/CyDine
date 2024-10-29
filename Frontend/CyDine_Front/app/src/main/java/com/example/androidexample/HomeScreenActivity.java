@@ -19,6 +19,36 @@ public class HomeScreenActivity extends AppCompatActivity {
         Button foodMenusButton = findViewById(R.id.food_menus_button);
         Button profileButton = findViewById(R.id.profile_button);
         Button waterButton = findViewById(R.id.water_button);
+        Button messagingButton = findViewById(R.id.MessagingButton);
+        Button createButton = findViewById(R.id.createbutton);
+        Button exerciseButton = findViewById(R.id.exercisebutton);
+
+        messagingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start FoodMenusActivity
+                Intent intent = new Intent(HomeScreenActivity.this, MessageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start FoodMenusActivity
+                Intent intent = new Intent(HomeScreenActivity.this, CreateActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        exerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start FoodMenusActivity
+                Intent intent = new Intent(HomeScreenActivity.this, ExerciseActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         waterButton.setOnClickListener(new View.OnClickListener() {

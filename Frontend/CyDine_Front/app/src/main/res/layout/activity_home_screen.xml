@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@android:color/EFBF04"
+        android:background="#EFBF04"
         android:padding="8dp"
         android:elevation="4dp">
 
