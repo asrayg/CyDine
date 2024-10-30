@@ -26,4 +26,24 @@
         <item>Keto</item>
         <item>Paleo</item>
     </string-array>
+
+
+        <string name="navigation_drawer_open">Open navigation drawer</string>
+        <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="select_dining_center">Select Dining Center</string>
+    <string name="select_meal_type">Select Meal Type</string>
+
+    <string-array name="dining_centers">
+        <item>UDCC</item>
+        <item>Friley</item>
+        <item>Seasons</item>
+    </string-array>
+
+    <string-array name="meal_types">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string-array>
+
 </resources>
