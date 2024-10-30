@@ -7,20 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +23,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private EditText name, email, password;
     private EditText editHeight, editWeight, editAge;
-    private static final String USER_DETAILS_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Assuming a GET /users/{id} API
+    private EditText editFitnessGoals, editDietaryPreference;  // New EditText fields
+    private static final String USER_DETAILS_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String UPDATE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String DELETE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
 
@@ -45,7 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
         editHeight = findViewById(R.id.edit_height);
         editWeight = findViewById(R.id.edit_weight);
         editAge = findViewById(R.id.edit_age);
-
+        editFitnessGoals = findViewById(R.id.edit_fitness_goals);  // Initialize new field
+        editDietaryPreference = findViewById(R.id.edit_dietary_preference);  // Initialize new field
 
         // Get the userId from intent
         String userId = getIntent().getStringExtra("userId");
@@ -67,12 +63,11 @@ public class ProfileActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Fetch the password from the EditText field
                 String userPassword = password.getText().toString();
                 if (userPassword.isEmpty()) {
                     Toast.makeText(ProfileActivity.this, "Please enter your password to delete the account.", Toast.LENGTH_SHORT).show();
                 } else {
-                    deleteUserAccount(userId);  // Pass both userId and userPassword
+                    deleteUserAccount(userId);  // Pass userId
                 }
             }
         });
@@ -89,18 +84,17 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            // Parse the response to JSON object
                             JSONObject jsonObject = new JSONObject(response);
 
                             // Populate fields from the JSON response
-                            String userName = jsonObject.getString("name");
-                            String userEmail = jsonObject.getString("emailId");
-                            String userPassword = jsonObject.getString("password");
-
-                            // Set the fields with the fetched data
-                            name.setText(userName);
-                            email.setText(userEmail);
-                            password.setText(userPassword);
+                            name.setText(jsonObject.getString("name"));
+                            email.setText(jsonObject.getString("emailId"));
+                            password.setText(jsonObject.getString("password"));
+                            editHeight.setText(String.valueOf(jsonObject.optInt("height", 0)));
+                            editWeight.setText(String.valueOf(jsonObject.optInt("weight", 0)));
+                            editAge.setText(String.valueOf(jsonObject.optInt("age", 0)));
+                            editFitnessGoals.setText(jsonObject.optString("fitness_goal", ""));  // Set fitness goals
+                            editDietaryPreference.setText(jsonObject.optString("dietary_preference", ""));  // Set dietary preference
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -117,7 +111,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
-        // Add request to queue
         Volley.newRequestQueue(this).add(userRequest);
     }
 
@@ -125,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateUserInformation(String userId) {
         StringRequest updateRequest = new StringRequest(
                 Request.Method.PUT,
-                UPDATE_USER_URL + "/" + userId, // Append user ID to URL
+                UPDATE_USER_URL + "/" + userId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -139,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Log.e("UpdateError", error.toString());
                         if (error.networkResponse != null) {
                             String errorData = new String(error.networkResponse.data);
-                            Log.e("UpdateErrorDetails", errorData); // Log server error response
+                            Log.e("UpdateErrorDetails", errorData);
                             Toast.makeText(ProfileActivity.this, "Error updating user info: " + errorData, Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(ProfileActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -150,32 +143,19 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public byte[] getBody() {
                 try {
-                    // Always get values from fields
-                    String updatedName = name.getText().toString().trim();
-                    String updatedEmail = email.getText().toString().trim();
-                    String updatedPassword = password.getText().toString().trim();
-
-                    int height = Integer.parseInt(editHeight.getText().toString().trim());
-                    int weight = Integer.parseInt(editWeight.getText().toString().trim());
-                    int age = Integer.parseInt(editAge.getText().toString().trim());
-
-
-                    // Create JSON object for the request body
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", userId);  // Pass the userId explicitly
-                    jsonObject.put("name", updatedName);
-                    jsonObject.put("emailId", updatedEmail);
-                    jsonObject.put("password", updatedPassword);
+                    jsonObject.put("id", userId);
+                    jsonObject.put("name", name.getText().toString().trim());
+                    jsonObject.put("emailId", email.getText().toString().trim());
+                    jsonObject.put("password", password.getText().toString().trim());
                     jsonObject.put("ifActive", true);
-                    jsonObject.put("height", height);
-                    jsonObject.put("weight", weight);
-                    jsonObject.put("age", age);
+                    jsonObject.put("height", Integer.parseInt(editHeight.getText().toString().trim()));
+                    jsonObject.put("weight", Integer.parseInt(editWeight.getText().toString().trim()));
+                    jsonObject.put("age", Integer.parseInt(editAge.getText().toString().trim()));
+                    jsonObject.put("fitness_goal", editFitnessGoals.getText().toString().trim()); // Add fitness goals to JSON
+                    jsonObject.put("dietary_preference", editDietaryPreference.getText().toString().trim()); // Add dietary preference to JSON
 
-
-
-                    String jsonString = jsonObject.toString();
-                    Log.d("UpdateRequestBody", jsonString); // Log the request body for debugging
-                    return jsonString.getBytes("utf-8"); // Return the JSON body as byte array
+                    return jsonObject.toString().getBytes("utf-8");
                 } catch (JSONException | UnsupportedEncodingException e) {
                     Log.e("UpdateError", "Error creating JSON body", e);
                     return null;
@@ -185,17 +165,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");  // Set Content-Type as JSON
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
         };
 
-        // Add request to queue
         Volley.newRequestQueue(this).add(updateRequest);
     }
 
     private void deleteUserAccount(String userId) {
-        String deleteUrl = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId;
+        String deleteUrl = DELETE_USER_URL + "/" + userId;
 
         StringRequest deleteRequest = new StringRequest(
                 Request.Method.DELETE,
@@ -203,18 +182,16 @@ public class ProfileActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Success response
                         Log.d("DeleteResponse", response);
                         Toast.makeText(getApplicationContext(), "User deleted successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                         startActivity(intent);
-
+                        finish(); // Close this activity
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Enhanced error logging
                         String errorMessage = "Unknown error occurred";
                         if (error.networkResponse != null) {
                             int statusCode = error.networkResponse.statusCode;
@@ -226,16 +203,12 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
         ) {
-
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
         };
 
-        // Add request to queue using your Volley singleton
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(deleteRequest);
+        Volley.newRequestQueue(this).add(deleteRequest);
     }
-
 }
-

@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity"
-    android:background="#EFBF04">
+    android:background="#EFBF04"
+    tools:context=".ProfileActivity">
 
     <!-- App Name -->
     <TextView
@@ -130,12 +130,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_password" />
 
-    <!-- Fitness Goals Spinner (Dropdown) -->
-    <Spinner
-        android:id="@+id/fitness_goals_spinner"
+    <!-- Fitness Goals EditText -->
+    <EditText
+        android:id="@+id/edit_fitness_goals"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:entries="@array/fitness_goals_array"
+        android:hint="Enter Fitness Goals"
+        android:textSize="15sp"
         app:layout_constraintTop_toTopOf="@id/fitness_goals_label"
         app:layout_constraintBottom_toBottomOf="@id/fitness_goals_label"
         app:layout_constraintStart_toEndOf="@id/fitness_goals_label"
@@ -153,14 +154,15 @@
         android:textColor="#BD2031"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fitness_goals_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/edit_fitness_goals" />
 
-    <!-- Dietary Preference Spinner -->
-    <Spinner
-        android:id="@+id/dietary_preference_spinner"
+    <!-- Dietary Preference EditText -->
+    <EditText
+        android:id="@+id/edit_dietary_preference"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:entries="@array/dietary_restrictions_array"
+        android:hint="Enter Dietary Preference"
+        android:textSize="15sp"
         app:layout_constraintTop_toTopOf="@id/dietary_preference_label"
         app:layout_constraintBottom_toBottomOf="@id/dietary_preference_label"
         app:layout_constraintStart_toEndOf="@id/dietary_preference_label"
@@ -178,7 +180,7 @@
         android:textColor="#BD2031"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dietary_preference_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/edit_dietary_preference" />
 
     <!-- Height EditText -->
     <EditText
@@ -277,4 +279,3 @@
         app:layout_constraintTop_toBottomOf="@id/button_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
