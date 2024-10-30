@@ -75,6 +75,9 @@
         <activity android:name=".UserAdapterActivity"
             android:exported="false"/>
 
+        <activity android:name=".FoodMenuActivity"
+            android:exported="false"/>
+
 
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />

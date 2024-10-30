@@ -1,125 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#EFBF04">
+    android:id="@+id/drawer_layout">
 
-    <!-- Welcome Text -->
-
-    <!-- Empty Space -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="20dp"
-        android:text="Welcome to CyDine!"
-        android:textSize="24sp" />
-
-    <!-- Navigation Buttons -->
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/iowa_state_cyclones_logo_svg" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#EFBF04"
-        android:padding="8dp"
-        android:elevation="4dp">
-
-        <!-- Meal Plan Button -->
-        <Button
-            android:id="@+id/meal_plan_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BD2031"
-            android:text="Meals"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_marginEnd="8dp"/>
-
-        <!-- Food Menu Button -->
-
-        <Button
-            android:id="@+id/food_menus_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BD2031"
-            android:text="Food"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:layout_marginEnd="8dp"/>
-
-        <!-- Profile Button -->
-
-        <Button
-            android:id="@+id/water_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#BD2031"
-            android:text="Water"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/profile_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BD2031"
-            android:text="Profile"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"/>
-    </LinearLayout>
-
+    <!-- Main Content Layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:background="#EFBF04"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/MessagingButton"
-            android:layout_width="0dp"
+        <!-- Toolbar for Hamburger Menu -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#BD2031"
-            android:text="Message"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:background="#BD2031"
+            android:title="CyDine"
+            android:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <Button
-            android:id="@+id/createbutton"
-            android:layout_width="0dp"
+        <!-- Welcome Text -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#BD2031"
-            android:text="Create"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:layout_gravity="center"
+            android:paddingTop="16dp"
+            android:paddingBottom="20dp"
+            android:text="Welcome to CyDine!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#BD2031" />
 
-        <Button
-            android:id="@+id/exercisebutton"
-            android:layout_width="0dp"
+        <!-- Logo Image -->
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#BD2031"
-            android:text="Exercise"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            app:srcCompat="@drawable/iowa_state_cyclones_logo_svg"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="Logo" />
+
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Navigation Drawer Layout -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/menu_drawer"
+        app:headerLayout="@layout/nav_header" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
