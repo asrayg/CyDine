@@ -25,17 +25,12 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/iowa_state_cyclones_logo_svg" />
 
-    <View
-        android:layout_width="464dp"
-        android:layout_height="429dp"
-        android:layout_weight="1" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@android:color/black"
+        android:background="#EFBF04"
         android:padding="8dp"
         android:elevation="4dp">
 
@@ -52,6 +47,7 @@
             android:layout_marginEnd="8dp"/>
 
         <!-- Food Menu Button -->
+
         <Button
             android:id="@+id/food_menus_button"
             android:layout_width="0dp"
@@ -64,6 +60,7 @@
             android:layout_marginEnd="8dp"/>
 
         <!-- Profile Button -->
+
         <Button
             android:id="@+id/water_button"
             android:layout_width="0dp"
@@ -84,6 +81,45 @@
             android:text="Profile"
             android:textColor="@android:color/white"
             android:textSize="15sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/MessagingButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2031"
+            android:text="Message"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/createbutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2031"
+            android:text="Create"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/exercisebutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#BD2031"
+            android:text="Exercise"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>

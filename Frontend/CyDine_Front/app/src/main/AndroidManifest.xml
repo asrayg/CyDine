@@ -78,6 +78,11 @@
 
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".FoodMenusActivity" />
+        <activity android:name=".MessageActivity" />
+        <activity android:name=".ExerciseActivity" />
+        <activity android:name=".CreateActivity" />
+
+
 
 
 
