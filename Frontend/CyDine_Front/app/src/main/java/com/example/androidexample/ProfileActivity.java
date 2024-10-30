@@ -4,17 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +29,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private EditText name, email, password;
     private EditText editHeight, editWeight, editAge;
-    private EditText editFitnessGoals, editDietaryPreference;  // New EditText fields
+    private Spinner spinnerFitnessGoals, spinnerDietaryPreference; // Changed to Spinner
+
     private static final String USER_DETAILS_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String UPDATE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String DELETE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
@@ -40,8 +47,21 @@ public class ProfileActivity extends AppCompatActivity {
         editHeight = findViewById(R.id.edit_height);
         editWeight = findViewById(R.id.edit_weight);
         editAge = findViewById(R.id.edit_age);
-        editFitnessGoals = findViewById(R.id.edit_fitness_goals);  // Initialize new field
-        editDietaryPreference = findViewById(R.id.edit_dietary_preference);  // Initialize new field
+
+        // Initialize spinners
+        spinnerFitnessGoals = findViewById(R.id.spinner_fitness_goals);
+        spinnerDietaryPreference = findViewById(R.id.spinner_dietary_preference);
+
+        // Populate spinners with options
+        ArrayAdapter<CharSequence> fitnessGoalsAdapter = ArrayAdapter.createFromResource(this,
+                R.array.fitness_goals_array, android.R.layout.simple_spinner_item);
+        fitnessGoalsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFitnessGoals.setAdapter(fitnessGoalsAdapter);
+
+        ArrayAdapter<CharSequence> dietaryPreferencesAdapter = ArrayAdapter.createFromResource(this,
+                R.array.dietary_restrictions_array, android.R.layout.simple_spinner_item);
+        dietaryPreferencesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDietaryPreference.setAdapter(dietaryPreferencesAdapter);
 
         // Get the userId from intent
         String userId = getIntent().getStringExtra("userId");
@@ -93,8 +113,16 @@ public class ProfileActivity extends AppCompatActivity {
                             editHeight.setText(String.valueOf(jsonObject.optInt("height", 0)));
                             editWeight.setText(String.valueOf(jsonObject.optInt("weight", 0)));
                             editAge.setText(String.valueOf(jsonObject.optInt("age", 0)));
-                            editFitnessGoals.setText(jsonObject.optString("fitness_goal", ""));  // Set fitness goals
-                            editDietaryPreference.setText(jsonObject.optString("dietary_preference", ""));  // Set dietary preference
+
+                            // Set selected items for spinners based on JSON response
+                            String fitnessGoal = jsonObject.optString("fitness_goal", "");
+                            String dietaryPreference = jsonObject.optString("dietary_preference", "");
+
+                            // Set spinner values based on the fetched data
+                            int fitnessGoalPosition = ((ArrayAdapter<String>) spinnerFitnessGoals.getAdapter()).getPosition(fitnessGoal);
+                            int dietaryPreferencePosition = ((ArrayAdapter<String>) spinnerDietaryPreference.getAdapter()).getPosition(dietaryPreference);
+                            spinnerFitnessGoals.setSelection(fitnessGoalPosition);
+                            spinnerDietaryPreference.setSelection(dietaryPreferencePosition);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -152,8 +180,8 @@ public class ProfileActivity extends AppCompatActivity {
                     jsonObject.put("height", Integer.parseInt(editHeight.getText().toString().trim()));
                     jsonObject.put("weight", Integer.parseInt(editWeight.getText().toString().trim()));
                     jsonObject.put("age", Integer.parseInt(editAge.getText().toString().trim()));
-                    jsonObject.put("fitness_goal", editFitnessGoals.getText().toString().trim()); // Add fitness goals to JSON
-                    jsonObject.put("dietary_preference", editDietaryPreference.getText().toString().trim()); // Add dietary preference to JSON
+                    jsonObject.put("fitness_goal", spinnerFitnessGoals.getSelectedItem().toString().trim()); // Use spinner value
+                    jsonObject.put("dietary_preference", spinnerDietaryPreference.getSelectedItem().toString().trim()); // Use spinner value
 
                     return jsonObject.toString().getBytes("utf-8");
                 } catch (JSONException | UnsupportedEncodingException e) {
