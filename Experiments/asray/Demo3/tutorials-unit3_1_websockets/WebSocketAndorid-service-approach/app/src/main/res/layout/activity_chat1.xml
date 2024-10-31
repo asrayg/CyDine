@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground"
+    tools:context=".ChatActivity1">
+
+    <!-- Conversation Display Area -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="@drawable/ic_launcher_foreground"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/tx1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="The conversation will appear here:"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:padding="8dp" />
+    </ScrollView>
+
+    <!-- Message Input and Send Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical"
+        android:background="?android:attr/windowBackground">
+
+        <EditText
+            android:id="@+id/msgEdt"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:hint="Type your message..."
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:background="@drawable/edittext_background"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/sendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Send"
+            android:layout_marginStart="8dp"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/backMainBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Main"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/design_default_color_background"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/charCountTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/160" />
+
+    <!-- Clear Button -->
+    <Button
+        android:id="@+id/clearChatBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Main"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/design_default_color_background"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/clearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear Chat" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

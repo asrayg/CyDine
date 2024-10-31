@@ -10,48 +10,72 @@ import android.widget.TextView;
 
 import org.java_websocket.handshake.ServerHandshake;
 
-public class ChatActivity extends AppCompatActivity implements WebSocketListener{
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class ChatActivity extends AppCompatActivity implements WebSocketListener {
 
     private Button sendBtn;
     private EditText msgEtx;
-    private TextView msgTv;
+    private TextView msgTv, typingIndicator;
+    private SimpleDateFormat timestampFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        /* initialize UI elements */
-        sendBtn = (Button) findViewById(R.id.sendBtn);
-        msgEtx = (EditText) findViewById(R.id.msgEdt);
-        msgTv = (TextView) findViewById(R.id.tx1);
+        // Initialize UI elements
+        sendBtn = findViewById(R.id.sendBtn);
+        msgEtx = findViewById(R.id.msgEdt);
+        msgTv = findViewById(R.id.tx1);
+        typingIndicator = findViewById(R.id.typingIndicator);
 
-        /* connect this activity to the websocket instance */
+        // Connect this activity to the websocket instance
         WebSocketManager.getInstance().setWebSocketListener(ChatActivity.this);
 
-        /* send button listener */
+        // Set up the timestamp format
+        timestampFormat = new SimpleDateFormat("HH:mm:ss");
+
+        // Send button listener
         sendBtn.setOnClickListener(v -> {
             try {
-                // send message
-                WebSocketManager.getInstance().sendMessage(msgEtx.getText().toString());
+                String message = msgEtx.getText().toString();
+                if (!message.trim().isEmpty()) {
+                    // Send message via WebSocket
+                    WebSocketManager.getInstance().sendMessage(message);
+                    msgEtx.setText(""); // Clear input
+                }
             } catch (Exception e) {
-                Log.d("ExceptionSendMessage:", e.getMessage().toString());
+                Log.d("ExceptionSendMessage:", e.getMessage());
             }
         });
-    }
 
+//        // Typing indicator
+//        msgEtx.addTextChangedListener(new SimpleTextWatcher() {
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                WebSocketManager.getInstance().sendMessage("User is typing...");
+//                typingIndicator.setText("User is typing...");
+//            }
+//        });
+    }
 
     @Override
     public void onWebSocketMessage(String message) {
-        /**
-         * In Android, all UI-related operations must be performed on the main UI thread
-         * to ensure smooth and responsive user interfaces. The 'runOnUiThread' method
-         * is used to post a runnable to the UI thread's message queue, allowing UI updates
-         * to occur safely from a background or non-UI thread.
-         */
+        // Handle typing indicator
+        if (message.contains("typing")) {
+            runOnUiThread(() -> typingIndicator.setText(message));
+            return;
+        }
+
+        // In Android, all UI updates must be performed on the main UI thread
         runOnUiThread(() -> {
-            String s = msgTv.getText().toString();
-            msgTv.setText(s + "\n"+message);
+            // Get timestamp for the message
+            String timestamp = timestampFormat.format(new Date());
+            String currentText = msgTv.getText().toString();
+            msgTv.setText(currentText + "\n" + timestamp + " - " + message);
+            typingIndicator.setText(""); // Clear typing indicator
         });
     }
 
