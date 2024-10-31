@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F7DC6F">
 
     <TextView
         android:id="@+id/textViewCalorieCounter"
@@ -12,7 +13,8 @@
         android:text="Calories Remaining: 500"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:textColor="#333" />
 
     <!-- Input Fields for New Exercise -->
     <EditText
@@ -20,28 +22,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Exercise Name"
-        android:inputType="text" />
+        android:inputType="text"
+        android:padding="12dp"
+        android:background="@drawable/input_background" />
 
     <EditText
         android:id="@+id/editTextTimeSpent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Time Spent (minutes)"
-        android:inputType="number" />
+        android:inputType="number"
+        android:padding="12dp"
+        android:background="@drawable/input_background" />
 
     <EditText
         android:id="@+id/editTextCaloriesBurned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Calories Burned"
-        android:inputType="number" />
+        android:inputType="number"
+        android:padding="12dp"
+        android:background="@drawable/input_background" />
 
     <!-- Add Exercise Button -->
     <Button
         android:id="@+id/buttonAddExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Exercise" />
+        android:text="Add Exercise"
+        android:backgroundTint="#00796B"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:layout_marginTop="12dp" />
 
     <!-- RecyclerView for Exercise List -->
     <androidx.recyclerview.widget.RecyclerView
