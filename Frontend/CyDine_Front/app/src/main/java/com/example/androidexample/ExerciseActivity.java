@@ -26,7 +26,6 @@ public class ExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
 
-        // Initialize UI components
         textViewCalorieCounter = findViewById(R.id.textViewCalorieCounter);
         editTextExerciseName = findViewById(R.id.editTextExerciseName);
         editTextTimeSpent = findViewById(R.id.editTextTimeSpent);

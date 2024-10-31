@@ -2,7 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#FFD700"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message Board"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="10dp" />
 
     <!-- RecyclerView for displaying messages -->
     <androidx.recyclerview.widget.RecyclerView
@@ -17,20 +31,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:layout_marginTop="10dp">
 
         <EditText
             android:id="@+id/editTextMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type a message"
-            android:inputType="text" />
+            android:hint="Type a message..."
+            android:padding="10dp"
+            android:background="#EEEEEE"
+            android:layout_marginEnd="8dp"
+            android:inputType="text"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/buttonSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:text="Send"
+            android:backgroundTint="#FF3B30"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </LinearLayout>
