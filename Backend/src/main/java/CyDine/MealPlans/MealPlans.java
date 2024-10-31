@@ -59,11 +59,14 @@ public class MealPlans {
     }
 
     public void removeFoodItem(FoodItems foodItem){
-        foodItems.remove(foodItem);
         protein -= foodItem.getProtein();
         carbs -= foodItem.getCarbs();
         fat -= foodItem.getFat();
         finalCalories -= foodItem.getCalories();
+        foodItems.remove(foodItem);
+        System.out.println("msodfhlksdjf   : ");
+//        foodItems.remove(tmp+1);
+
     }
 
     public void eatFoodAgain(FoodItems foodItem) {
