@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewCalorieCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calories Remaining: 500"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="8dp" />
+
+    <!-- Input Fields for New Exercise -->
+    <EditText
+        android:id="@+id/editTextExerciseName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Exercise Name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextTimeSpent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Time Spent (minutes)"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/editTextCaloriesBurned"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Calories Burned"
+        android:inputType="number" />
+
+    <!-- Add Exercise Button -->
+    <Button
+        android:id="@+id/buttonAddExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Exercise" />
+
+    <!-- RecyclerView for Exercise List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewExercises"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="16dp" />
+</LinearLayout>
