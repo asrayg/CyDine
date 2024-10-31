@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@android:color/white"> <!-- Set background color -->
 
     <!-- ImageView to display the selected image -->
     <ImageView
@@ -12,15 +13,20 @@
         android:scaleType="centerCrop"
         android:contentDescription="Selected image preview"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_placeholder_image" />
+        android:src="@drawable/ic_placeholder_image"
+        android:background="@drawable/rounded_corners" /> <!-- Add a background with rounded corners -->
 
     <!-- Button to select an image -->
     <Button
         android:id="@+id/selectImageButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Image"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:elevation="4dp" /> <!-- Add elevation for shadow effect -->
 
     <!-- EditText for entering caption -->
     <EditText
@@ -28,12 +34,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter caption"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background" /> <!-- Custom background for EditText -->
 
     <!-- Button to post the image with the caption -->
     <Button
         android:id="@+id/postButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post" />
+        android:text="Post"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:padding="12dp"
+        android:elevation="4dp" /> <!-- Add elevation for shadow effect -->
 </LinearLayout>

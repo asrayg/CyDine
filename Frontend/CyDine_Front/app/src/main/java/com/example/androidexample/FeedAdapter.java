@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import com.bumptech.glide.Glide; // Ensure you import Glide
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
 
@@ -32,20 +33,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
         Post post = postList.get(position);
-        holder.postImage.setImageURI(Uri.parse(post.getImageUri()));
+
+        // Use Glide to load the image
+        Glide.with(context)
+                .load(Uri.parse(post.getImageUri()))
+                .placeholder(R.drawable.ic_placeholder_image) // Optional placeholder
+                .into(holder.postImage); // Load image using Glide
+
         holder.captionText.setText(post.getCaption());
         holder.likeCountText.setText("Likes: " + post.getLikeCount());
         holder.commentsText.setText("Comments: " + post.getCommentsAsString());
 
         holder.likeButton.setOnClickListener(v -> {
             post.likePost();
-            holder.likeCountText.setText("Likes: " + post.getLikeCount()); // Update like count
+            holder.likeCountText.setText("Likes: " + post.getLikeCount());
         });
 
         holder.commentButton.setOnClickListener(v -> {
-            // For simplicity, we will add a sample comment
-            post.addComment("Sample comment"); // This could be replaced with user input
-            holder.commentsText.setText("Comments: " + post.getCommentsAsString()); // Update comments
+            post.addComment("Sample comment");
+            holder.commentsText.setText("Comments: " + post.getCommentsAsString());
         });
 
         holder.deleteButton.setOnClickListener(v -> {
@@ -62,7 +68,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     public static class FeedViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage;
-        TextView captionText, likeCountText, commentsText; // Add commentsText field
+        TextView captionText, likeCountText, commentsText;
         Button likeButton, deleteButton, commentButton;
 
         public FeedViewHolder(@NonNull View itemView) {
@@ -70,7 +76,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             postImage = itemView.findViewById(R.id.postImage);
             captionText = itemView.findViewById(R.id.captionText);
             likeCountText = itemView.findViewById(R.id.likeCountText);
-            commentsText = itemView.findViewById(R.id.commentsText); // Initialize commentsText
+            commentsText = itemView.findViewById(R.id.commentsText);
             likeButton = itemView.findViewById(R.id.likeButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
             commentButton = itemView.findViewById(R.id.commentButton);
