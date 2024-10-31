@@ -40,7 +40,7 @@ public class UserModAdminActivity extends AppCompatActivity {
         mod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserModAdminActivity.this, ModActivity.class);
+                Intent intent = new Intent(UserModAdminActivity.this, ModLoginActivity.class);
                 startActivity(intent);
             }
         });

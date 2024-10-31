@@ -84,6 +84,9 @@
         <activity android:name=".MessageActivity" />
         <activity android:name=".ExerciseActivity" />
         <activity android:name=".CreateActivity" />
+        <activity android:name=".ModLoginActivity" />
+
+
 
 
 
