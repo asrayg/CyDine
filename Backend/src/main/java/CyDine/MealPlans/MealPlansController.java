@@ -72,8 +72,10 @@ public class MealPlansController {
         if (mealPlan == null)
             return failure;
         for(String i : Vaibhav.split(",")){
+            System.out.println("2");
             for(FoodItems x : foodItemsRepository.findAll()){
                 if (x.getName().equalsIgnoreCase(i)){
+                    System.out.println("1");
                     mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));
                     break;
                 }
@@ -128,9 +130,11 @@ public class MealPlansController {
     @DeleteMapping(path = "/mealplans/{id}")
     String deleteMealPlan(@PathVariable int id) {
         if (mealPlansRepository.existsById(id)) {
-//            for (FoodItems fi : mealPlansRepository.findById(id).getFoodItems()) {
-//                mealPlansRepository.findById(id).removeFoodItem(fi);
-//            }
+            System.out.println("????");
+            for (FoodItems fi : mealPlansRepository.findById(id).getFoodItems()) {
+                System.out.println(fi.getName());
+                mealPlansRepository.findById(id).removeFoodItem(fi);
+            }
             mealPlansRepository.deleteById(id);
             return success;
         }
