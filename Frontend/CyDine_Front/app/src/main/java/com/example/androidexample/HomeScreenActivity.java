@@ -62,6 +62,8 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
             startActivity(new Intent(this, ExerciseActivity.class));
         } else if (id == R.id.nav_food_menu) {
             startActivity(new Intent(this, FoodMenuActivity.class));
+        } else if(id == R.id.feed){
+            startActivity(new Intent(this, FeedActivity.class));
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
