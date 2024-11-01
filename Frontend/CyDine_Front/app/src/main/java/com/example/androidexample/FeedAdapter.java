@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import com.bumptech.glide.Glide; // Ensure you import Glide
@@ -54,11 +56,26 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             holder.commentsText.setText("Comments: " + post.getCommentsAsString());
         });
 
-        holder.deleteButton.setOnClickListener(v -> {
-            postList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, postList.size());
+        holder.commentButton.setOnClickListener(v -> {
+            // Create an EditText for user input
+            final EditText commentInput = new EditText(context);
+            commentInput.setHint("Add a comment...");
+
+            // Create the AlertDialog
+            new AlertDialog.Builder(context)
+                    .setTitle("Add Comment")
+                    .setView(commentInput)
+                    .setPositiveButton("Add", (dialog, which) -> {
+                        String comment = commentInput.getText().toString();
+                        if (!comment.isEmpty()) {
+                            post.addComment(comment); // Add the comment to the post
+                            holder.commentsText.setText("Comments: " + post.getCommentsAsString());
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
+
     }
 
     @Override
