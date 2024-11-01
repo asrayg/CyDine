@@ -137,6 +137,13 @@ public class MealPlanActivity extends AppCompatActivity {
                         try {
                             mealPlanContainer.removeAllViews();
                             JSONArray mealPlanArray = new JSONArray(response);
+
+                            // Initialize totals
+                            int totalCalories = 0;
+                            int totalProtein = 0;
+                            int totalFat = 0;
+                            int totalCarbs = 0;
+
                             for (int i = 0; i < mealPlanArray.length(); i++) {
                                 JSONObject mealPlan = mealPlanArray.getJSONObject(i);
                                 int id = mealPlan.getInt("id");
@@ -145,6 +152,12 @@ public class MealPlanActivity extends AppCompatActivity {
                                 int fat = mealPlan.getInt("fat");
                                 int finalCalories = mealPlan.getInt("finalCalories");
                                 String date = mealPlan.optString("date", "No date");
+
+                                // Accumulate the totals
+                                totalProtein += protein;
+                                totalCarbs += carbs;
+                                totalFat += fat;
+                                totalCalories += finalCalories;
 
                                 // Handle food items array
                                 JSONArray foodItemsArray = mealPlan.getJSONArray("foodItems");
@@ -161,6 +174,17 @@ public class MealPlanActivity extends AppCompatActivity {
                                 // Add meal plan to UI
                                 addMealPlanToUI(id, foodNamesBuilder.toString(), protein, carbs, fat, finalCalories, date);
                             }
+
+                            // Update total views with accumulated totals
+                            TextView totalCaloriesView = findViewById(R.id.total_calories);
+                            TextView totalProteinView = findViewById(R.id.total_protein);
+                            TextView totalFatView = findViewById(R.id.total_fat);
+                            TextView totalCarbsView = findViewById(R.id.total_carbs);
+
+                            totalCaloriesView.setText("Total Calories: " + totalCalories);
+                            totalProteinView.setText("Total Protein: " + totalProtein + "g");
+                            totalFatView.setText("Total Fat: " + totalFat + "g");
+                            totalCarbsView.setText("Total Carbs: " + totalCarbs + "g");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -179,6 +203,7 @@ public class MealPlanActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(mealPlanRequest);
     }
+
 
     private void addMealPlanToUI(int id, String foods, int protein, int carbs, int fat, int finalCalories, String date) {
         View mealPlanView = LayoutInflater.from(this).inflate(R.layout.meal_plan_item, null);

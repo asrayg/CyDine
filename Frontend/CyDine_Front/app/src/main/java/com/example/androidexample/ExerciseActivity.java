@@ -50,6 +50,10 @@ public class ExerciseActivity extends AppCompatActivity {
         updateCalorieCounter();
     }
 
+
+
+
+
     private void addExercise() {
         String name = editTextExerciseName.getText().toString().trim();
         String timeSpentText = editTextTimeSpent.getText().toString().trim();
@@ -77,3 +81,4 @@ public class ExerciseActivity extends AppCompatActivity {
         textViewCalorieCounter.setText("Calories Remaining: " + caloriesRemaining);
     }
     }
+
