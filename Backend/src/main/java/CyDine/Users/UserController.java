@@ -2,6 +2,7 @@ package CyDine.Users;
 
 import java.util.List;
 
+import CyDine.FoodItems.FoodItems;
 import CyDine.MealPlans.MealPlans;
 import CyDine.MealPlans.MealPlansRepository;
 import jakarta.transaction.Transactional;
@@ -41,6 +42,15 @@ public class UserController {
     @GetMapping(path = "/users/{id}")
     User getUserById( @PathVariable int id){
         return userRepository.findById(id);
+    }
+
+    @GetMapping(path = "/users/{id}/mealplans")
+    List<MealPlans> getUserMealplansById( @PathVariable int id){
+        return userRepository.findById(id).getMealPlans();
+    }
+    @GetMapping(path = "/users/{id}/FoodItems")
+    List<FoodItems> getUserFoodsById(@PathVariable int id){
+        return userRepository.findById(id).getFoodItems();
     }
 
     @PostMapping(path = "/users")
