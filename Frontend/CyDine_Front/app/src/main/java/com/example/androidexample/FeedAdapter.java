@@ -39,7 +39,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         // Use Glide to load the image
         Glide.with(context)
                 .load(Uri.parse(post.getImageUri()))
-                .placeholder(R.drawable.ic_placeholder_image) // Optional placeholder
                 .into(holder.postImage); // Load image using Glide
 
         holder.captionText.setText(post.getCaption());
@@ -54,6 +53,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.commentButton.setOnClickListener(v -> {
             post.addComment("Sample comment");
             holder.commentsText.setText("Comments: " + post.getCommentsAsString());
+        });
+
+        holder.deleteButton.setOnClickListener(v -> {
+            postList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, postList.size());
         });
 
         holder.commentButton.setOnClickListener(v -> {
