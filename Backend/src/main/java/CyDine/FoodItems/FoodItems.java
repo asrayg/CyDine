@@ -20,7 +20,7 @@ public class FoodItems {
     private int carbs;
     private int fat;
     private int calories;
-
+    private int UserId;
 //    @ManyToOne
 //    @JsonIgnore
 //    private onetoone.Users.User user;
@@ -104,5 +104,13 @@ public class FoodItems {
 
     public void setMealPlans(MealPlans mealPlans) {
         this.mealPlans = mealPlans;
+    }
+
+    public int getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(int userId) {
+        UserId = userId;
     }
 }
