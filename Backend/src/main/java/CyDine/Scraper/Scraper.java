@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.HashMap;
 
 public class Scraper {
     public String[] getSlugs(){
@@ -18,11 +18,11 @@ public class Scraper {
         return slugs;
     }
 
-    public JSONArray[] getPlaces(){
+    public HashMap<String,JSONArray> getPlaces(){
         String[] slugs = getSlugs();
-        JSONArray[] places = new JSONArray[slugs.length+1];
+        HashMap<String,JSONArray> places = new HashMap<>();
         for(int i = 0; i < slugs.length;i++){
-            places[i] = getJson("https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=" + slugs[i]);
+            places.put(slugs[i],getJson("https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=" + slugs[i]));
         }
         return places;
     }

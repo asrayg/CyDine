@@ -2,6 +2,8 @@ package CyDine;
 
 import CyDine.FoodItems.FoodItems;
 import CyDine.FoodItems.FoodItemsRepository;
+import CyDine.Scraper.Scraper;
+import org.json.JSONArray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +16,7 @@ import CyDine.Users.UserRepository;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 
 @SpringBootApplication
@@ -21,6 +24,8 @@ class Main {
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+//        HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
+//        System.out.println(tmp.get("seasons-marketplace-2-2").);
     }
 
 

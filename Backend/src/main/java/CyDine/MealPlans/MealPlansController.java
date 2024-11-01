@@ -65,19 +65,22 @@ public class MealPlansController {
         return mealPlansRepository.findById(id).getDate().toString();
     }
 
-    @PutMapping(path = "/mealplans/{id}/fooditems/add/byName")
-    String addFoodItemToMealPlanByName(@PathVariable int id, @RequestBody String Vaibhav) {
+    @PutMapping(path = "/mealplans/{id}/fooditems/add/byName/{userId}")
+    String addFoodItemToMealPlanByName(@PathVariable int id, @PathVariable int userId, @RequestBody String Vaibhav) {
         MealPlans mealPlan = mealPlansRepository.findById(id);
         System.out.println("??????????????????????????????????");
         if (mealPlan == null)
             return failure;
         for(String i : Vaibhav.split(",")){
-            System.out.println("2");
+            System.out.println(i);
             for(FoodItems x : foodItemsRepository.findAll()){
                 if (x.getName().equalsIgnoreCase(i)){
-                    System.out.println("1");
-                    mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));
-                    break;
+                    System.out.println("SLDKF");
+                    if (x.getUserId() == userId){
+                        System.out.println("1");
+                        mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));
+                        break;
+                    }
                 }
             }
         }
