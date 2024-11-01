@@ -191,7 +191,7 @@ public class MealPlanActivity extends AppCompatActivity {
         Button saveButton = mealPlanView.findViewById(R.id.save_button);
         Button deleteButton = mealPlanView.findViewById(R.id.delete_button);
 
-        mealPlanHeader.setText("Meal Plan " + id);
+        mealPlanHeader.setText("Food Item " + id);
         mealNameEditText.setText(foods);
         proteinValueEditText.setText(String.valueOf(protein));
         fatValueEditText.setText(String.valueOf(fat));
@@ -202,7 +202,6 @@ public class MealPlanActivity extends AppCompatActivity {
             String foodItemsText = mealNameEditText.getText().toString();
             // Convert the food items into a list
             List<String> foodItems = Arrays.asList(foodItemsText.split(","));
-            // Remove duplicates by using a LinkedHashSet to preserve the order
 
 
             // Reset the fields for recalculation

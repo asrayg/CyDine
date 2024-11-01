@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class FoodMenuActivity extends AppCompatActivity {
+public class  FoodMenuActivity extends AppCompatActivity {
 
     private Spinner diningCenterSpinner;
     private Spinner mealTypeSpinner;

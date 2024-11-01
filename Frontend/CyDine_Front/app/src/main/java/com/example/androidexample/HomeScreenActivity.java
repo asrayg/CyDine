@@ -56,8 +56,6 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
             startActivity(new Intent(this, WaterActivity.class));
         } else if (id == R.id.nav_message) {
             startActivity(new Intent(this, MessageActivity.class));
-        } else if (id == R.id.nav_create) {
-            startActivity(new Intent(this, CreateActivity.class));
         } else if (id == R.id.nav_exercise) {
             startActivity(new Intent(this, ExerciseActivity.class));
         } else if (id == R.id.nav_food_menu) {
