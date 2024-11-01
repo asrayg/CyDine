@@ -33,12 +33,14 @@ public class FoodItems {
     }
 
     public FoodItems(String name, int protein, int carbs, int fat, int calories, int id) {
+        this.id = id;
         this.name = name;
         this.protein = protein;
         this.carbs = carbs;
         this.fat = fat;
         this.calories = calories;
     }
+
 
     public int getFat() {
         return fat;

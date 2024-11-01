@@ -30,11 +30,14 @@ public class MealPlans {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     private int protein = 0;
     private int carbs = 0;
     private int finalCalories = 0;
     private int fat = 0;
     LocalDate date;
+    private String userEmail;
+
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "foodItems_id")
@@ -44,9 +47,14 @@ public class MealPlans {
     @JsonIgnore
     private CyDine.Users.User user;
 
-    public MealPlans() {
+    public MealPlans(User user) {
         date = LocalDate.now();
         foodItems = new ArrayList<>();
+        this.userEmail = user.getEmailId();
+    }
+
+    public MealPlans() {
+
     }
 
     public void addFoodItem(FoodItems foodItem) {
@@ -136,6 +144,17 @@ public class MealPlans {
 
     public void setUser(User user) {
         this.user = user;
+        if (user != null) {
+            this.userEmail = user.getEmailId();
+        }
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 
