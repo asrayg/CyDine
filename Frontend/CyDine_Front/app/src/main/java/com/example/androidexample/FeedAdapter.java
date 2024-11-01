@@ -39,8 +39,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         // Use Glide to load the image
         Glide.with(context)
                 .load(Uri.parse(post.getImageUri()))
-                .placeholder(R.drawable.ic_placeholder_image) // Optional placeholder
-                .into(holder.postImage); // Load image using Glide
+                .placeholder(R.drawable.ic_launcher_background1)
+                .skipMemoryCache(true) // Add this to skip caching
+                .into(holder.postImage);
 
         holder.captionText.setText(post.getCaption());
         holder.likeCountText.setText("Likes: " + post.getLikeCount());
@@ -57,18 +58,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         });
 
         holder.commentButton.setOnClickListener(v -> {
-            // Create an EditText for user input
             final EditText commentInput = new EditText(context);
             commentInput.setHint("Add a comment...");
 
-            // Create the AlertDialog
             new AlertDialog.Builder(context)
                     .setTitle("Add Comment")
                     .setView(commentInput)
                     .setPositiveButton("Add", (dialog, which) -> {
                         String comment = commentInput.getText().toString();
                         if (!comment.isEmpty()) {
-                            post.addComment(comment); // Add the comment to the post
+                            post.addComment(comment);
                             holder.commentsText.setText("Comments: " + post.getCommentsAsString());
                         }
                     })
