@@ -42,8 +42,17 @@ public class MealPlanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal_plan);
+        String userId = getIntent().getStringExtra("userId");
+
+        // Print the userId in the log
+        Log.d("MealPlanActivity", "User ID: " + userId);
+
+        // Optional: Show the userId in a Toast message
+        Toast.makeText(this, "User ID: " + userId, Toast.LENGTH_LONG).show();
+
         Button addMealPlanButton = findViewById(R.id.add_meal_plan_button);
         mealPlanContainer = findViewById(R.id.meal_plan_container);
+
 
         // Fetch meal plans
         fetchMealPlans();
