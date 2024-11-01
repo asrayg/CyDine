@@ -38,34 +38,47 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        String userId = getIntent().getStringExtra("userId");
+        String userName = getIntent().getStringExtra("userName");
+        String userEmail = getIntent().getStringExtra("userEmail");
+        String password = getIntent().getStringExtra("password");
+
+        Intent intent = null;
 
         // Handle each menu item click
-        if (id == R.id.nav_meals) {
-            startActivity(new Intent(this, MealPlanActivity.class));
-        } else if (id == R.id.nav_food) {
-            startActivity(new Intent(this, FoodMenusActivity.class));
-        } else if (id == R.id.nav_profile) {
-            Intent intent = new Intent(this, ProfileActivity.class);
-            intent.putExtra("userId", getIntent().getStringExtra("userId"));
-            intent.putExtra("userName", getIntent().getStringExtra("userName"));
-            intent.putExtra("userEmail", getIntent().getStringExtra("userEmail"));
-            intent.putExtra("password", getIntent().getStringExtra("password"));
+        if (item.getItemId() == R.id.nav_meals) {
+            intent = new Intent(this, MealPlanActivity.class);
+        } else if (item.getItemId() == R.id.nav_food) {
+            intent = new Intent(this, FoodMenusActivity.class);
+        } else if (item.getItemId() == R.id.nav_profile) {
+            intent = new Intent(this, ProfileActivity.class);
+        } else if (item.getItemId() == R.id.nav_water) {
+            intent = new Intent(this, WaterActivity.class);
+        } else if (item.getItemId() == R.id.nav_message) {
+            intent = new Intent(this, MessageActivity.class);
+        } else if (item.getItemId() == R.id.nav_exercise) {
+            intent = new Intent(this, ExerciseActivity.class);
+        } else if (item.getItemId() == R.id.nav_food_menu) {
+            intent = new Intent(this, FoodMenuActivity.class);
+        } else if (item.getItemId() == R.id.feed) {
+            intent = new Intent(this, FeedActivity.class);
+        }
+
+        // Pass user details to the target activity if intent is created
+        if (intent != null) {
+            addUserDetailsToIntent(intent, userId, userName, userEmail, password);
             startActivity(intent);
-        } else if (id == R.id.nav_water) {
-            startActivity(new Intent(this, WaterActivity.class));
-        } else if (id == R.id.nav_message) {
-            startActivity(new Intent(this, MessageActivity.class));
-        } else if (id == R.id.nav_exercise) {
-            startActivity(new Intent(this, ExerciseActivity.class));
-        } else if (id == R.id.nav_food_menu) {
-            startActivity(new Intent(this, FoodMenuActivity.class));
-        } else if(id == R.id.feed){
-            startActivity(new Intent(this, FeedActivity.class));
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void addUserDetailsToIntent(Intent intent, String userId, String userName, String userEmail, String password) {
+        intent.putExtra("userId", userId);
+        intent.putExtra("userName", userName);
+        intent.putExtra("userEmail", userEmail);
+        intent.putExtra("password", password);
     }
 
     @Override

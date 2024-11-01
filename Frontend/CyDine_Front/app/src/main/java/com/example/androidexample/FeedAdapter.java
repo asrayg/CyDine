@@ -39,7 +39,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         // Use Glide to load the image
         Glide.with(context)
                 .load(Uri.parse(post.getImageUri()))
-                .into(holder.postImage); // Load image using Glide
+                .placeholder(R.drawable.ic_launcher_background1)
+                .skipMemoryCache(true)
+                .into(holder.postImage);
+
 
         holder.captionText.setText(post.getCaption());
         holder.likeCountText.setText("Likes: " + post.getLikeCount());
