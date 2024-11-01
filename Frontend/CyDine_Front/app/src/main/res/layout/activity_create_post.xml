@@ -13,8 +13,9 @@
         android:scaleType="centerCrop"
         android:contentDescription="Selected image preview"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_placeholder_image"
+        android:src="@drawable/ic_launcher_background1"
         android:background="@drawable/rounded_corners" /> <!-- Add a background with rounded corners -->
+
 
     <!-- Button to select an image -->
     <Button
