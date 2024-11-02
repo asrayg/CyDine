@@ -19,6 +19,7 @@ public class Water {
     private int userId;
 
 
+
     public Water(){
     }
 
@@ -53,6 +54,11 @@ public class Water {
     public int addToTotal(int t) {
         return total+=t;
     }
+
+    public int addToGoal(int t) {
+        return goal+=t;
+    }
+
 
     public void setTotal(int total) {
         this.total = total;
