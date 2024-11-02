@@ -132,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                     // Update ifActive status to true
                     updateUserStatus(userId);
 
-                    Toast.makeText(LoginActivity.this, "Login successful! Your ID is: " + userId, Toast.LENGTH_LONG).show();
-
                     Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                     intent.putExtra("userId", userId);
                     intent.putExtra("userName", userName);
@@ -203,12 +201,12 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("UpdateError", error.toString());
+                        Log.e("UpdateError", "Error updating user status: " + error.toString());
                         if (error.networkResponse != null) {
                             String errorData = new String(error.networkResponse.data);
                             Log.e("UpdateErrorDetails", errorData);
-                            Toast.makeText(LoginActivity.this, "Error updating user status: " + errorData, Toast.LENGTH_LONG).show();
                         } else {
+                            Log.e("UpdateError", "Network error: " + error.getMessage());
                             Toast.makeText(LoginActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
