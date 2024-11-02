@@ -1,5 +1,6 @@
 package CyDine.FoodItems;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -54,6 +55,17 @@ public class FoodItemsController{
         }
         foodItemsRepository.save(request);
         return foodItemsRepository.findById(id);
+    }
+
+    @GetMapping(path = "/users/{id}/FoodItems")
+    List<FoodItems> getUserFoodsById(@PathVariable int id){
+        List<FoodItems> tmp = new ArrayList<>();
+        for (FoodItems t: foodItemsRepository.findAll()){
+            if (t.getUserId() == id){
+                tmp.add(t);
+            }
+        }
+        return tmp;
     }
 
 }

@@ -46,6 +46,8 @@ public class MealPlansController {
         return mp.getId();
     }
 
+
+
     @PostMapping(path = "/mealplans/additm")
     int createMealPlan2(@RequestBody String mealpln) {
         MealPlans mealPlan = new MealPlans();
@@ -113,6 +115,7 @@ public class MealPlansController {
         if (mealPlan == null)
             return failure;
         for(String i : Vaibhav.split(",")){
+
             mealPlan.addFoodItem(foodItemsRepository.findById(Integer.parseInt(i)));
         }
         mealPlansRepository.save(mealPlan);
