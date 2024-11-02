@@ -77,7 +77,7 @@ public class Scraper {
                     String totalCal = pt3.getJSONObject(k).getString("totalCal");
                     String nutrients = pt3.getJSONObject(k).getString("nutrients");
                     JSONArray nutrients2 = new JSONArray(nutrients);
-                    if (nutrients2.length() >0){
+                    if (!nutrients2.isEmpty()){
                         String protein = nutrients2.getJSONObject(1).getString("qty");
                         String fat = nutrients2.getJSONObject(1).getString("qty");
                         String carbs = nutrients2.getJSONObject(1).getString("qty");
@@ -97,3 +97,5 @@ public class Scraper {
 
 }
 
+
+//you can choose udcc, fily,seanson and then you can choose breakfast lunch or dinner,
