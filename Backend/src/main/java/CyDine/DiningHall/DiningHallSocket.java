@@ -1,0 +1,170 @@
+package CyDine.DiningHall;
+
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+@Controller      // this is needed for this to be an endpoint to springboot
+@ServerEndpoint(value = "/chat/{username}")  // this is Websocket url
+public class DiningHallSocket {
+
+  // cannot autowire static directly (instead we do it by the below
+  // method
+	private static DiningHallFoodItemRepository msgRepo;
+
+	/*
+   * Grabs the MessageRepository singleton from the Spring Application
+   * Context.  This works because of the @Controller annotation on this
+   * class and because the variable is declared as static.
+   * There are other ways to set this. However, this approach is
+   * easiest.
+	 */
+	@Autowired
+	public void setMessageRepository(DiningHallFoodItemRepository repo) {
+		msgRepo = repo;  // we are setting the static variable
+	}
+
+	// Store all socket session and their corresponding username.
+	private static Map<Session, String> sessionUsernameMap = new Hashtable<>();
+	private static Map<String, Session> usernameSessionMap = new Hashtable<>();
+
+	private final Logger logger = LoggerFactory.getLogger(DiningHallSocket.class);
+
+	@OnOpen
+	public void onOpen(Session session, @PathParam("username") String username) throws IOException {
+		logger.info("Entered into Open");
+
+		// Check if the user is already connected
+		if (usernameSessionMap.containsKey(username)) {
+			session.getBasicRemote().sendText("You are already connected.");
+			return;
+		}
+
+		// Store connecting user information
+		sessionUsernameMap.put(session, username);
+		usernameSessionMap.put(username, session);
+
+		// Send chat history to the newly connected user
+		sendMessageToPArticularUser(username, getChatHistory());
+
+		// Broadcast that new user joined, but only once
+		String message = "User: " + username + " has Joined the Chat!";
+		broadcast(message);
+	}
+
+
+
+	@OnMessage
+	public void onMessage(Session session, String message) throws IOException {
+		logger.info("Entered into Message: Got Message: " + message);
+		String username = sessionUsernameMap.get(session);
+
+		// Check for delete command
+		if (message.startsWith("/delete ")) {
+			String messageIdStr = message.split(" ")[1];
+			deleteMessage(messageIdStr, username);
+			return; // Exit after handling delete command
+		}
+
+		// Direct message to a user using the format "@username <message>"
+		if (message.startsWith("@")) {
+			String destUsername = message.split(" ")[0].substring(1);
+			sendMessageToPArticularUser(destUsername, "[DM] " + username + ": " + message);
+			sendMessageToPArticularUser(username, "[DM] " + username + ": " + message);
+		} else { // Broadcast
+			broadcast(username + ": " + message);
+		}
+
+		// Saving chat history to repository
+		msgRepo.save(new DiningHallFoodItem(username, message));
+	}
+
+
+	@OnClose
+	public void onClose(Session session) throws IOException {
+		logger.info("Entered into Close");
+
+    // remove the user connection information
+		String username = sessionUsernameMap.get(session);
+		sessionUsernameMap.remove(session);
+		usernameSessionMap.remove(username);
+
+    // broadcase that the user disconnected
+		String message = username + " disconnected";
+		broadcast(message);
+	}
+
+
+	@OnError
+	public void onError(Session session, Throwable throwable) {
+		// Do error handling here
+		logger.info("Entered into Error");
+		throwable.printStackTrace();
+	}
+
+
+	private void sendMessageToPArticularUser(String username, String message) {
+		try {
+			usernameSessionMap.get(username).getBasicRemote().sendText(message);
+		}
+    catch (IOException e) {
+			logger.info("Exception: " + e.getMessage().toString());
+			e.printStackTrace();
+		}
+	}
+
+
+	private void broadcast(String message) {
+		sessionUsernameMap.forEach((session, username) -> {
+			try {
+				session.getBasicRemote().sendText(message);
+			}
+      catch (IOException e) {
+				logger.info("Exception: " + e.getMessage().toString());
+				e.printStackTrace();
+			}
+
+		});
+
+	}
+
+
+  // Gets the Chat history from the repository
+	private String getChatHistory() {
+		List<DiningHallFoodItem> messages = msgRepo.findAll();
+
+    // convert the list to a string
+		StringBuilder sb = new StringBuilder();
+		if(messages != null && messages.size() != 0) {
+			for (DiningHallFoodItem message : messages) {
+				sb.append(message.getUserName() + ": " + message.getContent() + "\n");
+			}
+		}
+		return sb.toString();
+	}
+
+	private void deleteMessage(String messageIdStr, String username) {
+		// Fetch the message by ID
+		Long messageId = Long.parseLong(messageIdStr);
+		DiningHallFoodItem messageToDelete = msgRepo.findById(messageId).orElse(null); // Adjust based on your repository method
+
+		if (messageToDelete != null && messageToDelete.getUserName().equals(username)) {
+			msgRepo.delete(messageToDelete);
+			broadcast(username + " deleted a message");
+		} else {
+			sendMessageToPArticularUser(username, "You can only delete your own messages or the message does not exist.");
+		}
+	}
+
+
+
+} // end of Class

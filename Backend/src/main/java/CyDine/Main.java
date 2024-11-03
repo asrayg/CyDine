@@ -25,10 +25,9 @@ import java.util.HashMap;
 class Main {
 
     public static void main(String[] args) {
+//        System.out.println("starting");
+//        new Scraper().getEachFood();
         SpringApplication.run(Main.class, args);
-//        SpringApplication.run(Websocket3Application.class, args);
-//        HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
-//        System.out.println(tmp.get("seasons-marketplace-2-2").);
     }
 
 

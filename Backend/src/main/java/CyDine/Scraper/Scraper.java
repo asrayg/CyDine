@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Scraper {
@@ -15,6 +16,7 @@ public class Scraper {
         for(int i = 0; i < json.length();i++){
             slugs[i] = json.getJSONObject(i).getString("slug");
         }
+        System.out.println(Arrays.toString(slugs));
         return slugs;
     }
 
@@ -58,5 +60,42 @@ public class Scraper {
     }
 
 
+    public void getEachFood(){
+        HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
+//       what the indexes in getJbj calls that are after get array calls can be
+//        1: must be 0
+//        2: can be multiple based on how many sections the dining hall has
+//        3: must be 0 I think idk
+//        4: this one is for each food item
+        JSONArray pt1 = tmp.get("seasons-marketplace-2-2").getJSONObject(0).getJSONArray("menus");
+        for (int i = 0; i < pt1.length(); i++) {
+            JSONArray pt2 = pt1.getJSONObject(i).getJSONArray("menuDisplays").getJSONObject(0).getJSONArray("categories");
+            for (int j = 0; j < pt2.length(); j++) {
+                JSONArray pt3 = pt2.getJSONObject(j).getJSONArray("menuItems");
+                for (int k = 0; k < pt3.length(); k++) {
+                    String name = pt3.getJSONObject(k).getString("name");
+                    String totalCal = pt3.getJSONObject(k).getString("totalCal");
+                    String nutrients = pt3.getJSONObject(k).getString("nutrients");
+                    JSONArray nutrients2 = new JSONArray(nutrients);
+                    if (!nutrients2.isEmpty()){
+                        String protein = nutrients2.getJSONObject(1).getString("qty");
+                        String fat = nutrients2.getJSONObject(1).getString("qty");
+                        String carbs = nutrients2.getJSONObject(1).getString("qty");
+                        System.out.println("STUF SLJDFHLKJSDHFJKH: " + protein +", " + fat + ",  " + carbs + "\n \n");
+
+                    }
+                    System.out.println(name +": " + totalCal + ",  " + nutrients + "\n \n");
+                }
+            }
+
+        }
+
+
+
+    }
+
+
 }
 
+
+//you can choose udcc, fily,seanson and then you can choose breakfast lunch or dinner,
