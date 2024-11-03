@@ -13,6 +13,7 @@ public class Water {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
+
     private int goal;
     private int total;
     private Date date;
@@ -20,10 +21,10 @@ public class Water {
 
 
     public Water(){
+        this.date = new Date();
     }
 
-    public Water(int goal, int total, int id, int userId) {
-        this.id = id;
+    public Water(int goal, int total, int userId) {
         this.date = new Date();
         this.goal = goal;
         this.total = total;

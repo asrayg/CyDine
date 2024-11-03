@@ -47,6 +47,10 @@ public class MealPlans {
     @JsonIgnore
     private CyDine.Users.User user;
 
+//    @OneToMany
+//    @JsonIgnore
+//    private CyDine.Posts.Posts post;
+
     public MealPlans(User user) {
         date = LocalDate.now();
         foodItems = new ArrayList<>();

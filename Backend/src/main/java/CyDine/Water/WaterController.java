@@ -1,6 +1,9 @@
 package CyDine.Water;
 
 import CyDine.FoodItems.FoodItems;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,17 @@ public class WaterController {
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
+
+
+    @ManyToOne
+    @JsonIgnore
+    private CyDine.Users.User user;
+
+    @OneToMany
+    @JsonIgnore
+    private CyDine.MealPlans.MealPlans mealplan;
+
+
 
     @GetMapping(path = "/water")
     List<Water> getAllWaters() {
@@ -41,7 +55,7 @@ public class WaterController {
                 tmp.add(t);
             }
         }
-        Water tmp2 = tmp.getFirst();
+        Water tmp2 = tmp.get(0);
         for (Water t: tmp){
             if(t.getDate().after(tmp2.getDate())){
                 tmp2 = t;
@@ -57,7 +71,8 @@ public class WaterController {
 
     @PostMapping(path = "/water")
     int createWaterDate(@RequestBody Water water) {
-        return waterRepository.save(water).getId();
+        int tmp = waterRepository.save(water).getId();
+        return tmp ;
     }
 
     @Transactional
@@ -88,14 +103,14 @@ public class WaterController {
                 tmp.add(t);
             }
         }
-        Water tmp2 = tmp.getFirst();
+        Water tmp2 = tmp.get(0);
         for (Water t: tmp){
             if(t.getDate().after(tmp2.getDate())){
                 tmp2 = t;
             }
         }
         tmp2.addToGoal(goal);
-
+        waterRepository.save(tmp2);
         return tmp2;
     }
 
@@ -107,14 +122,15 @@ public class WaterController {
                 tmp.add(t);
             }
         }
-        Water tmp2 = tmp.getFirst();
+        Water tmp2 = tmp.get(0);
         for (Water t: tmp){
             if(t.getDate().after(tmp2.getDate())){
                 tmp2 = t;
             }
         }
+        waterRepository.save(tmp2);
         tmp2.addToTotal(amount);
-
+        waterRepository.save(tmp2);
         return tmp2;
     }
 
