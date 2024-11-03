@@ -48,10 +48,7 @@ public class UserController {
     List<MealPlans> getUserMealplansById( @PathVariable int id){
         return userRepository.findById(id).getMealPlans();
     }
-    @GetMapping(path = "/users/{id}/FoodItems")
-    List<FoodItems> getUserFoodsById(@PathVariable int id){
-        return userRepository.findById(id).getFoodItems();
-    }
+
 
     @PostMapping(path = "/users")
     String createUser(@RequestBody User user){

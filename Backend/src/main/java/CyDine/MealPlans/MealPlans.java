@@ -53,6 +53,12 @@ public class MealPlans {
         this.userEmail = user.getEmailId();
     }
 
+    public MealPlans(int userId) {
+        date = LocalDate.now();
+        foodItems = new ArrayList<>();
+        this.userEmail = user.getEmailId();
+    }
+
     public MealPlans() {
 
     }
@@ -71,7 +77,7 @@ public class MealPlans {
         carbs -= foodItem.getCarbs();
         fat -= foodItem.getFat();
         finalCalories -= foodItem.getCalories();
-        foodItems.remove(foodItem);
+//        foodItems.remove(foodItem);
         System.out.println("msodfhlksdjf   : ");
 //        foodItems.remove(tmp+1);
 
