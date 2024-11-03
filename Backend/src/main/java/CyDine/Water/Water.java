@@ -19,7 +19,6 @@ public class Water {
     private int userId;
 
 
-
     public Water(){
     }
 
