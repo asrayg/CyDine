@@ -13,5 +13,6 @@ public interface WaterRepository extends JpaRepository<Water, Long> {
 
     List<Water> findAll();
 
+
 }
 
