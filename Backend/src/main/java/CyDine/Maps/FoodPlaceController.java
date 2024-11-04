@@ -2,7 +2,6 @@ package CyDine.Maps;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -30,6 +29,12 @@ public class FoodPlaceController {
         if (foodPlace.getRating() < 0 || foodPlace.getRating() > 5) {
             return "{\"message\":\"Rating must be between 0 and 5\"}";
         }
+
+        // Ensure the review is not null or empty
+        if (foodPlace.getReview() == null || foodPlace.getReview().trim().isEmpty()) {
+            return "{\"message\":\"Review cannot be empty\"}";
+        }
+
         foodPlaceRepository.save(foodPlace);
         return success;
     }
@@ -40,9 +45,16 @@ public class FoodPlaceController {
         if (foodPlace == null) {
             return failure;
         }
+
         if (updatedFoodPlace.getRating() < 0 || updatedFoodPlace.getRating() > 5) {
             return "{\"message\":\"Rating must be between 0 and 5\"}";
         }
+
+        // Ensure the review is not null or empty
+        if (updatedFoodPlace.getReview() == null || updatedFoodPlace.getReview().trim().isEmpty()) {
+            return "{\"message\":\"Review cannot be empty\"}";
+        }
+
         updatedFoodPlace.setId(id);
         foodPlaceRepository.save(updatedFoodPlace);
         return success;
