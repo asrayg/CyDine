@@ -70,9 +70,13 @@
         android:id="@+id/textViewDailyCalories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Daily Calories Burned: "
-        android:textSize="16sp"
-        android:textColor="#333" />
+        android:padding="12dp"
+        android:background="@drawable/rounded_background"
+        android:text="Daily Calories Burned:"
+        android:textSize="18sp"
+        android:textColor="#333"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
 </LinearLayout>
