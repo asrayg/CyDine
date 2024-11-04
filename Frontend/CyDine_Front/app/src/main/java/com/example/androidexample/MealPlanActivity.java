@@ -49,8 +49,8 @@ public class MealPlanActivity extends AppCompatActivity {
         mealPlanContainer = findViewById(R.id.meal_plan_container);
         addMealPlanButton = findViewById(R.id.add_meal_plan_button);
 
-        fetchUserMealPlans();
         fetchFoodItems();
+        fetchUserMealPlans();
 
         addMealPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +72,7 @@ public class MealPlanActivity extends AppCompatActivity {
                             JSONArray foodItemArray = new JSONArray(response);
                             for (int i = 0; i < foodItemArray.length(); i++) {
                                 JSONObject foodItem = foodItemArray.getJSONObject(i);
-                                String foodName = foodItem.getString("name").toLowerCase();
+                                String foodName = foodItem.getString("name");
                                 foodItemMap.put(foodName, foodItem); // Store food item in the map
                             }
                         } catch (JSONException e) {
@@ -261,7 +261,7 @@ public class MealPlanActivity extends AppCompatActivity {
 
             // Loop through the unique food items and retrieve their nutritional values
             for (String food : foodItems) {
-                food = food.trim().toLowerCase(); // Normalize the food name
+                food = food.trim(); // Normalize the food name
                 JSONObject foodItem = foodItemMap.get(food);
                 if (foodItem != null) {
                     try {
@@ -298,7 +298,7 @@ public class MealPlanActivity extends AppCompatActivity {
 
 
     private void updateMealPlanWithFoodItem(int id, String foodItemName) {
-        String updateUrl = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + id +"/fooditems/add/byName/" + userId; // Ensure you're hitting the correct URL with the meal plan ID
+        String updateUrl = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + id + "/fooditems/add/byName/" + userId;
 
         StringRequest updateRequest = new StringRequest(
                 Request.Method.PUT,
@@ -308,30 +308,39 @@ public class MealPlanActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("UpdateMealPlanResponse", response);
                         Toast.makeText(MealPlanActivity.this, "Meal Plan updated successfully!", Toast.LENGTH_SHORT).show();
-                        //fetchMealPlans(); // Refresh the meal plans to show the update
+                        // fetchMealPlans(); // Refresh the meal plans to show the update
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("UpdateMealPlanError", error.toString());
-                        Toast.makeText(MealPlanActivity.this, "Error updating meal plan: " + error.getMessage() , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MealPlanActivity.this, "Error updating meal plan: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         ) {
             @Override
             public byte[] getBody() {
-                // Create the JSON body with the fields that need to be updated
-                // Ensure you're sending the correct fields that the server expects for an update
                 try {
+                    // Create JSON body with an array of foods
                     JSONObject requestBody = new JSONObject();
+                    JSONArray foodsArray = new JSONArray();
+
+                    // Split food items and add each to the array
                     String[] foodItems = foodItemName.split(",");
-                    for(String food: foodItems){
-                        requestBody.put("foods", food);
-                        Log.d("UpdateMealPlanRequestBody", requestBody.toString());
+                    for (String food : foodItems) {
+                        foodsArray.put(food.trim());
                     }
-                    return foodItemName.getBytes();
-                } catch (JSONException e) {
+
+                    // Attach the foods array to the request body
+                    requestBody.put("foods", foodsArray);
+
+                    // Log the final request body for debugging
+                    Log.d("UpdateMealPlanRequestBody", requestBody.toString());
+
+                    // Return the request body as bytes
+                    return requestBody.toString().getBytes("UTF-8");
+                } catch (JSONException | UnsupportedEncodingException e) {
                     e.printStackTrace();
                     return null;
                 }
@@ -347,6 +356,7 @@ public class MealPlanActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(updateRequest);
     }
+
     private void deleteMealPlan(int mealPlanId, final View mealPlanView) {
         String deleteUrl = BASE_URL + userId + "/mealplan/" + mealPlanId;
 
@@ -380,4 +390,4 @@ public class MealPlanActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(deleteRequest);
     }
 
-    }
+}

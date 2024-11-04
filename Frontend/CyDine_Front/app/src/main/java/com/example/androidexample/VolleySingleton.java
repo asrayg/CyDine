@@ -13,7 +13,7 @@ import com.android.volley.toolbox.Volley;
 /**
  * Singleton class to manage all network requests using Volley across the app.
  */
-public class VolleySingleton {
+public class  VolleySingleton {
     // Single instance of VolleySingleton
     private static VolleySingleton instance;
 

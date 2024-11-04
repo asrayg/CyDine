@@ -11,11 +11,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-public class  FoodMenuActivity extends AppCompatActivity {
+public class FoodMenuActivity extends AppCompatActivity {
 
     private Spinner diningCenterSpinner;
     private Spinner mealTypeSpinner;
@@ -23,6 +31,7 @@ public class  FoodMenuActivity extends AppCompatActivity {
     private LinearLayout breakfastContainer;
     private LinearLayout lunchContainer;
     private LinearLayout dinnerContainer;
+    private LinearLayout lateNightContainer;
 
     private Map<String, FoodOption> selectedMeals; // Store selected meals by meal type
 
@@ -34,33 +43,73 @@ public class  FoodMenuActivity extends AppCompatActivity {
         diningCenterSpinner = findViewById(R.id.dining_center_spinner);
         mealTypeSpinner = findViewById(R.id.meal_type_spinner);
         foodOptionsContainer = findViewById(R.id.food_options_container);
+
+        // Containers for each meal type in "Selected Meals" section
         breakfastContainer = findViewById(R.id.breakfast_container);
         lunchContainer = findViewById(R.id.lunch_container);
         dinnerContainer = findViewById(R.id.dinner_container);
-        Button generateButton = findViewById(R.id.generate_button);
+        lateNightContainer = findViewById(R.id.late_night_container);
+
         selectedMeals = new HashMap<>(); // Initialize the map
 
+        Button generateButton = findViewById(R.id.generate_button);
         generateButton.setOnClickListener(v -> generateFoodOptions());
     }
 
     private void generateFoodOptions() {
-        // Clear any existing views
-        foodOptionsContainer.removeAllViews();
+        foodOptionsContainer.removeAllViews(); // Clear previous views
 
-        // Generate 3 random food cards
-        for (int i = 0; i < 3; i++) {
-            String foodName = generateRandomFoodName();
-            int calories = generateRandomCalories();
-            int amount = generateRandomAmount();
+        // Get selected dining center and meal type
+        String diningHall = diningCenterSpinner.getSelectedItem().toString();
+        String mealType = mealTypeSpinner.getSelectedItem().toString();
 
-            // Create a new card for each food option
-            CardView foodCard = createFoodCard(foodName, calories, amount);
-            foodOptionsContainer.addView(foodCard);
+        // Map spinner values to API path values if necessary
+        diningHall = mapDiningHallName(diningHall);
+
+        // Construct the URL
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/Dininghall/" + diningHall + "/" + mealType;
+
+        // Create a JSON request
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        parseFoodItems(response, mealType);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FoodMenuActivity.this, "Error fetching food items.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Add the request to the request queue
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
+    }
+
+    private void parseFoodItems(JSONArray foodItems, String mealType) {
+        try {
+            for (int i = 0; i < foodItems.length(); i++) {
+                JSONObject foodObject = foodItems.getJSONObject(i);
+
+                String foodName = foodObject.getString("name");
+                int calories = foodObject.getInt("calories");
+
+                // Create and display food cards with the API data
+                CardView foodCard = createFoodCard(foodName, calories, mealType);
+                foodOptionsContainer.addView(foodCard);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
-    private CardView createFoodCard(String foodName, int calories, int amount) {
-        // Create a new CardView
+    private CardView createFoodCard(String foodName, int calories, String mealType) {
         CardView cardView = new CardView(this);
         cardView.setCardElevation(8);
         cardView.setRadius(12);
@@ -70,7 +119,6 @@ public class  FoodMenuActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
 
-        // Add content to CardView
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -81,117 +129,80 @@ public class  FoodMenuActivity extends AppCompatActivity {
         TextView calorieText = new TextView(this);
         calorieText.setText("Calories: " + calories + " kcal");
 
-        TextView amountText = new TextView(this);
-        amountText.setText("Amount: " + amount + "g");
-
         layout.addView(foodNameText);
         layout.addView(calorieText);
-        layout.addView(amountText);
-
-        // Make card clickable to select the meal
-        cardView.setOnClickListener(v -> selectFoodOption(foodName, calories, amount, cardView));
 
         cardView.addView(layout);
+
+        // Set a click listener to select this food option for the meal type
+        cardView.setOnClickListener(v -> selectMealOption(mealType, new FoodOption(foodName, calories)));
+
         return cardView;
     }
 
-    private void selectFoodOption(String foodName, int calories, int amount, CardView cardView) {
-        String mealType = mealTypeSpinner.getSelectedItem().toString(); // Get selected meal type
+    private void selectMealOption(String mealType, FoodOption foodOption) {
+        selectedMeals.put(mealType, foodOption); // Update selected meal for this meal type
 
-        // Remove previously selected meal if it exists
-        FoodOption existingMeal = selectedMeals.get(mealType);
-        if (existingMeal != null) {
-            // Remove existing meal display
-            removeMealDisplay(existingMeal, mealType);
-        }
-
-        FoodOption foodOption = new FoodOption(foodName, calories, amount);
-        selectedMeals.put(mealType, foodOption); // Store the selected meal
-
-        // Update selected meals display
-        displaySelectedMeals(mealType);
-
-        // Disable card after selection to prevent re-selection
-        cardView.setClickable(false);
-        cardView.setAlpha(0.5f); // Make it appear disabled
+        // Update the corresponding UI section
+        updateSelectedMealUI(mealType);
     }
 
-    private void displaySelectedMeals(String mealType) {
-        LinearLayout selectedContainer = getMealContainer(mealType);
-        selectedContainer.removeAllViews();
+    private void updateSelectedMealUI(String mealType) {
+        LinearLayout targetContainer;
 
-        FoodOption meal = selectedMeals.get(mealType);
-        if (meal != null) {
-            // Create a TextView for the selected meal
-            TextView mealText = new TextView(this);
-            mealText.setText(meal.toString());
-            mealText.setTextSize(16);
-            mealText.setOnClickListener(v -> removeMeal(mealType));
-
-            selectedContainer.addView(mealText);
-        }
-    }
-
-    private LinearLayout getMealContainer(String mealType) {
         switch (mealType) {
             case "Breakfast":
-                return breakfastContainer;
+                targetContainer = breakfastContainer;
+                break;
             case "Lunch":
-                return lunchContainer;
+                targetContainer = lunchContainer;
+                break;
             case "Dinner":
-                return dinnerContainer;
+                targetContainer = dinnerContainer;
+                break;
+            case "Late Night":
+                targetContainer = lateNightContainer;
+                break;
             default:
-                return null;
+                return; // Unknown meal type, do nothing
+        }
+
+        targetContainer.removeAllViews(); // Clear previous selection for this meal type
+
+        FoodOption selectedOption = selectedMeals.get(mealType);
+        if (selectedOption != null) {
+            TextView mealTextView = new TextView(this);
+            mealTextView.setText(selectedOption.toString());
+            mealTextView.setTextSize(16);
+            targetContainer.addView(mealTextView);
         }
     }
 
-    private void removeMeal(String mealType) {
-        FoodOption meal = selectedMeals.remove(mealType);
-        if (meal != null) {
-            Toast.makeText(this, meal.getFoodName() + " removed from your selection.", Toast.LENGTH_SHORT).show();
-            displaySelectedMeals(mealType); // Update display
+    private String mapDiningHallName(String diningHall) {
+        switch (diningHall) {
+            case "Seasons":
+                return "seasons-marketplace-2-2";
+            case "Friley":
+                return "friley-windows-2-2";
+            case "UDCC":
+                return "union-drive-marketplace-2-2";
+            default:
+                return diningHall;
         }
-    }
-
-    private void removeMealDisplay(FoodOption meal, String mealType) {
-        // Remove the existing meal display from the appropriate container
-        LinearLayout selectedContainer = getMealContainer(mealType);
-        if (selectedContainer != null) {
-            selectedContainer.removeAllViews(); // Clear the previous selection
-        }
-    }
-
-    private String generateRandomFoodName() {
-        String[] foodNames = {"Pasta", "Salad", "Pizza", "Burger", "Sandwich", "Soup"};
-        return foodNames[new Random().nextInt(foodNames.length)];
-    }
-
-    private int generateRandomCalories() {
-        return 100 + new Random().nextInt(400); // Random calorie between 100 and 500
-    }
-
-    private int generateRandomAmount() {
-        return 50 + new Random().nextInt(150); // Random amount between 50g and 200g
     }
 
     private static class FoodOption {
         private String foodName;
         private int calories;
-        private int amount;
 
-        public FoodOption(String foodName, int calories, int amount) {
+        public FoodOption(String foodName, int calories) {
             this.foodName = foodName;
             this.calories = calories;
-            this.amount = amount;
-        }
-
-        public String getFoodName() {
-            return foodName;
         }
 
         @Override
         public String toString() {
-            return foodName + " - " + calories + " kcal (" + amount + "g)";
+            return foodName + " - " + calories + " kcal";
         }
     }
 }
