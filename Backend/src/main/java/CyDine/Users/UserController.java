@@ -2,6 +2,8 @@ package CyDine.Users;
 
 import java.util.List;
 
+import CyDine.DiningHallMealPlan.DiningHallMealPlan;
+import CyDine.DiningHallMealPlan.DiningHallMealPlanRepository;
 import CyDine.FoodItems.FoodItems;
 import CyDine.MealPlans.MealPlans;
 import CyDine.MealPlans.MealPlansRepository;
@@ -28,6 +30,9 @@ public class UserController {
     @Autowired
     MealPlansRepository mealPlansRepository;
 
+    @Autowired
+    DiningHallMealPlanRepository diningHallMealPlanRepository;
+
 // TODO: make it so after mealplan gets make user asignes it to it self
 
 
@@ -47,6 +52,11 @@ public class UserController {
     @GetMapping(path = "/users/{id}/mealplans")
     List<MealPlans> getUserMealplansById( @PathVariable int id){
         return userRepository.findById(id).getMealPlans();
+    }
+
+    @GetMapping(path = "/users/{id}/DHmealplans")
+    List<DiningHallMealPlan> getUserDHMealplansById(@PathVariable int id){
+        return userRepository.findById(id).getDiningHallMealPlan();
     }
 
 
@@ -75,6 +85,18 @@ public class UserController {
             return failure;
         mealPlan.setUser(user);
         user.addMealPlans(mealPlan);
+        userRepository.save(user);
+        return success;
+    }
+
+    @PutMapping("/users/{userId}/DHmealplan/{mealPlanId}")
+    String assignDHMealPlan(@PathVariable int userId, @PathVariable int mealPlanId){
+        User user = userRepository.findById(userId);
+        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(mealPlanId);
+        if(user == null || mealPlan == null)
+            return failure;
+        mealPlan.setUser(user);
+        user.addDiningHallMealPlan(mealPlan);
         userRepository.save(user);
         return success;
     }

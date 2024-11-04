@@ -84,6 +84,7 @@ public class Scraper {
             for (int i = 0; i < pt1.length(); i++) {
                 JSONArray pt2 = pt1.getJSONObject(i).getJSONArray("menuDisplays").getJSONObject(0).getJSONArray("categories");
                 for (int j = 0; j < pt2.length(); j++) {
+                    System.out.println(pt2.length());
                     JSONArray pt3 = pt2.getJSONObject(j).getJSONArray("menuItems");
                     for (int k = 0; k < pt3.length(); k++) {
                         String name = pt3.getJSONObject(k).getString("name");

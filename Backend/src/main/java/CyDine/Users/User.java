@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import CyDine.DiningHallMealPlan.DiningHallMealPlan;
 import jakarta.persistence.*;
 
 
@@ -38,6 +39,10 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "mealPlans_id")
     private List<MealPlans> mealPlans;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "diningHallMealPlan_id")
+    private List<DiningHallMealPlan> diningHallMealPlan;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "foodItems_id")
@@ -208,6 +213,18 @@ public class User {
 
     public void removeMealPlans(MealPlans mealPlans) {
         this.mealPlans.remove(mealPlans);
+    }
+
+    public void addDiningHallMealPlan(DiningHallMealPlan diningHallMealPlan) {
+        this.diningHallMealPlan.add(diningHallMealPlan);
+    }
+
+    public void removeDiningHallMealPlan(DiningHallMealPlan diningHallMealPlan) {
+        this.diningHallMealPlan.remove(diningHallMealPlan);
+    }
+
+    public List<DiningHallMealPlan> getDiningHallMealPlan() {
+        return diningHallMealPlan;
     }
 
     public List<FoodItems> getFoodItems() {
