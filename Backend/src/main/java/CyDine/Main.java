@@ -17,6 +17,7 @@ import CyDine.Users.User;
 import CyDine.Users.UserRepository;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -24,10 +25,11 @@ import java.util.HashMap;
 @SpringBootApplication
 class Main {
 
-    public static void main(String[] args) {
-//        System.out.println("starting");
-//        new Scraper().getEachFood();
+    public static void main(String[] args) throws IOException {
+
         SpringApplication.run(Main.class, args);
+
+//        new Scraper().getEachFood();
     }
 
 
