@@ -10,6 +10,9 @@ public class FitnessController {
     @Autowired
     FitnessRepository fitnessRepository;
 
+    @Autowired
+    StreakService streakService;
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -32,11 +35,16 @@ public class FitnessController {
 
     @PostMapping(path = "/fitness")
     Fitness createFitness(@RequestBody Fitness fitness) {
-        // Map incoming JSON fields to Fitness object
         fitness.setActivity(fitness.getName());
         fitness.setDuration(fitness.getTime());
         fitness.setCaloriesBurned(fitness.getCalories());
-        return fitnessRepository.save(fitness);
+
+        Fitness savedFitness = fitnessRepository.save(fitness);
+
+        // Calculate and update streak
+        int newStreak = streakService.calculateStreak(fitness.getUserId());
+        savedFitness.setCurrentStreak(newStreak);
+        return fitnessRepository.save(savedFitness);
     }
 
     @DeleteMapping(path = "/fitness/{id}")
@@ -46,6 +54,11 @@ public class FitnessController {
             return success;
         }
         return failure;
+    }
+
+    @GetMapping(path = "/users/{userId}/streak")
+    int getUserStreak(@PathVariable int userId) {
+        return streakService.calculateStreak(userId);
     }
 
     @PutMapping("/fitness/{id}")
