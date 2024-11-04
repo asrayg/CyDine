@@ -46,6 +46,7 @@ public class WaterActivity extends AppCompatActivity {
 
         // Post new entry on open
         postNewWaterEntry();
+        fetchLast5DaysWaterIntake();
 
 
 
@@ -59,7 +60,6 @@ public class WaterActivity extends AppCompatActivity {
         setGoalButton = findViewById(R.id.set_goal_button);
         confirmGoalButton = findViewById(R.id.confirm_goal_button);
         addButton = findViewById(R.id.add_button);
-        resetButton = findViewById(R.id.reset_button);
         requestQueue = Volley.newRequestQueue(this);
 
         Log.d(TAG, "onCreate: Fetching today's water intake");
@@ -80,11 +80,7 @@ public class WaterActivity extends AppCompatActivity {
         });
 
 
-        // Reset Button Click
-        resetButton.setOnClickListener(v -> {
-            Log.d(TAG, "Reset Button Clicked");
-            resetWaterIntake();
-        });
+
 
         // Set Goal Button Click
         setGoalButton.setOnClickListener(v -> {
@@ -109,6 +105,43 @@ public class WaterActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void fetchLast5DaysWaterIntake() {
+        String url = BASE_URL + "/users/" + userId + "/water/last5days";
+        Log.d(TAG, "Fetching last 5 days water intake from URL: " + url);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    Log.d(TAG, "Received response for last 5 days water intake: " + response.toString());
+                    LinearLayout last5DaysContainer = findViewById(R.id.last_5_days_container);
+                    last5DaysContainer.removeAllViews(); // Clear previous data
+
+                    // Loop through the last 5 records and create a view for each
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject entry = response.getJSONObject(i);
+                            String date = entry.getString("date").split("T")[0];  // Extract just the date
+                            int totalIntake = entry.getInt("total");
+
+                            // Create a TextView for each day's intake
+                            TextView intakeText = new TextView(this);
+                            intakeText.setText("Date: " + date + " - Water Intake: " + totalIntake + " ml");
+                            intakeText.setTextSize(16);
+                            intakeText.setPadding(8, 8, 8, 8);
+                            last5DaysContainer.addView(intakeText);
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing JSON response for last 5 days", e);
+                        }
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Error fetching last 5 days water intake", error);
+                    Toast.makeText(WaterActivity.this, "Error fetching last 5 days data", Toast.LENGTH_SHORT).show();
+                });
+
+        requestQueue.add(jsonArrayRequest);
+    }
+
 
 
     private void postNewWaterEntry() {
@@ -237,13 +270,7 @@ public class WaterActivity extends AppCompatActivity {
         }
     }
 
-    private void resetWaterIntake() {
-        Log.d(TAG, "Resetting water intake locally");
-        // Since there's no backend endpoint to reset, we'll set intake to zero locally
-        currentWaterIntake = 0;
-        updateProgress();
-        Toast.makeText(this, "Water intake reset locally. Please note this does not affect the backend.", Toast.LENGTH_LONG).show();
-    }
+
 
     private void updateProgress() {
         Log.d(TAG, "Updating progress bar and texts");
