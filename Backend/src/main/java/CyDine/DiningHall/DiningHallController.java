@@ -1,5 +1,6 @@
 package CyDine.DiningHall;
 
+import CyDine.FoodItems.FoodItems;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,31 +12,43 @@ import java.util.List;
 public class DiningHallController {
 
     @Autowired
-    DiningHallRepository foodItemsRepository;
+    DiningHallRepository diningHallRepository;
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
     @GetMapping(path = "/Dininghall")
     List<DiningHall> getAllFoods() {
-        return foodItemsRepository.findAll();
+        return diningHallRepository.findAll();
     }
+
+    @GetMapping(path = "/Dininghall/{dininghall}/{time}")
+    List<DiningHall> getDiningHallFoods(@PathVariable String dininghall, @PathVariable String time) {
+        List<DiningHall> ret = new ArrayList<>();
+        for(DiningHall t: diningHallRepository.findAll()){
+            if (t.getDininghall().equals(dininghall) && t.getTime().equals(time)){
+                ret.add(t);
+            }
+        }
+        return ret;
+    }
+
 
     @GetMapping(path = "/Dininghall/{id}")
     DiningHall getFoodsById(@PathVariable int id) {
-        return foodItemsRepository.findById(id);
+        return diningHallRepository.findById(id);
     }
 
     @PostMapping(path = "/Dininghall")
     int createFood(@RequestBody DiningHall food) {
-        return foodItemsRepository.save(food).getId();
+        return diningHallRepository.save(food).getId();
     }
 
     @Transactional
     @DeleteMapping(path = "/Dininghall/{id}")
     String deleteFood(@PathVariable int id) {
-        if (foodItemsRepository.findById(id) != null) {
-            foodItemsRepository.deleteById(id);
+        if (diningHallRepository.findById(id) != null) {
+            diningHallRepository.deleteById(id);
             return success;
         }
         return failure;
@@ -43,12 +56,12 @@ public class DiningHallController {
 
     @PutMapping("/Dininghall/{id}")
     DiningHall updateFood(@PathVariable int id, @RequestBody DiningHall request) {
-        DiningHall foodItem = foodItemsRepository.findById(id);
+        DiningHall foodItem = diningHallRepository.findById(id);
         if (foodItem == null) {
             throw new RuntimeException("food id does not exist");
         }
-        foodItemsRepository.save(request);
-        return foodItemsRepository.findById(id);
+        diningHallRepository.save(request);
+        return diningHallRepository.findById(id);
     }
 
 
