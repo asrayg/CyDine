@@ -1,28 +1,56 @@
 package com.example.androidexample;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import com.android.volley.*;
+import com.android.volley.toolbox.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WaterActivity extends AppCompatActivity {
-    private int waterGoal = 2000;  // Default goal
+    private static final String TAG = "WaterActivity";
+    private int waterGoal = 2000;
     private int currentWaterIntake = 0;
     private ProgressBar waterProgress;
     private TextView remainingWaterText, waterGoalText;
     private EditText waterInput, goalInput;
     private Button setGoalButton, confirmGoalButton, addButton, resetButton;
+    private RequestQueue requestQueue;
+    private String userId;  // Removed hardcoded userId
+
+    private final String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080";  // Replace with your backend URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_water);
 
-        // Initialize views
+        Log.d(TAG, "onCreate: Initializing views and request queue");
+
+        // Retrieve the userId from the Intent
+        userId = getIntent().getStringExtra("userId");  // Retrieve as String
+        if (userId == null) {
+            Log.e(TAG, "User ID is missing. Ensure HomeScreenActivity passes userId.");
+            Toast.makeText(this, "User ID missing", Toast.LENGTH_SHORT).show();
+        }
+
+        requestQueue = Volley.newRequestQueue(this);
+
+        // Post new entry on open
+        postNewWaterEntry();
+
+
+
+
+        // Initialize views and Volley request queue
         waterProgress = findViewById(R.id.water_goal_progress);
         remainingWaterText = findViewById(R.id.remaining_water_text);
         waterGoalText = findViewById(R.id.water_goal_text);
@@ -32,95 +60,202 @@ public class WaterActivity extends AppCompatActivity {
         confirmGoalButton = findViewById(R.id.confirm_goal_button);
         addButton = findViewById(R.id.add_button);
         resetButton = findViewById(R.id.reset_button);
+        requestQueue = Volley.newRequestQueue(this);
 
-        // Initial setup for water goal and progress
-        updateProgress();
+        Log.d(TAG, "onCreate: Fetching today's water intake");
+        fetchTodayWaterIntake();  // Fetch water intake for today
 
         // Add Water Button Click
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String waterAmount = waterInput.getText().toString();
-                if (!waterAmount.isEmpty()) {
-                    int amount = Integer.parseInt(waterAmount);
-                    adjustWaterIntake(amount);
-                } else {
-                    Toast.makeText(WaterActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
-                }
+        addButton.setOnClickListener(v -> {
+            String waterAmount = waterInput.getText().toString();
+            Log.d(TAG, "Add Button Clicked: waterAmount = " + waterAmount);
+            if (!waterAmount.isEmpty()) {
+                int amount = Integer.parseInt(waterAmount);
+                Log.d(TAG, "Parsed water amount: " + amount);
+                addWaterIntake(amount);
+            } else {
+                Log.w(TAG, "Add Button Clicked: Invalid amount entered");
+                Toast.makeText(WaterActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
             }
         });
 
+
         // Reset Button Click
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetWaterIntake();
-            }
+        resetButton.setOnClickListener(v -> {
+            Log.d(TAG, "Reset Button Clicked");
+            resetWaterIntake();
         });
 
         // Set Goal Button Click
-        setGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goalInput.setVisibility(View.VISIBLE);
-                confirmGoalButton.setVisibility(View.VISIBLE);
-            }
+        setGoalButton.setOnClickListener(v -> {
+            Log.d(TAG, "Set Goal Button Clicked");
+            goalInput.setVisibility(View.VISIBLE);
+            confirmGoalButton.setVisibility(View.VISIBLE);
         });
 
         // Confirm Goal Button Click
-        confirmGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String goalAmount = goalInput.getText().toString();
-                if (!goalAmount.isEmpty()) {
-                    int newGoal = Integer.parseInt(goalAmount);
-                    setWaterGoal(newGoal);
-                    goalInput.setVisibility(View.GONE);
-                    confirmGoalButton.setVisibility(View.GONE);
-                } else {
-                    Toast.makeText(WaterActivity.this, "Please enter a valid goal", Toast.LENGTH_SHORT).show();
-                }
+        confirmGoalButton.setOnClickListener(v -> {
+            String goalAmount = goalInput.getText().toString();
+            Log.d(TAG, "Confirm Goal Button Clicked: goalAmount = " + goalAmount);
+            if (!goalAmount.isEmpty()) {
+                int newGoal = Integer.parseInt(goalAmount);
+                Log.d(TAG, "Parsed new goal: " + newGoal);
+                setWaterGoal(newGoal);
+                goalInput.setVisibility(View.GONE);
+                confirmGoalButton.setVisibility(View.GONE);
+            } else {
+                Log.w(TAG, "Confirm Goal Button Clicked: Invalid goal entered");
+                Toast.makeText(WaterActivity.this, "Please enter a valid goal", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Adjust water intake, allowing both adding and removing water
-    private void adjustWaterIntake(int amount) {
-        currentWaterIntake += amount;
 
-        // Ensure the intake does not exceed the goal or go below zero
-        if (currentWaterIntake > waterGoal) {
-            currentWaterIntake = waterGoal;
-        } else if (currentWaterIntake < 0) {
-            currentWaterIntake = 0;
+    private void postNewWaterEntry() {
+        String url = BASE_URL + "/water";  // Use /water as per the backend endpoint
+        Log.d(TAG, "Posting a new water entry to URL: " + url);
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("goal", waterGoal);
+            jsonBody.put("total", 0); // New entry with 0 intake
+            jsonBody.put("userId", userId); // Add userId in the body as the backend expects it
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating JSON body for new entry", e);
         }
 
-        updateProgress();
-        waterInput.setText("");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> Log.d(TAG, "New water entry created. Server response: " + response),
+                error -> Log.e(TAG, "Error posting new water entry", error)
+        ) {
+            @Override
+            public byte[] getBody() {
+                return jsonBody.toString().getBytes();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 
-    // Reset water intake to 0
+
+    private void fetchTodayWaterIntake() {
+        String url = BASE_URL + "/users/" + userId + "/water/today";
+        Log.d(TAG, "Fetching today's water intake from URL: " + url);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    Log.d(TAG, "Received response for today's water intake: " + response.toString());
+                    try {
+                        waterGoal = response.getInt("goal");
+                        currentWaterIntake = response.getInt("total");
+                        Log.d(TAG, "Parsed waterGoal: " + waterGoal + ", currentWaterIntake: " + currentWaterIntake);
+                        waterProgress.setMax(waterGoal);  // Set ProgressBar max to the goal
+                        updateProgress();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing JSON response", e);
+                        Toast.makeText(WaterActivity.this, "Error parsing data. Please try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Error fetching today's water intake", error);
+                    if (error instanceof ServerError) {
+                        Toast.makeText(WaterActivity.this, "Server error. Please try again later.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(WaterActivity.this, "Network error. Please check your connection.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+
+    private void addWaterIntake(int amount) {
+        String url = BASE_URL + "/users/" + userId + "/water/today/drank/" + amount;
+        Log.d(TAG, "Adding water intake. URL: " + url + ", Amount: " + amount);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, null,
+                response -> {
+                    Log.d(TAG, "Received response after adding water intake: " + response.toString());
+                    try {
+                        currentWaterIntake = response.getInt("total");
+                        Log.d(TAG, "Updated currentWaterIntake: " + currentWaterIntake);
+                        updateProgress();
+                        waterInput.setText("");
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing JSON response", e);
+                        Toast.makeText(WaterActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Error updating water intake", error);
+                    Toast.makeText(WaterActivity.this, "Error updating intake: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void setWaterGoal(int newGoal) {
+        String url = BASE_URL + "/users/" + userId + "/water/today/goal/" + newGoal;
+        Log.d(TAG, "Setting new water goal. URL: " + url + ", New Goal: " + newGoal);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, null,
+                response -> {
+                    Log.d(TAG, "Received response after setting new goal: " + response.toString());
+                    try {
+                        waterGoal = response.getInt("goal");
+                        Log.d(TAG, "Updated waterGoal: " + waterGoal);
+                        waterProgress.setMax(waterGoal);
+                        updateProgress();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing JSON response", e);
+                        Toast.makeText(WaterActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Error setting new water goal", error);
+                    Toast.makeText(WaterActivity.this, "Error setting goal: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            Log.d(TAG, "Hiding keyboard");
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } else {
+            Log.d(TAG, "No view in focus, keyboard not hidden");
+        }
+    }
+
     private void resetWaterIntake() {
+        Log.d(TAG, "Resetting water intake locally");
+        // Since there's no backend endpoint to reset, we'll set intake to zero locally
         currentWaterIntake = 0;
         updateProgress();
+        Toast.makeText(this, "Water intake reset locally. Please note this does not affect the backend.", Toast.LENGTH_LONG).show();
     }
 
-    // Set a new water goal
-    private void setWaterGoal(int newGoal) {
-        waterGoal = newGoal;
-        currentWaterIntake = 0;  // Reset the intake when setting a new goal
-        waterProgress.setMax(waterGoal);  // Update the ProgressBar max value
-        updateProgress();
-    }
-
-    // Update the progress bar and remaining text
     private void updateProgress() {
+        Log.d(TAG, "Updating progress bar and texts");
         waterProgress.setProgress(currentWaterIntake);
         int remaining = waterGoal - currentWaterIntake;
         remainingWaterText.setText("Remaining: " + remaining + " ml");
         waterGoalText.setText("Goal: " + currentWaterIntake + "/" + waterGoal + " ml");
 
+        Log.d(TAG, "CurrentWaterIntake: " + currentWaterIntake + ", WaterGoal: " + waterGoal);
+
         if (currentWaterIntake >= waterGoal) {
+            Log.d(TAG, "Water goal reached");
             Toast.makeText(this, "Congratulations! You've reached your water goal!", Toast.LENGTH_LONG).show();
         }
     }
