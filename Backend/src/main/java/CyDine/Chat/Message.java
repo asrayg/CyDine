@@ -41,3 +41,4 @@ public class Message {
         return this.userName.equals(username);
     }
 }
+
