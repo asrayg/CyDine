@@ -24,6 +24,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.HashMap;
+
+import java.util.Map;
 
 public class ExerciseActivity extends AppCompatActivity {
 
@@ -84,10 +87,13 @@ public class ExerciseActivity extends AppCompatActivity {
                     int totalCaloriesBurned = 0;
                     String today = comparisonDateFormat.format(new Date());
 
+                    // Map to hold calories burned for each day
+                    Map<String, Integer> dailyCalories = new HashMap<>();
+
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject exerciseJson = response.getJSONObject(i);
-                            int id = exerciseJson.getInt("id");  // Retrieve ID from JSON
+                            int id = exerciseJson.getInt("id");
                             String name = exerciseJson.getString("name");
                             int timeSpent = exerciseJson.getInt("time");
                             int caloriesBurned = exerciseJson.getInt("calories");
@@ -97,9 +103,13 @@ public class ExerciseActivity extends AppCompatActivity {
                             Date exerciseDate = serverDateFormat.parse(dateString);
                             String exerciseDateOnly = comparisonDateFormat.format(exerciseDate);
 
+                            // Track calories burned for each day
+                            dailyCalories.put(exerciseDateOnly,
+                                    dailyCalories.getOrDefault(exerciseDateOnly, 0) + caloriesBurned);
+
                             // Check if the exercise date is today
                             if (exerciseDateOnly.equals(today)) {
-                                Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);  // Include ID
+                                Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);
                                 exerciseList.add(exercise);
                                 totalCaloriesBurned += caloriesBurned;
                             }
@@ -112,11 +122,36 @@ public class ExerciseActivity extends AppCompatActivity {
                     exerciseAdapter.notifyDataSetChanged();
                     caloriesRemaining = 500 - totalCaloriesBurned;
                     updateCalorieCounter();
+
+                    // Calculate the calories burned for the last 5 days and display them
+                    updateDailyCalories(dailyCalories);
                 },
                 error -> Toast.makeText(ExerciseActivity.this, "Failed to load exercises", Toast.LENGTH_SHORT).show()
         );
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+
+    private void updateDailyCalories(Map<String, Integer> dailyCalories) {
+        // Get the last 5 days as a list of formatted date strings
+        List<String> lastFiveDays = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 5; i++) {
+            lastFiveDays.add(comparisonDateFormat.format(calendar.getTime()));
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+        }
+
+        // Build a string to display the last 5 days' calorie burns
+        StringBuilder dailyCalorieText = new StringBuilder("Daily Calories Burned:\n");
+        for (String date : lastFiveDays) {
+            int calories = dailyCalories.getOrDefault(date, 0);
+            dailyCalorieText.append(date).append(": ").append(calories).append(" kcal\n");
+        }
+
+        // Update the TextView with daily calorie burns
+        TextView textViewDailyCalories = findViewById(R.id.textViewDailyCalories);
+        textViewDailyCalories.setText(dailyCalorieText.toString());
     }
 
     private void addExercise() {
