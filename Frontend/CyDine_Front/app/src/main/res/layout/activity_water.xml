@@ -105,15 +105,7 @@
             android:padding="10dp"
             android:layout_marginEnd="8dp"/>
 
-        <!-- Reset button with #BD2031 color -->
-        <Button
-            android:id="@+id/reset_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset"
-            android:backgroundTint="#BD2031"
-            android:textColor="#FFFFFF"
-            android:padding="10dp"/>
+
     </LinearLayout>
 
     <!-- Set Goal Button -->
@@ -148,5 +140,30 @@
         android:textColor="#004D40"
         android:layout_gravity="center_horizontal"
         android:paddingTop="20dp"/>
+
+    <!-- Last 5 Days Intake Section -->
+    <TextView
+        android:id="@+id/last_5_days_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last 5 Days Intake"
+        android:textSize="20sp"
+        android:textColor="#BD2031"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/last_5_days_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:layout_marginTop="8dp"
+        android:background="#F0F0F0"
+        android:padding="10dp"
+        android:visibility="visible" />
+
 
 </LinearLayout>
