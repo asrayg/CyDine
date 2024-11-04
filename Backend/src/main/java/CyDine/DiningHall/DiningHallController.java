@@ -5,7 +5,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -26,7 +29,7 @@ public class DiningHallController {
     List<DiningHall> getDiningHallFoods(@PathVariable String dininghall, @PathVariable String time) {
         List<DiningHall> ret = new ArrayList<>();
         for(DiningHall t: diningHallRepository.findAll()){
-            if (t.getDininghall().equals(dininghall) && t.getTime().equals(time)){
+            if (t.getDininghall().equals(dininghall) && t.getTime().equals(time) && t.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())){
                 ret.add(t);
             }
         }
@@ -63,6 +66,8 @@ public class DiningHallController {
         diningHallRepository.save(request);
         return diningHallRepository.findById(id);
     }
+
+
 
 
 }

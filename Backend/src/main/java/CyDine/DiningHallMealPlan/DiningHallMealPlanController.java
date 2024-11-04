@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 
@@ -51,8 +54,8 @@ public class DiningHallMealPlanController {
         return diningHallMealPlanRepository.findById(id).getDate().toString();
     }
 
-    @PutMapping(path = "/DHmealplans/{id}/fooditems/add/byName/{userId}")
-    String addFoodItemToMealPlanByName(@PathVariable int id, @PathVariable int userId, @RequestBody String Vaibhav) {
+    @PutMapping(path = "/DHmealplans/{id}/fooditems/add/byName")
+    String addFoodItemToMealPlanByName(@PathVariable int id, @RequestBody String Vaibhav) {
         DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);
         System.out.println("??????????????????????????????????");
         if (mealPlan == null)
@@ -60,7 +63,7 @@ public class DiningHallMealPlanController {
         for(String i : Vaibhav.split(",")){
             System.out.println(i);
             for(DiningHall x : foodItemsRepository.findAll()){
-                if (x.getName().equalsIgnoreCase(i)){
+                if (x.getName().equalsIgnoreCase(i) && x.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())){
                     System.out.println("SLDKF");
                         System.out.println("1");
                         mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));

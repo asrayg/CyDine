@@ -15,7 +15,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Scraper {
     public String[] getSlugs(){
         String urlString = "https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-all-locations"; // Replace with your URL
@@ -67,7 +70,7 @@ public class Scraper {
 
     }
 
-
+    @Scheduled(cron = "0 7 0 * * ?")
     public void getEachFood() throws IOException {
         HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
         String[] places = {"seasons-marketplace-2-2","friley-windows-2-2","union-drive-marketplace-2-2"};
@@ -90,7 +93,7 @@ public class Scraper {
                         if (!nutrients2.isEmpty()) {
                             String url = "http://127.0.0.1:8080/Dininghall";
                             String jsonInputString = "{" +
-                                    "\"name\": \"" + name + "\"," +
+                                    "\"name\": \"" + name.replace(" ", "_") + "\"," +
                                     " \"protein\": " + nutrients2.getJSONObject(1).getString("qty") + "," +
                                     " \"carbs\": " + nutrients2.getJSONObject(1).getString("qty") + "," +
                                     " \"fat\": " + nutrients2.getJSONObject(1).getString("qty") + "," +

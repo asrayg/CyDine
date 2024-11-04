@@ -4,6 +4,8 @@ import CyDine.MealPlans.MealPlans;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 public class DiningHall {
 
@@ -18,6 +20,8 @@ public class DiningHall {
     private int calories;
     private String dininghall;
     private String time;
+    private Date date;
+
     //    @ManyToOne
 //    @JsonIgnore
 //    private onetoone.Users.User user;
@@ -27,6 +31,7 @@ public class DiningHall {
     private MealPlans mealPlans;
 
     public DiningHall(){
+        this.date = new Date();
     }
 
     public DiningHall(String name, int protein, int carbs, int fat, int calories, int id, String dininghall, String time) {
@@ -38,6 +43,7 @@ public class DiningHall {
         this.calories = calories;
         this.dininghall = dininghall;
         this.time = time;
+        this.date = new Date();
     }
 
     public int getId() {
@@ -111,4 +117,13 @@ public class DiningHall {
     public void setMealPlans(MealPlans mealPlans) {
         this.mealPlans = mealPlans;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 }

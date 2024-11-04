@@ -28,8 +28,8 @@ class Main {
     public static void main(String[] args) throws IOException {
 
         SpringApplication.run(Main.class, args);
-        System.out.println("starting");
-        new Scraper().getEachFood();
+
+//        new Scraper().getEachFood();
     }
 
 
