@@ -1,6 +1,5 @@
 package CyDine.Fitness;
 
-import CyDine.MealPlans.MealPlans;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
