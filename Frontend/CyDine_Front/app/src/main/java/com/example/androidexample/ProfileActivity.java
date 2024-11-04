@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private EditText name, email, password;
+    private EditText name, email, password, discordUsername;
     private EditText editHeight, editWeight, editAge;
     private Spinner spinnerFitnessGoals, spinnerDietaryPreference; // Changed to Spinner
 
@@ -47,6 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
         editHeight = findViewById(R.id.edit_height);
         editWeight = findViewById(R.id.edit_weight);
         editAge = findViewById(R.id.edit_age);
+        discordUsername = findViewById(R.id.edit_discord_username); // New field
+
 
         // Initialize spinners
         spinnerFitnessGoals = findViewById(R.id.spinner_fitness_goals);
@@ -113,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity {
                             editHeight.setText(String.valueOf(jsonObject.optInt("height", 0)));
                             editWeight.setText(String.valueOf(jsonObject.optInt("weight", 0)));
                             editAge.setText(String.valueOf(jsonObject.optInt("age", 0)));
+                            discordUsername.setText(jsonObject.optString("discordUsername", "")); // New field
+
 
                             // Set selected items for spinners based on JSON response
                             String fitnessGoal = jsonObject.optString("fitness_goal", "");
@@ -179,9 +183,11 @@ public class ProfileActivity extends AppCompatActivity {
                     jsonObject.put("ifActive", true);
                     jsonObject.put("height", Integer.parseInt(editHeight.getText().toString().trim()));
                     jsonObject.put("weight", Integer.parseInt(editWeight.getText().toString().trim()));
+                    jsonObject.put("discordUsername", discordUsername.getText().toString().trim()); // New field
                     jsonObject.put("age", Integer.parseInt(editAge.getText().toString().trim()));
                     jsonObject.put("fitness_goal", spinnerFitnessGoals.getSelectedItem().toString().trim()); // Use spinner value
                     jsonObject.put("dietary_preference", spinnerDietaryPreference.getSelectedItem().toString().trim()); // Use spinner value
+                    Log.d("updateUserInformation", "Request payload: " + jsonObject.toString());
 
                     return jsonObject.toString().getBytes("utf-8");
                 } catch (JSONException | UnsupportedEncodingException e) {

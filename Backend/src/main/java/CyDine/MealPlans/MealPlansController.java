@@ -76,13 +76,15 @@ public class MealPlansController {
             return failure;
         for(String i : Vaibhav.split(",")){
             System.out.println(i);
-            for(FoodItems x : foodItemsRepository.findAll()){
-                if (x.getName().equalsIgnoreCase(i)){
-                    System.out.println("SLDKF");
-                    if (x.getUserId() == userId){
-                        System.out.println("1");
-                        mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));
-                        break;
+            for(FoodItems x : foodItemsRepository.findAll()) {
+                if (x.getName() != null) {
+                    if (x.getName().equalsIgnoreCase(i)) {
+                        System.out.println("SLDKF");
+                        if (x.getUserId() == userId) {
+                            System.out.println("1");
+                            mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));
+                            break;
+                        }
                     }
                 }
             }
