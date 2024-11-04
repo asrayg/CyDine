@@ -44,6 +44,14 @@ public class ExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
 
+        // Retrieve the userId from the intent
+        userId = getIntent().getStringExtra("userId");
+        if (userId == null) {
+            Toast.makeText(this, "User ID not provided", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         textViewCalorieCounter = findViewById(R.id.textViewCalorieCounter);
         editTextExerciseName = findViewById(R.id.editTextExerciseName);
         editTextTimeSpent = findViewById(R.id.editTextTimeSpent);
@@ -53,7 +61,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         // Set up RecyclerView
         exerciseList = new ArrayList<>();
-        exerciseAdapter = new ExerciseAdapter(exerciseList);
+        exerciseAdapter = new ExerciseAdapter(exerciseList, ExerciseActivity.this);
         recyclerViewExercises.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewExercises.setAdapter(exerciseAdapter);
 
@@ -61,15 +69,11 @@ public class ExerciseActivity extends AppCompatActivity {
         loadExercisesForToday();
 
         // Add Exercise Button Click Listener
-        buttonAddExercise.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addExercise();
-            }
-        });
+        buttonAddExercise.setOnClickListener(v -> addExercise());
 
         updateCalorieCounter();
     }
+
 
     private void loadExercisesForToday() {
         String url = BASE_URL + "/users/" + userId + "/fitness";
@@ -83,6 +87,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject exerciseJson = response.getJSONObject(i);
+                            int id = exerciseJson.getInt("id");  // Retrieve ID from JSON
                             String name = exerciseJson.getString("name");
                             int timeSpent = exerciseJson.getInt("time");
                             int caloriesBurned = exerciseJson.getInt("calories");
@@ -94,7 +99,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
                             // Check if the exercise date is today
                             if (exerciseDateOnly.equals(today)) {
-                                Exercise exercise = new Exercise(name, timeSpent, caloriesBurned);
+                                Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);  // Include ID
                                 exerciseList.add(exercise);
                                 totalCaloriesBurned += caloriesBurned;
                             }
@@ -135,11 +140,17 @@ public class ExerciseActivity extends AppCompatActivity {
                 JsonObjectRequest request = new JsonObjectRequest(
                         Request.Method.POST, url, exerciseJson,
                         response -> {
-                            exerciseList.add(new Exercise(name, timeSpent, caloriesBurned));
-                            exerciseAdapter.notifyItemInserted(exerciseList.size() - 1);
-                            caloriesRemaining -= caloriesBurned;
-                            updateCalorieCounter();
-                            clearInputFields();
+                            try {
+                                int id = response.getInt("id"); // Retrieve the id from the response
+                                Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);
+                                exerciseList.add(exercise);
+                                exerciseAdapter.notifyItemInserted(exerciseList.size() - 1);
+                                caloriesRemaining -= caloriesBurned;
+                                updateCalorieCounter();
+                                clearInputFields();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         },
                         error -> Toast.makeText(ExerciseActivity.this, "Failed to add exercise", Toast.LENGTH_SHORT).show()
                 );
