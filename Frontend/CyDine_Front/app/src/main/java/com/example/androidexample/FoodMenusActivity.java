@@ -44,6 +44,8 @@ public class FoodMenusActivity extends AppCompatActivity {
     private int totalSelectedCalories = 0;
 
     private int lastId = 0;
+    private String userId; // Add this
+
 
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -56,6 +58,12 @@ public class FoodMenusActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_menus);
+
+        userId = getIntent().getStringExtra("userId");
+        if (userId == null) {
+            userId = "1"; // Default value if "userId" is not found in the intent
+        }
+
 
         foodListLayout = findViewById(R.id.food_list);
         caloriesTextView = findViewById(R.id.calories_text);
@@ -84,7 +92,7 @@ public class FoodMenusActivity extends AppCompatActivity {
     }
 
     private void fetchFoodItemsFromAPI() {
-        String url = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem";
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/FoodItems";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -192,41 +200,28 @@ public class FoodMenusActivity extends AppCompatActivity {
             }
         });
     }
+
     private void sendFoodItemToAPI(JSONObject newFoodItem) {
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/FoodItem";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         try {
+            newFoodItem.put("userId", userId); // Add userId to the JSON payload
             addFoodToUI(newFoodItem.getString("name"),
                     newFoodItem.getInt("protein"),
                     newFoodItem.getInt("carbs"),
                     newFoodItem.getInt("fat"),
                     newFoodItem.getInt("calories"),
                     -1);
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, newFoodItem,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            // Add the new food item to the UI
-                            addFoodToUI(response.getString("name"),
-                                    response.getInt("protein"),
-                                    response.getInt("carbs"),
-                                    response.getInt("fat"),
-                                    response.getInt("calories"),
-                                    response.getInt("id"));
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        // Handle response
                     }
                 },
                 new Response.ErrorListener() {
@@ -550,12 +545,15 @@ public class FoodMenusActivity extends AppCompatActivity {
             foodIdsBuilder.append(foodId);
         }
 
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + mealPlanId + "/fooditems/add/byId/" + userId;
+
         Log.d("MEAL_PLAN", "Selected food IDs: " + foodIdsBuilder.toString());
         Log.d("MEAL_PLAN", "Protein: " + totalSelectedProtein);
         Log.d("MEAL_PLAN", "Carbs: " + totalSelectedCarbs);
         Log.d("MEAL_PLAN", "Fat: " + totalSelectedFat);
         Log.d("MEAL_PLAN", "Final Calories: " + totalSelectedCalories);
 
+        // Create a new JSONObject for this request
         JSONObject mealPlanUpdate = new JSONObject();
         try {
             mealPlanUpdate.put("foodItems", foodIdsBuilder.toString());
@@ -563,9 +561,9 @@ public class FoodMenusActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + mealPlanId + "/fooditems/add/byId";
         RequestQueue queue = Volley.newRequestQueue(this);
 
+        // Use StringRequest and assign it to putRequest
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
@@ -581,7 +579,7 @@ public class FoodMenusActivity extends AppCompatActivity {
                 }) {
             @Override
             public byte[] getBody() {
-                return foodIdsBuilder.toString().getBytes();
+                return mealPlanUpdate.toString().getBytes();
             }
 
             @Override
@@ -590,6 +588,6 @@ public class FoodMenusActivity extends AppCompatActivity {
             }
         };
 
-        queue.add(putRequest);
+        queue.add(putRequest); // Add the request to the queue
     }
 }
