@@ -18,6 +18,7 @@ public class Fitness {
     private int calories;
     private Date date;
     private int userId;
+    private int currentStreak;
 
     public Fitness() {
         this.date = new Date();
@@ -73,6 +74,14 @@ public class Fitness {
 
     public void setDuration(int duration) {
         this.time = duration;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
     }
 
     public void setCaloriesBurned(int caloriesBurned) {
