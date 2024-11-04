@@ -32,6 +32,8 @@ public class FoodMenuActivity extends AppCompatActivity {
     private LinearLayout lunchContainer;
     private LinearLayout dinnerContainer;
     private LinearLayout lateNightContainer;
+    private String userId;
+    private Button save;
 
     private Map<String, FoodOption> selectedMeals; // Store selected meals by meal type
 
@@ -39,10 +41,12 @@ public class FoodMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_menu);
+        userId = getIntent().getStringExtra("userId");
 
         diningCenterSpinner = findViewById(R.id.dining_center_spinner);
         mealTypeSpinner = findViewById(R.id.meal_type_spinner);
         foodOptionsContainer = findViewById(R.id.food_options_container);
+        save = findViewById(R.id.save_button);
 
         // Containers for each meal type in "Selected Meals" section
         breakfastContainer = findViewById(R.id.breakfast_container);
