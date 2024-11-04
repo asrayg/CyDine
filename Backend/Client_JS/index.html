@@ -1,39 +1,71 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>CyDine.Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyDine.Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #A50034; /* Iowa State Cardinal */
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        input, button, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #FFD100; /* Iowa State Gold */
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #FFC300;
+        }
+        #log {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #log p {
+            margin-top: 5px; /* Add some space between messages */
+        }
+    </style>
 </head>
-
 <body>
-  <table style="width: 100%">
-    <tr>
-      <td>
-        <input type="text" id="wsserver"
-	style = "width: 15rem;"
-        placeholder="ws://localhost:8080/chat/"
-	value ="ws://localhost:8080/chat/"	
-/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <input type="text" id="username" style:"width=100%;" placeholder="Username" />
-        <button type="button" onclick="connect();">Connect</button>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <textarea readonly="true" rows="10" cols="80" id="log"></textarea>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <input type="text" size="51" id="msg" placeholder="Message" />
-        <button type="button" onclick="send();">Send</button>
-      </td>
-    </tr>
-  </table>
-</body>
-<script src="websocket.js"></script>
+<div class="chat-container">
+    <input type="text" id="wsserver" placeholder="ws://localhost:8080/chat/" value="ws://localhost:8080/chat/">
+    <input type="text" id="username" placeholder="Username">
+    <button onclick="connect()">Connect</button>
 
+    <!-- Chat Log -->
+    <div id="log"></div>
+
+    <!-- Message Input -->
+    <input type="text" id="msg" placeholder="Message">
+    <button onclick="send()">Send</button>
+</div>
+
+<script src="websocket.js"></script>
+</body>
 </html>
