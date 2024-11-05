@@ -2,15 +2,8 @@ package CyDine.MealPlanChat;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import CyDine.MealPlans.MealPlans;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
@@ -30,6 +23,9 @@ public class MealPlanMessage {
 
     @Lob
     private String content;
+
+    @ManyToOne
+    private CyDine.MealPlans.MealPlans mealPlans;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent")
@@ -84,4 +80,16 @@ public class MealPlanMessage {
                                     "}";
         return json;
     }
+
+
+    public MealPlans getMealPlans() {
+        return mealPlans;
+    }
+
+    public void setMealPlans(MealPlans mealPlans) {
+        this.mealPlans = mealPlans;
+    }
 }
+
+
+
