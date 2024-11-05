@@ -113,11 +113,6 @@ public class Scraper {
                                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                                 os.write(input, 0, input.length);
                             }
-
-                            int responseCode = con.getResponseCode();
-                            System.out.println("Response Code : " + responseCode);
-
-
                         }
                     }
                 }
@@ -125,32 +120,28 @@ public class Scraper {
             }
         }
 
+        String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
 
-    }
+        JSONObject json = new JSONObject("{ \"content\" : \"" + "<@849437503181815878> hello" + "\"  }");
 
+        try {
+            URL url = new URL(webhookUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
-    void scrapeAndPut() throws IOException {
-        String url = "http://127.0.0.1:8080/Dininghall";
-        String jsonInputString = "{\"name\": \"John Doe\", \"occupation\": \"Developer\"}";
-
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("PUT");
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setDoOutput(true);
-
-        try(OutputStream os = con.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = json.toString().getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        int responseCode = con.getResponseCode();
-        System.out.println("Response Code : " + responseCode);
-
-
     }
+
 
 }
 
 
-//you can choose udcc, fily,seanson and then you can choose breakfast lunch or dinner,
