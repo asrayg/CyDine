@@ -1,5 +1,6 @@
 package com.example.androidexample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -41,6 +43,7 @@ public class FoodMenuActivity extends AppCompatActivity {
     private String userId;
     private Button save;
     private int mealPlanID;
+    private int mealID;
 
     private Map<String, List<FoodOption>> selectedMeals; // Store selected meals by meal type
     private List<JSONObject> selectedMealsJson; // List to store JSON objects of selected meals
@@ -57,7 +60,7 @@ public class FoodMenuActivity extends AppCompatActivity {
         diningCenterSpinner = findViewById(R.id.dining_center_spinner);
         mealTypeSpinner = findViewById(R.id.meal_type_spinner);
         foodOptionsContainer = findViewById(R.id.food_options_container);
-        save = findViewById(R.id.save_button);
+
 
         // Containers for each meal type in "Selected Meals" section
         breakfastContainer = findViewById(R.id.breakfast_container);
@@ -70,14 +73,14 @@ public class FoodMenuActivity extends AppCompatActivity {
         Button generateButton = findViewById(R.id.generate_button);
         generateButton.setOnClickListener(v -> generateFoodOptions());
 
-        fetchMealPlansByTime();
+        fetchUserMealPlan();
     }
 
-    private void fetchMealPlansByTime() {
+    private void fetchUserMealPlan() {
         // Construct the URL for the GET request
-        String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/"+ userId+ "/DHmealplans";
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/DHmealplans";
 
-        // Create a JsonObjectRequest to fetch meal plans
+        // Create a JsonArrayRequest to fetch meal plans
         JsonArrayRequest mealPlansRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 url,
@@ -86,7 +89,6 @@ public class FoodMenuActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         parseMealPlans(response); // Handle the response
-                        Toast.makeText(FoodMenuActivity.this, "Fetched meal plans.", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -111,12 +113,20 @@ public class FoodMenuActivity extends AppCompatActivity {
             dinnerContainer.removeAllViews();
             lateNightContainer.removeAllViews();
 
-            // Iterate through the response to populate selectedMeals
+            JSONObject latestMealPlan = null; // To store the latest meal plan
+
+            // Find the latest meal plan based on the highest ID
             for (int i = 0; i < mealPlans.length(); i++) {
                 JSONObject mealPlan = mealPlans.getJSONObject(i);
+                if (latestMealPlan == null || mealPlan.getInt("id") > latestMealPlan.getInt("id")) {
+                    latestMealPlan = mealPlan; // Update the latest meal plan
+                    mealID = mealPlan.getInt("id");
+                }
+            }
 
-                // Access the foodItems array
-                JSONArray foodItems = mealPlan.getJSONArray("foodItems"); // Fetch the food items from the current meal plan
+            if (latestMealPlan != null) {
+                // Access the foodItems array of the latest meal plan
+                JSONArray foodItems = latestMealPlan.getJSONArray("foodItems");
 
                 // Iterate through the food items
                 for (int j = 0; j < foodItems.length(); j++) {
@@ -150,6 +160,7 @@ public class FoodMenuActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 
 
     private void generateFoodOptions() {
@@ -255,50 +266,38 @@ public class FoodMenuActivity extends AppCompatActivity {
     }
 
     private void selectMealOption(String mealType, FoodOption foodOption) {
-        // Get the current list of selected meals for this meal type
+        // Get the current list of selected meals for this meal type, or create a new list if it doesn't exist
         List<FoodOption> selectedMealList = selectedMeals.get(mealType);
-
         if (selectedMealList == null) {
-            // If no meals are selected yet for this meal type, create a new list
             selectedMealList = new ArrayList<>();
-            selectedMeals.put(mealType, selectedMealList);
+            selectedMeals.put(mealType, selectedMealList); // Save the new list in the map
         }
 
-        // Check if the food option is already selected
-        if (selectedMealList.contains(foodOption)) {
-            // If it is already selected, remove it (deselecting)
-            selectedMealList.remove(foodOption);
-            Toast.makeText(this, foodOption.getName() + " removed from " + mealType, Toast.LENGTH_SHORT).show();
+        // Add the food option to the list
+        selectedMealList.add(foodOption);
 
-            // Call the method to send a DELETE request to remove the food item from the user's meal plan
-            removeFoodItem(foodOption.id);
-
-        } else {
-            // If it is not selected, add it (selecting)
-            selectedMealList.add(foodOption);
-            Toast.makeText(this, foodOption.getName() + " added to " + mealType, Toast.LENGTH_SHORT).show();
-
-            // Call the method to send a POST request to add the selected food option
-            sendAddMealRequest(foodOption, mealType);
-        }
+        // Call the method to send a POST request to add the selected food option
+        sendAddMealRequest(foodOption, mealType);
 
         // Update the corresponding UI section to reflect the current selection
         updateSelectedMealUI(mealType);
     }
+
     private void removeFoodItem(int foodItemId) {
         // Prepare the URL for the DELETE request
-        String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/" + mealPlanID + "/fooditems/remove/byId"; // Use mealPlanID for the endpoint
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/" + mealID + "/fooditems/remove/byId";
+        // Convert the single food item ID to a string
+        String requestBody = String.valueOf(foodItemId); // A single ID as a string
 
-        // Create a DELETE request to remove food items
+        // Create a PUT request to remove the food item
         StringRequest removeFoodRequest = new StringRequest(
-                Request.Method.PUT, // Change to DELETE method
+                Request.Method.PUT,
                 url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("RemoveFoodResponse", response);
                         // Handle success response
-                        Toast.makeText(FoodMenuActivity.this, "Food item removed from meal plan successfully!", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -311,10 +310,9 @@ public class FoodMenuActivity extends AppCompatActivity {
         ) {
             @Override
             public byte[] getBody() {
-                // Prepare the request body with the food item ID to remove
-                String requestBody = String.valueOf(foodItemId); // just the food item ID
+                // Log the request body to confirm it's correct
                 Log.d("RemoveFoodRequestBody", requestBody);
-                return requestBody.getBytes(); // Return the request body
+                return requestBody.getBytes(); // Return the request body as bytes
             }
 
             @Override
@@ -332,6 +330,7 @@ public class FoodMenuActivity extends AppCompatActivity {
 
 
 
+
     private void addFoodItem(int mealPlanID) {
         // Prepare the URL for the PUT request
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/"+mealPlanID+"/fooditems/add/byId";
@@ -345,7 +344,6 @@ public class FoodMenuActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("AddFoodResponse", response);
                         // Handle success response
-                        Toast.makeText(FoodMenuActivity.this, "Food items added to meal plan successfully!", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -407,7 +405,7 @@ public class FoodMenuActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("AssociateMealResponse", response);
                         // Handle response (e.g., show a success message)
-                        Toast.makeText(FoodMenuActivity.this, "Meal plan associated with user successfully!", Toast.LENGTH_SHORT).show();
+
                         addFoodItem(mealPlanID);
                     }
                 },
@@ -531,7 +529,6 @@ public class FoodMenuActivity extends AppCompatActivity {
                         Log.d("AddMealResponse", response);
                         mealPlanID = Integer.parseInt(response.trim());
                         // Handle response as needed (e.g., show a success message)
-                        Toast.makeText(FoodMenuActivity.this, "Meal added successfully!", Toast.LENGTH_SHORT).show();
                         associateMealPlanWithUser(mealPlanID);
                     }
                 },
@@ -603,10 +600,32 @@ public class FoodMenuActivity extends AppCompatActivity {
                 TextView mealTextView = new TextView(this);
                 mealTextView.setText(option.toString());
                 mealTextView.setTextSize(16);
+                mealTextView.setPadding(10, 10, 10, 10);
+                mealTextView.setBackgroundColor(Color.LTGRAY); // Optional: for visual clarity
+
+                // Make the text view clickable
+                mealTextView.setOnClickListener(view -> showDeleteConfirmation(option, mealType));
+
                 targetContainer.addView(mealTextView);
             }
         }
     }
+
+    private void showDeleteConfirmation(FoodOption option, String mealType) {
+        new AlertDialog.Builder(this)
+                .setTitle("Remove Item")
+                .setMessage("Are you sure you want to remove this item from " + mealType + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    removeFoodItem(option.id); // Call removeFoodItem with the item ID
+                    selectedMeals.get(mealType).remove(option); // Remove item from selected list
+                    updateSelectedMealUI(mealType); // Refresh the UI
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
+
 
     private String mapDiningHallName(String diningHall) {
         switch (diningHall) {
