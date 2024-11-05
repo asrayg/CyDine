@@ -1,18 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_meals"
-        android:title="Outside Food Tracking"/>
-    <item android:id="@+id/nav_food"
-        android:title="Insert Outside Food Item " />
-    <item android:id="@+id/nav_water"
-        android:title="Water Tracking" />
-    <item android:id="@+id/nav_profile"
-        android:title="Profile Settings" />
-    <item android:id="@+id/nav_message"
-        android:title="Message" />
-    <item android:id="@+id/nav_exercise"
-        android:title="Exercise Tracking" />
-    <item android:id="@+id/nav_food_menu"
-        android:title="Food Menu" />
-    <item android:id="@+id/feed"
-        android:title="Feed" />
+    <item android:id="@+id/nav_meals" android:title="Outside Food Tracking" />
+    <item android:id="@+id/nav_food" android:title="Insert Outside Food Item" />
+    <item android:id="@+id/nav_water" android:title="Water Tracking" />
+    <item android:id="@+id/nav_profile" android:title="Profile Settings" />
+    <item android:id="@+id/nav_message" android:title="Message" />
+    <item android:id="@+id/nav_exercise" android:title="Exercise Tracking" />
+    <item android:id="@+id/nav_food_menu" android:title="Food Menu" />
+    <item android:id="@+id/feed" android:title="Feed" />
+
+    <!-- New menu item for the Map screen -->
+    <item android:id="@+id/nav_map" android:title="Nearby Healthy Restaurants" />
 </menu>

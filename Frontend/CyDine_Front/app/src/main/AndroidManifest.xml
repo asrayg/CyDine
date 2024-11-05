@@ -92,13 +92,7 @@
         <activity android:name=".ExerciseActivity" />
         <activity android:name=".CreateActivity" />
         <activity android:name=".ModLoginActivity" />
-
-
-
-
-
-
-
+        <activity android:name=".MapActivity" />
     </application>
 
 </manifest>
