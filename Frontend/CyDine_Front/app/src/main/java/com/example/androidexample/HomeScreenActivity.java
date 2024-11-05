@@ -63,6 +63,8 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
             intent = new Intent(this, FoodMenuActivity.class);
         } else if (item.getItemId() == R.id.feed) {
             intent = new Intent(this, FeedActivity.class);
+        }else if (item.getItemId() == R.id.nav_map) {
+            intent = new Intent(this, MapActivity.class);
         }
 
         // Pass user details to the target activity if intent is created
