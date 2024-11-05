@@ -95,7 +95,7 @@ public class FoodPlaceController {
             } else {
                 System.out.println("No results found for the given address: " + address); // Log if no results are found
                 // Provide a generic map centered on Ames, Iowa
-                imageUrl = "https://www.openstreetmap.org/?mlat=42.0308&mlon=-93.6319#map=13/42.0308/-93.6319";
+                imageUrl = "https://www.openstreetmap.org/search?query=Mcdonald%27s%20Ames#map=19/42.021858/-93.611026";
             }
         } catch (Exception e) {
             System.out.println("Error generating map URL: " + e.getMessage()); // Log any exceptions
