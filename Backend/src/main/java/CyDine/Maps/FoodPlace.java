@@ -12,6 +12,7 @@ public class FoodPlace {
     private String address;
     private double rating;
     private String review;
+    private String imageUrl;
 
     public FoodPlace() {}
 
@@ -61,5 +62,13 @@ public class FoodPlace {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
