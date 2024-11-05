@@ -34,6 +34,7 @@ public class User {
     private String dietary_preference;
     private String dietary_restrictions;
     private String fitness_goal;
+    private String discordUsername;
 
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -54,7 +55,7 @@ public class User {
     // =============================== Constructors ================================== //
 
 
-    public User(String name, String emailId, String password, int height, int weight, String dietary_preference, String dietary_restrictions, String fitness_goal) {
+    public User(String name, String emailId, String password, int height, int weight, String dietary_preference, String dietary_restrictions, String fitness_goal, String discordUsername) {
         this.name = name;
         this.emailId = emailId;
         this.password = password;
@@ -64,6 +65,7 @@ public class User {
         this.dietary_preference = dietary_preference;
         this.dietary_restrictions = dietary_restrictions;
         this.fitness_goal = fitness_goal;
+        this.discordUsername = discordUsername;
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
     }
@@ -233,5 +235,13 @@ public class User {
 
     public void setFoodItems(List<FoodItems> foodItems) {
         this.foodItems = foodItems;
+    }
+
+    public String getdiscordUsername() {
+        return discordUsername;
+    }
+
+    public void setdiscordUsername(String discordUsername) {
+        this.discordUsername = discordUsername;
     }
 }

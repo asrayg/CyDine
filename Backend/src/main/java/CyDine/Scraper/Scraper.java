@@ -70,6 +70,8 @@ public class Scraper {
 
     }
 
+
+
     @Scheduled(cron = "0 7 0 * * ?")
     public void getEachFood() throws IOException {
         HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
@@ -124,6 +126,24 @@ public class Scraper {
 
             }
         }
+
+
+//        String url = "http://127.0.0.1:8080/Dininghall";
+//        String jsonInputString = "{" + "}";
+//
+//        URL obj = new URL(url);
+//        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//        con.setRequestMethod("POST");
+//        con.setRequestProperty("Content-Type", "application/json");
+//        con.setDoOutput(true);
+//
+//        try (OutputStream os = con.getOutputStream()) {
+//        }
+//
+//        int responseCode = con.getResponseCode();
+//        System.out.println("Response Code : " + responseCode);
+
+
 
 
     }

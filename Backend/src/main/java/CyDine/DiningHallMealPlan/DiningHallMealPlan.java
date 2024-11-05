@@ -67,7 +67,7 @@ public class DiningHallMealPlan {
         carbs -= foodItem.getCarbs();
         fat -= foodItem.getFat();
         finalCalories -= foodItem.getCalories();
-//        foodItems.remove(foodItem);
+        foodItems.remove(foodItem);
         System.out.println("msodfhlksdjf   : ");
 //        foodItems.remove(tmp+1);
 
