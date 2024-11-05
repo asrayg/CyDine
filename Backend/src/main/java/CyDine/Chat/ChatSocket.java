@@ -79,15 +79,7 @@ public class ChatSocket {
 			deleteMessage(messageIdStr, username);
 			return; // Exit after handling delete command
 		}
-
-		// Direct message to a user using the format "@username <message>"
-		if (message.startsWith("@")) {
-			String destUsername = message.split(" ")[0].substring(1);
-			sendMessageToPArticularUser(destUsername, "[DM] " + username + ": " + message);
-			sendMessageToPArticularUser(username, "[DM] " + username + ": " + message);
-		} else { // Broadcast
-			broadcast(username + ": " + message);
-		}
+		broadcast(username + ": " + message);
 
 		// Saving chat history to repository
 		msgRepo.save(new Message(username, message));
