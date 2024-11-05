@@ -1,7 +1,13 @@
 package CyDine.Maps;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -14,15 +20,7 @@ public class FoodPlaceController {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
-    @GetMapping
-    List<FoodPlace> getAllFoodPlaces() {
-        return foodPlaceRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    FoodPlace getFoodPlaceById(@PathVariable int id) {
-        return foodPlaceRepository.findById(id);
-    }
+    private RestTemplate restTemplate = new RestTemplate();
 
     @PostMapping
     String createFoodPlace(@RequestBody FoodPlace foodPlace) {
@@ -30,10 +28,12 @@ public class FoodPlaceController {
             return "{\"message\":\"Rating must be between 0 and 5\"}";
         }
 
-        // Ensure the review is not null or empty
         if (foodPlace.getReview() == null || foodPlace.getReview().trim().isEmpty()) {
             return "{\"message\":\"Review cannot be empty\"}";
         }
+
+        String imageUrl = generateImageUrl(foodPlace.getAddress(), foodPlace.getName());
+        foodPlace.setImageUrl(imageUrl);
 
         foodPlaceRepository.save(foodPlace);
         return success;
@@ -50,9 +50,16 @@ public class FoodPlaceController {
             return "{\"message\":\"Rating must be between 0 and 5\"}";
         }
 
-        // Ensure the review is not null or empty
         if (updatedFoodPlace.getReview() == null || updatedFoodPlace.getReview().trim().isEmpty()) {
             return "{\"message\":\"Review cannot be empty\"}";
+        }
+
+        if (!foodPlace.getAddress().equals(updatedFoodPlace.getAddress()) ||
+                !foodPlace.getName().equals(updatedFoodPlace.getName())) {
+            String imageUrl = generateImageUrl(updatedFoodPlace.getAddress(), updatedFoodPlace.getName());
+            updatedFoodPlace.setImageUrl(imageUrl);
+        } else {
+            updatedFoodPlace.setImageUrl(foodPlace.getImageUrl());
         }
 
         updatedFoodPlace.setId(id);
@@ -60,6 +67,42 @@ public class FoodPlaceController {
         return success;
     }
 
+    public String generateImageUrl(String address, String name) {
+        String imageUrl = "https://example.com/default-image.jpg"; // Default image URL
+        try {
+            String encodedAddress = URLEncoder.encode(address + ", " + name, StandardCharsets.UTF_8.toString());
+
+            // Use Nominatim API to get coordinates for the address
+            String nominatimUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodedAddress + "&limit=1";
+            System.out.println("Nominatim API URL: " + nominatimUrl); // Log the URL
+
+            String response = restTemplate.getForObject(nominatimUrl, String.class);
+            System.out.println("Nominatim API response: " + response); // Log the response
+
+            // Parse the JSON response to get latitude and longitude
+            JSONArray jsonArray = new JSONArray(response);
+            if (jsonArray.length() > 0) {
+                JSONObject firstResult = jsonArray.getJSONObject(0);
+                double lat = firstResult.getDouble("lat");
+                double lon = firstResult.getDouble("lon");
+
+                // Generate the OpenStreetMap URL to display the address
+                imageUrl = String.format(
+                        "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=15/%f/%f",
+                        lat, lon, lat, lon
+                );
+                System.out.println("Generated map URL: " + imageUrl); // Log the generated URL
+            } else {
+                System.out.println("No results found for the given address: " + address); // Log if no results are found
+                // Provide a generic map centered on Ames, Iowa
+                imageUrl = "https://www.openstreetmap.org/?mlat=42.0308&mlon=-93.6319#map=13/42.0308/-93.6319";
+            }
+        } catch (Exception e) {
+            System.out.println("Error generating map URL: " + e.getMessage()); // Log any exceptions
+            e.printStackTrace();
+        }
+        return imageUrl;
+    }
     @DeleteMapping("/{id}")
     String deleteFoodPlace(@PathVariable int id) {
         if (foodPlaceRepository.existsById(id)) {
@@ -67,5 +110,15 @@ public class FoodPlaceController {
             return success;
         }
         return failure;
+    }
+
+    @GetMapping
+    List<FoodPlace> getAllFoodPlaces() {
+        return foodPlaceRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    FoodPlace getFoodPlaceById(@PathVariable int id) {
+        return foodPlaceRepository.findById(id);
     }
 }
