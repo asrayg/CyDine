@@ -71,14 +71,9 @@ public class FoodPlaceController {
         String imageUrl = "https://example.com/default-image.jpg"; // Default image URL
         try {
             String encodedAddress = URLEncoder.encode(address + ", " + name, StandardCharsets.UTF_8.toString());
-
             // Use Nominatim API to get coordinates for the address
             String nominatimUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodedAddress + "&limit=1";
-            System.out.println("Nominatim API URL: " + nominatimUrl); // Log the URL
-
             String response = restTemplate.getForObject(nominatimUrl, String.class);
-            System.out.println("Nominatim API response: " + response); // Log the response
-
             // Parse the JSON response to get latitude and longitude
             JSONArray jsonArray = new JSONArray(response);
             if (jsonArray.length() > 0) {
