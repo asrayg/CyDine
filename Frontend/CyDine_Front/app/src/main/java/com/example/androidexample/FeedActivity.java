@@ -1,49 +1,89 @@
 package com.example.androidexample;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
-import androidx.annotation.Nullable;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
+import androidx.appcompat.widget.AppCompatEditText;
 
-public class FeedActivity extends AppCompatActivity {
+import org.java_websocket.handshake.ServerHandshake;
 
-    private RecyclerView feedRecyclerView;
+public class FeedActivity extends AppCompatActivity implements WebSocketListener {
+
     private Button createPostButton;
-    private ArrayList<Post> postList;
-    private FeedAdapter feedAdapter;
+    private TextView feedTextView;
+    private WebSocketManager webSocketManager;
+    private AppCompatEditText messageEditText; // Reference to the EditText
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        feedRecyclerView = findViewById(R.id.feedRecyclerView);
+        // Initialize UI components
         createPostButton = findViewById(R.id.createPostButton);
+        feedTextView = findViewById(R.id.feedTextView); // Make sure you initialize feedTextView here
+        messageEditText = findViewById(R.id.messageEditText); // Initialize the EditText
 
-        postList = new ArrayList<>();
-        feedAdapter = new FeedAdapter(postList, this);
+        // Initialize WebSocketManager and set the listener
+        webSocketManager = WebSocketManager.getInstance();
 
-        feedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        feedRecyclerView.setAdapter(feedAdapter);
+        // WebSocket server URL (use the correct URL)
+        String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss";
+        Log.d("WebSocket", "Connecting to WebSocket: " + serverUrl);
 
+        // Set the WebSocketListener
+        webSocketManager.setWebSocketListener(this);
+
+        // Initiate WebSocket connection
+        webSocketManager.connectWebSocket(serverUrl);
+
+        // Handle button click to send message
         createPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FeedActivity.this, CreatePostActivity.class);
-            startActivityForResult(intent, 1);
+            // Get the message from the EditText
+            String message = messageEditText.getText().toString();
+
+            // Check if the message is not empty
+            if (!message.isEmpty()) {
+                // Send the message over WebSocket
+                webSocketManager.sendMessage(message);
+
+                // Clear the EditText after sending the message
+                messageEditText.setText("");
+            }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            String imagePath = data.getStringExtra("imagePath");
-            String caption = data.getStringExtra("caption");
-            postList.add(new Post(imagePath, caption));
-            feedAdapter.notifyDataSetChanged();
-        }
+    public void onWebSocketMessage(String message) {
+        // Update the UI to display the received WebSocket message
+        Log.d("WebSocket", "Received message: " + message);
+
+        // Use runOnUiThread to ensure UI update happens on the main thread
+        runOnUiThread(() -> {
+            // Append the received message to the TextView (you can add new lines or formatting if needed)
+            String currentText = feedTextView.getText().toString();
+            feedTextView.setText(currentText + "\n" + message);
+        });
+    }
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote) {
+        // Handle WebSocket connection closure
+        Log.d("WebSocket", "Connection closed. Code: " + code + ", Reason: " + reason);
+    }
+
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+        // Handle WebSocket connection opened
+        Log.d("WebSocket", "WebSocket opened: " + handshakedata.getHttpStatus());
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex) {
+        // Handle WebSocket error
+        Log.e("WebSocket", "WebSocket error: " + ex.getMessage());
     }
 }

@@ -59,11 +59,20 @@ public class ChatSocket {
 		usernameSessionMap.put(username, session);
 
 		// Send chat history to the newly connected user
-		sendMessageToPArticularUser(username, getChatHistory());
+		sendChatHistory(username);
 
 		// Broadcast that new user joined, but only once
 		String message = "User: " + username + " has Joined the CyDine.Chat!";
 		broadcast(message);
+	}
+
+	private void sendChatHistory(String username) {
+		List<Message> messages = msgRepo.findAll();
+		StringBuilder sb = new StringBuilder();
+		for (Message message : messages) {
+			sb.append(message.getUserName()).append(": ").append(message.getContent()).append("\n");
+		}
+		sendMessageToPArticularUser(username, sb.toString());
 	}
 
 
