@@ -70,13 +70,16 @@
         android:padding="12dp"
         android:layout_marginTop="8dp" />
 
+    <!-- Updated ImageView to include contentDescription -->
     <ImageView
         android:id="@+id/selectedImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="118dp"
-        tools:layout_editor_absoluteY="315dp" />
+        android:contentDescription="Selected Image"
+        app:layout_constraintBottom_toTopOf="@id/messageEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
