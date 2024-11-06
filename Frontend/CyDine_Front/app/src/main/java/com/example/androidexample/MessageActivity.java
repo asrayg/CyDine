@@ -7,27 +7,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class MessageActivity extends AppCompatActivity {
     private static final String TAG = "MessageActivity";
     private WebSocketClient webSocketClient;
     private EditText messageInput;
-    private EditText mealPlanIdInput;
     private LinearLayout messageContainer;
     private RequestQueue requestQueue;
+    private int selectedMealPlanId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +40,16 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meal_plan_chat);
 
         messageInput = findViewById(R.id.messageInput);
-        mealPlanIdInput = findViewById(R.id.mealPlanIdInput);
         messageContainer = findViewById(R.id.messageContainer);
         requestQueue = Volley.newRequestQueue(this);
 
+        Button chooseMealPlanButton = findViewById(R.id.chooseMealPlanButton);
         Button sendMessageButton = findViewById(R.id.sendMessageButton);
+
+        // Choose Meal Plan Button
+        chooseMealPlanButton.setOnClickListener(view -> fetchAndShowMealPlans("1"));  // Replace "1" with the actual user ID
+
+        // Send Message Button
         sendMessageButton.setOnClickListener(view -> sendMessage());
 
         connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/mpchat/1");
@@ -80,44 +90,31 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        String userId = "1";  // replace with actual user ID if available
-        String messageText = messageInput.getText().toString();
-        String mealPlanIdText = mealPlanIdInput.getText().toString();
-
-        if (messageText.isEmpty() || mealPlanIdText.isEmpty()) {
-            displayMessage("Message and Meal Plan ID cannot be empty.", "System", -1);
+        if (selectedMealPlanId == -1) {
+            Toast.makeText(this, "Please select a meal plan first.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int mealPlanId = Integer.parseInt(mealPlanIdText);
-        JSONObject messageJson = new JSONObject();
+        String userId = "1";  // replace with actual user ID if available
+        String messageText = messageInput.getText().toString();
 
+        if (messageText.isEmpty()) {
+            displayMessage("Message cannot be empty.", "System", -1);
+            return;
+        }
+
+        JSONObject messageJson = new JSONObject();
         try {
             messageJson.put("userId", userId);
             messageJson.put("message", messageText);
-            messageJson.put("mealplanId", mealPlanId);
+            messageJson.put("mealplanId", selectedMealPlanId);
 
             Log.d(TAG, "Sending message: " + messageJson.toString());
             webSocketClient.send(messageJson.toString());
 
             messageInput.setText("");
-            mealPlanIdInput.setText("");
         } catch (Exception e) {
             Log.e(TAG, "Error creating message JSON", e);
-        }
-    }
-
-    private void handleIncomingMessage(String message) {
-        try {
-            JSONObject jsonMessage = new JSONObject(message);
-            String userId = jsonMessage.getString("userId");
-            String content = jsonMessage.getString("message");
-            int mealPlanId = jsonMessage.getInt("mealplanId");
-
-            Log.d(TAG, "Processing message from user ID: " + userId);
-            fetchUsername(userId, content, mealPlanId);
-        } catch (Exception e) {
-            Log.e(TAG, "Error parsing incoming message JSON", e);
         }
     }
 
@@ -144,6 +141,72 @@ public class MessageActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+
+    private void handleIncomingMessage(String message) {
+        try {
+            JSONObject jsonMessage = new JSONObject(message);
+            String userId = jsonMessage.getString("userId");
+            String content = jsonMessage.getString("message");
+            int mealPlanId = jsonMessage.getInt("mealplanId");
+
+            Log.d(TAG, "Processing message from user ID: " + userId);
+            fetchUsername(userId, content, mealPlanId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing incoming message JSON", e);
+        }
+    }
+
+
+    private void fetchAndShowMealPlans(String userId) {
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/mealplans";
+        Log.d(TAG, "Fetching meal plans for userId: " + userId);
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> showMealPlanSelectionDialog(response),
+                error -> Log.e(TAG, "Error fetching meal plans", error));
+
+        requestQueue.add(request);
+    }
+
+    private void showMealPlanSelectionDialog(JSONArray mealPlans) {
+        ArrayList<String> mealPlanDescriptions = new ArrayList<>();
+        ArrayList<Integer> mealPlanIds = new ArrayList<>();
+
+        // Parse meal plans
+        for (int i = 0; i < mealPlans.length(); i++) {
+            try {
+                JSONObject mealPlan = mealPlans.getJSONObject(i);
+                int mealPlanId = mealPlan.getInt("id");
+                JSONArray foodItems = mealPlan.getJSONArray("foodItems");
+
+                StringBuilder description = new StringBuilder("MealPlan ID: " + mealPlanId + "\nItems: ");
+                for (int j = 0; j < foodItems.length(); j++) {
+                    JSONObject foodItem = foodItems.getJSONObject(j);
+                    description.append(foodItem.getString("name"));
+                    if (j < foodItems.length() - 1) {
+                        description.append(", ");
+                    }
+                }
+
+                mealPlanDescriptions.add(description.toString());
+                mealPlanIds.add(mealPlanId);
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing meal plan JSON", e);
+            }
+        }
+
+        // Show dialog for selection
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select a Meal Plan")
+                .setItems(mealPlanDescriptions.toArray(new String[0]), (dialog, which) -> {
+                    selectedMealPlanId = mealPlanIds.get(which);
+                    Toast.makeText(this, "Selected Meal Plan ID: " + selectedMealPlanId, Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private void displayMessage(String message, String username, int mealPlanId) {
         Log.d(TAG, "Displaying message from: " + username);
         LinearLayout messageLayout = new LinearLayout(this);
@@ -152,23 +215,53 @@ public class MessageActivity extends AppCompatActivity {
         messageLayout.setBackgroundResource(R.drawable.message_background); // Custom background for messages
 
         TextView nameView = new TextView(this);
-        nameView.setText("Name: " + username);
+        nameView.setText(username);
         nameView.setTypeface(null, android.graphics.Typeface.BOLD);
 
         TextView messageView = new TextView(this);
-        messageView.setText("Message: " + message);
+        messageView.setText(message);
 
         messageLayout.addView(nameView);
         messageLayout.addView(messageView);
 
         if (mealPlanId > 0) {
-            TextView mealPlanView = new TextView(this);
-            mealPlanView.setText("Mealplan: " + mealPlanId);
-            messageLayout.addView(mealPlanView);
+            fetchAndDisplayFoodItems(mealPlanId, messageLayout);
         }
+
 
         messageContainer.addView(messageLayout);
     }
+
+    private void fetchAndDisplayFoodItems(int mealPlanId, LinearLayout messageLayout) {
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + mealPlanId;
+        Log.d(TAG, "Fetching food items for mealPlanId: " + mealPlanId);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray foodItems = response.getJSONArray("foodItems");
+                        StringBuilder foodItemsList = new StringBuilder("My meal plan is: ");
+
+                        for (int i = 0; i < foodItems.length(); i++) {
+                            JSONObject foodItem = foodItems.getJSONObject(i);
+                            foodItemsList.append(foodItem.getString("name"));
+                            if (i < foodItems.length() - 1) {
+                                foodItemsList.append(", ");
+                            }
+                        }
+
+                        TextView foodItemsView = new TextView(this);
+                        foodItemsView.setText(foodItemsList.toString());
+                        messageLayout.addView(foodItemsView);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing food items", e);
+                    }
+                },
+                error -> Log.e(TAG, "Error fetching food items", error));
+
+        requestQueue.add(request);
+    }
+
 
     @Override
     protected void onDestroy() {

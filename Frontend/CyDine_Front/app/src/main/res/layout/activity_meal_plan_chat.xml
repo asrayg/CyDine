@@ -5,12 +5,12 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/mealPlanIdInput"
-        android:layout_width="match_parent"
+    <!-- Button for selecting a meal plan -->
+    <Button
+        android:id="@+id/chooseMealPlanButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter Meal Plan ID"
-        android:inputType="number" />
+        android:text="Choose Meal Plan" />
 
     <EditText
         android:id="@+id/messageInput"
