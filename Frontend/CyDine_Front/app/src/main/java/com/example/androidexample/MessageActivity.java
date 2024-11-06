@@ -32,12 +32,22 @@ public class MessageActivity extends AppCompatActivity {
     private EditText messageInput;
     private LinearLayout messageContainer;
     private RequestQueue requestQueue;
+    private String userId = "1";  // Replace this with the actual user ID
+
     private int selectedMealPlanId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal_plan_chat);
+
+        userId = getIntent().getStringExtra("userId");
+        if (userId == null) {
+            Toast.makeText(this, "User ID not provided", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
 
         messageInput = findViewById(R.id.messageInput);
         messageContainer = findViewById(R.id.messageContainer);
@@ -47,12 +57,12 @@ public class MessageActivity extends AppCompatActivity {
         Button sendMessageButton = findViewById(R.id.sendMessageButton);
 
         // Choose Meal Plan Button
-        chooseMealPlanButton.setOnClickListener(view -> fetchAndShowMealPlans("1"));  // Replace "1" with the actual user ID
+        chooseMealPlanButton.setOnClickListener(view -> fetchAndShowMealPlans(userId));  // Replace "1" with the actual user ID
 
         // Send Message Button
         sendMessageButton.setOnClickListener(view -> sendMessage());
 
-        connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/mpchat/1");
+        connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/mpchat/"+userId);
     }
 
     private void connectWebSocket(String url) {
@@ -95,7 +105,6 @@ public class MessageActivity extends AppCompatActivity {
             return;
         }
 
-        String userId = "1";  // replace with actual user ID if available
         String messageText = messageInput.getText().toString();
 
         if (messageText.isEmpty()) {
