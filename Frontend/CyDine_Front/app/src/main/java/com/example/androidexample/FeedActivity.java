@@ -44,6 +44,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
     private RecyclerView feedRecyclerView;
     private ImageAdapter imageAdapter;
+    private boolean counter;
 
 
     @Override
@@ -52,9 +53,9 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         setContentView(R.layout.activity_feed);
 
         // Initialize UI components
-        createPostButton = findViewById(R.id.createPostButton);
+        //createPostButton = findViewById(R.id.createPostButton);
         feedTextView = findViewById(R.id.feedTextView);
-        messageEditText = findViewById(R.id.messageEditText);
+        //messageEditText = findViewById(R.id.messageEditText);
         uploadImageButton = findViewById(R.id.uploadImageButton);
         selectedImageView = findViewById(R.id.selectedImageView);
 
@@ -62,6 +63,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         imageAdapter = new ImageAdapter(this);
         feedRecyclerView.setAdapter(imageAdapter);
+        counter = false;
 
         // Initialize WebSocketManager and set the listener
         webSocketManager = WebSocketManager.getInstance();
@@ -77,19 +79,19 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         webSocketManager.connectWebSocket(serverUrl);
 
         // Handle button click to send message
-        createPostButton.setOnClickListener(v -> {
-            // Get the message from the EditText
-            String message = messageEditText.getText().toString();
-
-            // Check if the message is not empty
-            if (!message.isEmpty()) {
-                // Send the message over WebSocket
-                webSocketManager.sendMessage(message);
-
-                // Clear the EditText after sending the message
-                messageEditText.setText("");
-            }
-        });
+//        createPostButton.setOnClickListener(v -> {
+//            // Get the message from the EditText
+//            String message = messageEditText.getText().toString();
+//
+//            // Check if the message is not empty
+//            if (!message.isEmpty()) {
+//                // Send the message over WebSocket
+//                webSocketManager.sendMessage(message);
+//
+//                // Clear the EditText after sending the message
+//                messageEditText.setText("");
+//            }
+//        });
 
         uploadImageButton = findViewById(R.id.uploadImageButton);
         selectedImageView = findViewById(R.id.selectedImageView);
@@ -112,7 +114,6 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            selectedImageView.setImageURI(selectedImageUri); // Display selected image
 
             // Automatically upload the image after selection
             uploadImage();
@@ -120,6 +121,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void uploadImage() {
+        counter = true;
         if (selectedImageUri == null) {
             Log.e("FeedActivity", "No image selected for upload.");
             return;
@@ -166,8 +168,8 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         Log.d("FeedActivity", "Fetching image from URL: " + imageUrl);
 
 
-            imageAdapter.addImage(imageUrl); // This adds the new image without removing old ones
-            Toast.makeText(FeedActivity.this, "Image fetched and displayed!", Toast.LENGTH_SHORT).show();
+        imageAdapter.addImage(imageUrl); // This adds the new image without removing old ones
+        Toast.makeText(FeedActivity.this, "Image fetched and displayed!", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -206,15 +208,23 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
     @Override
     public void onWebSocketMessage(String message) {
-        Log.d("WebSocket", "Received message: " + message);
-
         // Use runOnUiThread to ensure UI update happens on the main thread
         runOnUiThread(() -> {
             // Check if the message starts with "@" (indicating an image name)
-            if (message.startsWith("@")) {
-                String imageName = message.substring(1);  // Remove the "@" prefix
-                fetchUploadedImage(imageName);            // Fetch and display the image
-                Log.d("WebSocket", "Received message: " + imageName);
+            if (message.contains("@")) {
+                // Find the position of "@" and extract everything after it
+                int atIndex = message.indexOf("@");
+
+                // Extract the part after the "@" symbol (the image name)
+                String imageName = message.substring(atIndex + 1).trim();  // +1 to skip '@'
+
+                Log.d("WebSocket", "First fetch");
+                // You can now fetch and display the image with the image name
+                if(counter){
+                    fetchUploadedImage(imageName);
+                }
+
+                // Optionally, show a Toast for debugging or user feedbacm
             } else {
                 // Handle other types of messages, if any
                 String currentText = feedTextView.getText().toString();
