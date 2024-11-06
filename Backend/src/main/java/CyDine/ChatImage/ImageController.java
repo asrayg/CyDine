@@ -13,7 +13,7 @@ import java.nio.file.Files;
 public class ImageController {
 
     // replace this! careful with the operating system in use
-    private static String directory = "/Users/akhilpallem/Desktop/images";
+    private static String directory = "src/main/java/CyDine/images";
 
     @Autowired
     private ImageRepository imageRepository;
@@ -25,7 +25,7 @@ public class ImageController {
         return Files.readAllBytes(imageFile.toPath());
     }
 
-    @PostMapping("images")
+    @PostMapping("/images")
     public int handleFileUpload(@RequestParam("image") MultipartFile imageFile)  {
 
         try {
