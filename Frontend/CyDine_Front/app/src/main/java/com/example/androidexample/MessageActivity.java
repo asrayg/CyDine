@@ -218,6 +218,10 @@ public class MessageActivity extends AppCompatActivity {
 
     private void displayMessage(String message, String username, int mealPlanId) {
         Log.d(TAG, "Displaying message from: " + username);
+        if ("System".equals(username) && ("Connected to server".equals(message) || "Disconnected from server".equals(message))) {
+            return;
+        }
+
         LinearLayout messageLayout = new LinearLayout(this);
         messageLayout.setOrientation(LinearLayout.VERTICAL);
         messageLayout.setPadding(10, 10, 10, 10);

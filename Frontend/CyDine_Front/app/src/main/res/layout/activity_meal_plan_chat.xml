@@ -2,19 +2,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F7DC6F"
     android:orientation="vertical"
+
     android:padding="16dp">
+
 
     <!-- ScrollView for displaying messages -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="#F7DC6F"
         android:padding="8dp">
+
 
         <LinearLayout
             android:id="@+id/messageContainer"
             android:layout_width="match_parent"
+            android:background="#F7DC6F"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
