@@ -35,6 +35,7 @@ public class User {
     private String dietary_restrictions;
     private String fitness_goal;
     private String discordUsername;
+    private boolean isWarned;
 
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -71,6 +72,7 @@ public class User {
     }
 
     public User() {
+        isWarned = false;
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
     }
@@ -243,5 +245,14 @@ public class User {
 
     public void setdiscordUsername(String discordUsername) {
         this.discordUsername = discordUsername;
+    }
+
+
+    public void setWarned(boolean warned) {
+        isWarned = warned;
+    }
+
+    public boolean isWarned() {
+        return isWarned;
     }
 }
