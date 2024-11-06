@@ -10,7 +10,7 @@ public class Post {
 
     public Post(String imageUri, String caption) {
         this.imageUri = imageUri;
-        this.caption = caption;
+        this.caption = caption != null ? caption : "";
         this.likeCount = 0;
         this.comments = new ArrayList<>();
     }

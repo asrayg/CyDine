@@ -1,25 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    tools:context=".FeedActivity">
+
+    <!-- Use a ConstraintLayout as the child of ScrollView -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:padding="16dp">
 
+    <!-- Add a TextView to display received WebSocket messages -->
+    <TextView
+        android:id="@+id/feedTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Messages will appear here"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/feedRecyclerView" />
+
+    <!-- RecyclerView for displaying the feed -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/feedRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feedTextView"
         app:layout_constraintBottom_toTopOf="@id/createPostButton"
         android:layout_marginBottom="16dp"
-        android:nestedScrollingEnabled="false"/> <!-- Disable nested scrolling -->
+        android:nestedScrollingEnabled="false" />
 
+    <!-- EditText to type the message -->
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/messageEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Type your message"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/feedRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Button for creating posts -->
     <Button
         android:id="@+id/createPostButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Create Post"
+        android:text="Send Image"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@id/uploadImageButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="12dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Button to upload an image -->
+    <Button
+        android:id="@+id/uploadImageButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,4 +78,17 @@
         android:padding="12dp"
         android:layout_marginTop="8dp" />
 
+    <!-- Updated ImageView to include contentDescription -->
+    <ImageView
+        android:id="@+id/selectedImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Selected Image"
+        app:layout_constraintBottom_toTopOf="@id/messageEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
