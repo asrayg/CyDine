@@ -12,8 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 import com.bumptech.glide.Glide; // Ensure you import Glide
+
+import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
 
@@ -43,27 +44,30 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                 .skipMemoryCache(true)
                 .into(holder.postImage);
 
-
         holder.captionText.setText(post.getCaption());
         holder.likeCountText.setText("Likes: " + post.getLikeCount());
         holder.commentsText.setText("Comments: " + post.getCommentsAsString());
 
+        // Handle Like button click
         holder.likeButton.setOnClickListener(v -> {
             post.likePost();
             holder.likeCountText.setText("Likes: " + post.getLikeCount());
         });
 
+        // Handle Comment button click (Simple sample comment)
         holder.commentButton.setOnClickListener(v -> {
             post.addComment("Sample comment");
             holder.commentsText.setText("Comments: " + post.getCommentsAsString());
         });
 
+        // Handle Delete button click
         holder.deleteButton.setOnClickListener(v -> {
             postList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, postList.size());
         });
 
+        // Handle adding a custom comment via AlertDialog
         holder.commentButton.setOnClickListener(v -> {
             final EditText commentInput = new EditText(context);
             commentInput.setHint("Add a comment...");
@@ -81,12 +85,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                     .setNegativeButton("Cancel", null)
                     .show();
         });
-
     }
 
     @Override
     public int getItemCount() {
         return postList.size();
+    }
+
+    public void addPost(Post newPost) {
+        postList.add(newPost);
+        notifyItemInserted(postList.size() - 1);
     }
 
     public static class FeedViewHolder extends RecyclerView.ViewHolder {
