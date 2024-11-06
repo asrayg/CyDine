@@ -37,54 +37,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
         Post post = postList.get(position);
 
-        // Use Glide to load the image
+        // Use Glide to load the image from the server
         Glide.with(context)
-                .load(Uri.parse(post.getImageUri()))
-                .placeholder(R.drawable.ic_launcher_background1)
-                .skipMemoryCache(true)
+                .load(post.getImageUri()) // This can be the URL you get from the backend.
+                .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.postImage);
 
         holder.captionText.setText(post.getCaption());
-        holder.likeCountText.setText("Likes: " + post.getLikeCount());
-        holder.commentsText.setText("Comments: " + post.getCommentsAsString());
-
-        // Handle Like button click
-        holder.likeButton.setOnClickListener(v -> {
-            post.likePost();
-            holder.likeCountText.setText("Likes: " + post.getLikeCount());
-        });
-
-        // Handle Comment button click (Simple sample comment)
-        holder.commentButton.setOnClickListener(v -> {
-            post.addComment("Sample comment");
-            holder.commentsText.setText("Comments: " + post.getCommentsAsString());
-        });
-
-        // Handle Delete button click
-        holder.deleteButton.setOnClickListener(v -> {
-            postList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, postList.size());
-        });
-
-        // Handle adding a custom comment via AlertDialog
-        holder.commentButton.setOnClickListener(v -> {
-            final EditText commentInput = new EditText(context);
-            commentInput.setHint("Add a comment...");
-
-            new AlertDialog.Builder(context)
-                    .setTitle("Add Comment")
-                    .setView(commentInput)
-                    .setPositiveButton("Add", (dialog, which) -> {
-                        String comment = commentInput.getText().toString();
-                        if (!comment.isEmpty()) {
-                            post.addComment(comment);
-                            holder.commentsText.setText("Comments: " + post.getCommentsAsString());
-                        }
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
     }
 
     @Override
@@ -92,25 +51,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         return postList.size();
     }
 
-    public void addPost(Post newPost) {
-        postList.add(newPost);
-        notifyItemInserted(postList.size() - 1);
-    }
-
     public static class FeedViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage;
-        TextView captionText, likeCountText, commentsText;
-        Button likeButton, deleteButton, commentButton;
+        TextView captionText;
 
         public FeedViewHolder(@NonNull View itemView) {
             super(itemView);
             postImage = itemView.findViewById(R.id.postImage);
             captionText = itemView.findViewById(R.id.captionText);
-            likeCountText = itemView.findViewById(R.id.likeCountText);
-            commentsText = itemView.findViewById(R.id.commentsText);
-            likeButton = itemView.findViewById(R.id.likeButton);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
-            commentButton = itemView.findViewById(R.id.commentButton);
         }
     }
 }

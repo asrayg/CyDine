@@ -1,14 +1,30 @@
 package com.example.androidexample;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.Volley;
+
 import org.java_websocket.handshake.ServerHandshake;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FeedActivity extends AppCompatActivity implements WebSocketListener {
 
@@ -16,6 +32,11 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     private TextView feedTextView;
     private WebSocketManager webSocketManager;
     private AppCompatEditText messageEditText; // Reference to the EditText
+    private Button uploadImageButton;
+    private ImageView selectedImageView;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri selectedImageUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +75,106 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
                 messageEditText.setText("");
             }
         });
+
+        uploadImageButton = findViewById(R.id.uploadImageButton);
+        selectedImageView = findViewById(R.id.selectedImageView);
+
+        // Set up the button to open image picker
+        // Handle uploadImageButton click
+        uploadImageButton.setOnClickListener(v -> openImagePicker());
+
+
     }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            selectedImageView.setImageURI(selectedImageUri); // Display selected image
+
+            // Automatically upload the image after selection
+            uploadImage();
+        }
+    }
+
+    private void uploadImage() {
+        if (selectedImageUri == null) {
+            Log.e("FeedActivity", "No image selected for upload.");
+            return;
+        }
+
+        String serverUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images"; // Replace with your server URL
+
+        // Convert the image URI to a File object
+        File file = new File(getPathFromURI(selectedImageUri));
+
+        // Create a custom request for file upload
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, serverUrl,
+                response -> {
+                    // Log success and show toast
+                    Log.d("FeedActivity", "Image uploaded successfully!");
+                    runOnUiThread(() -> Toast.makeText(FeedActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show());
+                },
+                error -> {
+                    // Log error and show toast
+                    Log.e("FeedActivity", "Image upload failed: " + error.getMessage());
+                    runOnUiThread(() -> Toast.makeText(FeedActivity.this, "Image upload failed!", Toast.LENGTH_SHORT).show());
+                }
+        ) {
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                try {
+                    byte[] fileData = getFileDataFromUri(selectedImageUri);
+                    params.put("image", new DataPart(file.getName(), fileData, "image/jpeg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return params;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(this).add(multipartRequest);
+    }
+
+
+    private String getPathFromURI(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        return null;
+    }
+
+    private byte[] getFileDataFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteArrayOutputStream.write(buffer, 0, len);
+        }
+        inputStream.close();
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+
+
 
     @Override
     public void onWebSocketMessage(String message) {
