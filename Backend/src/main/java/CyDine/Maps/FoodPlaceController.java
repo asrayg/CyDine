@@ -31,7 +31,6 @@ public class FoodPlaceController {
         if (foodPlace.getReview() == null || foodPlace.getReview().trim().isEmpty()) {
             return "{\"message\":\"Review cannot be empty\"}";
         }
-
         String imageUrl = generateImageUrl(foodPlace.getAddress(), foodPlace.getName());
         foodPlace.setImageUrl(imageUrl);
 

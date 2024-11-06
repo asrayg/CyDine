@@ -1,0 +1,62 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7DC6F"
+    android:orientation="vertical"
+
+    android:padding="16dp">
+
+
+    <!-- ScrollView for displaying messages -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#F7DC6F"
+        android:padding="8dp">
+
+
+        <LinearLayout
+            android:id="@+id/messageContainer"
+            android:layout_width="match_parent"
+            android:background="#F7DC6F"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <!-- Input field for typing a message -->
+    <EditText
+        android:id="@+id/messageInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type your message here"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Horizontal layout for the buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/chooseMealPlanButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Choose Meal Plan"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"/>
+
+        <Button
+            android:id="@+id/sendMessageButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send Message"
+            android:layout_marginStart="4dp"
+            android:padding="8dp"/>
+    </LinearLayout>
+</LinearLayout>
