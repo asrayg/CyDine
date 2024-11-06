@@ -62,10 +62,15 @@ public class MealPlanChatSocket {
 	@OnMessage
 	public void onMessage(Session session, String message) throws IOException {
         JSONObject tmp =new JSONObject(message);
-        MealPlanMessage mpMessage = new MealPlanMessage(tmp.getInt("userId"),tmp.getString("message"),tmp.getInt("mealplanId"));
-        broadcast(mpMessage.toJson());
-		msgRepo.save(mpMessage);
-	}
+        if(tmp.has("mealplanId")) {
+            MealPlanMessage mpMessage = new MealPlanMessage(tmp.getInt("userId"), tmp.getString("message"), tmp.getInt("mealplanId"));
+            broadcast(mpMessage.toJson());
+            msgRepo.save(mpMessage);
+        }else {
+            msgRepo.findById((long) Integer.parseInt(tmp.getString("message").split("")[1])).orElseThrow().setReported();
+            msgRepo.deleteById((long) Integer.parseInt(tmp.getString("message").split("")[1]));
+        }
+    }
 
 
 	@OnClose
