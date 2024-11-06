@@ -44,7 +44,6 @@ public class ImageController {
             if(!uploadir.exists()){
                 uploadir.mkdirs();
             }
-
             String filename = imageFile.getOriginalFilename();
             File destinationFile = new File(directory + filename);
             Files.copy(imageFile.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -53,8 +52,6 @@ public class ImageController {
             // Save the image in the repository
 
             //imageRepository.save(image);
-
-
             return 1;
         } catch (IOException e) {
             return -1;
