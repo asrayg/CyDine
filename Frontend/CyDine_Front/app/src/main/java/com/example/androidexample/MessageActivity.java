@@ -1,56 +1,120 @@
-// MessageActivity.java
 package com.example.androidexample;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class MessageActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerViewMessages;
-    private EditText editTextMessage;
-    private Button buttonSend;
-    private MessageAdapter messageAdapter;
-    private List<String> messageList;
+    private WebSocketClient webSocketClient;
+    private EditText messageInput;
+    private EditText mealPlanIdInput;
+    private LinearLayout messageContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        setContentView(R.layout.activity_meal_plan_chat);
 
-        // Initialize UI components
-        recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
-        editTextMessage = findViewById(R.id.editTextMessage);
-        buttonSend = findViewById(R.id.buttonSend);
+        messageInput = findViewById(R.id.messageInput);
+        mealPlanIdInput = findViewById(R.id.mealPlanIdInput);
+        messageContainer = findViewById(R.id.messageContainer);
 
-        // Set up RecyclerView
-        messageList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(messageList);
-        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewMessages.setAdapter(messageAdapter);
-
-        // Send button click listener
-        buttonSend.setOnClickListener(new View.OnClickListener() {
+        Button sendMessageButton = findViewById(R.id.sendMessageButton);
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String message = editTextMessage.getText().toString().trim();
-                if (!message.isEmpty()) {
-                    sendMessage(message);
-                }
+            public void onClick(View view) {
+                sendMessage();
             }
         });
+
+        // Replace "22" with actual user ID
+        connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/mpchat/22");
     }
 
-    private void sendMessage(String message) {
-        messageList.add(message);  // Add message to list
-        messageAdapter.notifyItemInserted(messageList.size() - 1);  // Notify adapter of new message
-        recyclerViewMessages.scrollToPosition(messageList.size() - 1);  // Scroll to the latest message
-        editTextMessage.setText("");  // Clear input field
+    private void connectWebSocket(String url) {
+        URI uri;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        webSocketClient = new WebSocketClient(uri) {
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                runOnUiThread(() -> displayMessage("Connected to server"));
+            }
+
+            @Override
+            public void onMessage(String message) {
+                runOnUiThread(() -> displayMessage(message));
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+                runOnUiThread(() -> displayMessage("Disconnected from server"));
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+                runOnUiThread(() -> displayMessage("Error: " + ex.getMessage()));
+            }
+        };
+
+        webSocketClient.connect();
+    }
+
+    private void sendMessage() {
+        String userId = "22";  // replace with actual user ID if available
+        String messageText = messageInput.getText().toString();
+        String mealPlanIdText = mealPlanIdInput.getText().toString();
+
+        if (messageText.isEmpty() || mealPlanIdText.isEmpty()) {
+            displayMessage("Message and Meal Plan ID cannot be empty.");
+            return;
+        }
+
+        int mealPlanId = Integer.parseInt(mealPlanIdText);
+
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("userId", userId);
+            messageJson.put("message", messageText);
+            messageJson.put("mealplanId", mealPlanId);
+
+            webSocketClient.send(messageJson.toString());
+
+            messageInput.setText("");
+            mealPlanIdInput.setText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void displayMessage(String message) {
+        TextView textView = new TextView(this);
+        textView.setText(message);
+        messageContainer.addView(textView);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (webSocketClient != null) {
+            webSocketClient.close();
+        }
     }
 }
