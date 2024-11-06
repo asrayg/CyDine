@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,9 +15,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -37,6 +42,9 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri selectedImageUri;
 
+    private RecyclerView feedRecyclerView;
+    private ImageAdapter imageAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +53,15 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
         // Initialize UI components
         createPostButton = findViewById(R.id.createPostButton);
-        feedTextView = findViewById(R.id.feedTextView); // Make sure you initialize feedTextView here
-        messageEditText = findViewById(R.id.messageEditText); // Initialize the EditText
+        feedTextView = findViewById(R.id.feedTextView);
+        messageEditText = findViewById(R.id.messageEditText);
+        uploadImageButton = findViewById(R.id.uploadImageButton);
+        selectedImageView = findViewById(R.id.selectedImageView);
+
+        feedRecyclerView = findViewById(R.id.feedRecyclerView);
+        feedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        imageAdapter = new ImageAdapter(this);
+        feedRecyclerView.setAdapter(imageAdapter);
 
         // Initialize WebSocketManager and set the listener
         webSocketManager = WebSocketManager.getInstance();
@@ -121,6 +136,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
                     // Log success and show toast
                     Log.d("FeedActivity", "Image uploaded successfully!");
                     runOnUiThread(() -> Toast.makeText(FeedActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show());
+                    webSocketManager.sendMessage("@" + file.getName());
                 },
                 error -> {
                     // Log error and show toast
@@ -144,6 +160,18 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         // Add the request to the Volley request queue
         Volley.newRequestQueue(this).add(multipartRequest);
     }
+
+    private void fetchUploadedImage(String imageName) {
+        String imageUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images/gets?image=" + imageName;
+        Log.d("FeedActivity", "Fetching image from URL: " + imageUrl);
+
+
+            imageAdapter.addImage(imageUrl); // This adds the new image without removing old ones
+            Toast.makeText(FeedActivity.this, "Image fetched and displayed!", Toast.LENGTH_SHORT).show();
+
+    }
+
+
 
 
     private String getPathFromURI(Uri uri) {
@@ -178,16 +206,23 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
     @Override
     public void onWebSocketMessage(String message) {
-        // Update the UI to display the received WebSocket message
         Log.d("WebSocket", "Received message: " + message);
 
         // Use runOnUiThread to ensure UI update happens on the main thread
         runOnUiThread(() -> {
-            // Append the received message to the TextView (you can add new lines or formatting if needed)
-            String currentText = feedTextView.getText().toString();
-            feedTextView.setText(currentText + "\n" + message);
+            // Check if the message starts with "@" (indicating an image name)
+            if (message.startsWith("@")) {
+                String imageName = message.substring(1);  // Remove the "@" prefix
+                fetchUploadedImage(imageName);            // Fetch and display the image
+                Log.d("WebSocket", "Received message: " + imageName);
+            } else {
+                // Handle other types of messages, if any
+                String currentText = feedTextView.getText().toString();
+                feedTextView.setText("\n" + message);
+            }
         });
     }
+
 
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
