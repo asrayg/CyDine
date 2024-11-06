@@ -25,7 +25,7 @@ public class ImageController {
         return Files.readAllBytes(imageFile.toPath());
     }
 
-    @PostMapping("images")
+    @PostMapping("/images")
     public int handleFileUpload(@RequestParam("image") MultipartFile imageFile)  {
 
         try {

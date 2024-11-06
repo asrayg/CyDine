@@ -48,6 +48,7 @@ public class MealPlanChatSocket {
 	@OnOpen
 	public void onOpen(Session session, @PathParam("userId") int userId)
       throws IOException {
+        System.out.println("OPEN MEALPLAN");
         sessionUserIdMap.put(session, userId);
         userIdSessionMap.put(userId, session);
 
