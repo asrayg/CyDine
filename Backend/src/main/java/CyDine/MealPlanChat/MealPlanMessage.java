@@ -24,6 +24,8 @@ public class MealPlanMessage {
     @Lob
     private String content;
 
+    private boolean reported;
+
     @ManyToOne
     private CyDine.MealPlans.MealPlans mealPlans;
 
@@ -32,12 +34,15 @@ public class MealPlanMessage {
     private Date sent = new Date();
 	
 	
-	public MealPlanMessage() {};
+	public MealPlanMessage() {
+        reported = false;
+    };
 	
 	public MealPlanMessage(Integer userId, String content, Integer mealplanId) {
 		this.userId = userId;
 		this.content = content;
         this.mealplanId = mealplanId;
+        reported = false;
 	}
 
     public Long getId() {
@@ -76,7 +81,8 @@ public class MealPlanMessage {
         String json = "{" +
                                     "\"userId\": \"" + userId + "\"," +
                                     " \"message\": " + content + "," +
-                                    " \"mealplanId\": " + mealplanId +
+                                    " \"mealplanId\": " + mealplanId + ","  +
+                                    " \"id\": " + id +
                                     "}";
         return json;
     }
@@ -88,6 +94,14 @@ public class MealPlanMessage {
 
     public void setMealPlans(MealPlans mealPlans) {
         this.mealPlans = mealPlans;
+    }
+
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported() {
+        reported = !reported;
     }
 }
 

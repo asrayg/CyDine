@@ -16,7 +16,6 @@
         android:src="@drawable/ic_launcher_background1"
         android:background="@drawable/rounded_corners" /> <!-- Add a background with rounded corners -->
 
-
     <!-- Button to select an image -->
     <Button
         android:id="@+id/selectImageButton"
@@ -49,4 +48,17 @@
         android:backgroundTint="@android:color/holo_blue_light"
         android:padding="12dp"
         android:elevation="4dp" /> <!-- Add elevation for shadow effect -->
+
+    <!-- TextView to display feed messages -->
+    <TextView
+        android:id="@+id/feedTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Feed"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="16dp"
+        android:scrollbars="vertical"
+        android:maxLines="5" /> <!-- Set a maximum height to control scrolling -->
 </LinearLayout>
