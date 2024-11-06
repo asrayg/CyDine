@@ -214,14 +214,32 @@ public class MessageActivity extends AppCompatActivity {
         messageLayout.setPadding(10, 10, 10, 10);
         messageLayout.setBackgroundResource(R.drawable.message_background); // Custom background for messages
 
+        // Set margin for spacing between messages
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 8, 0, 8); // Adjust top and bottom margin to add spacing
+        messageLayout.setLayoutParams(params);
+
+
         TextView nameView = new TextView(this);
         nameView.setText(username);
         nameView.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        View separator = new View(this);
+        separator.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                2  // Line height in pixels (adjust as needed)
+        ));
+        separator.setBackgroundColor(getResources().getColor(android.R.color.darker_gray)); // Set your preferred line color
+
 
         TextView messageView = new TextView(this);
         messageView.setText(message);
 
         messageLayout.addView(nameView);
+        messageLayout.addView(separator);  // Add the separator line
         messageLayout.addView(messageView);
 
         if (mealPlanId > 0) {
