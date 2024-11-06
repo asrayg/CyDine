@@ -65,7 +65,7 @@ public class MapActivity extends AppCompatActivity {
 
     private void loadMapImage() {
         // Set a default URL in case the backend does not return a valid image URL
-        String defaultImageUrl = "https://ibb.co/f80PxcF";
+        String defaultImageUrl = "https://ibb.c`o/f80PxcF";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET, BASE_URL, null,

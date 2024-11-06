@@ -251,9 +251,21 @@ public class MessageActivity extends AppCompatActivity {
         TextView messageView = new TextView(this);
         messageView.setText(message);
 
+        TextView reportView = new TextView(this);
+        reportView.setText("Report");
+        reportView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+        reportView.setPadding(0, 8, 0, 0);
+        reportView.setTextSize(12);
+        reportView.setGravity(View.TEXT_ALIGNMENT_VIEW_END);
+
+        // Set click listener for report action
+        reportView.setOnClickListener(v -> reportUser(userId));
+
+
         messageLayout.addView(nameView);
         messageLayout.addView(separator);  // Add the separator line
         messageLayout.addView(messageView);
+        messageLayout.addView(reportView); // Add the report button
 
         if (mealPlanId > 0) {
             fetchAndDisplayFoodItems(mealPlanId, messageLayout);
@@ -261,6 +273,20 @@ public class MessageActivity extends AppCompatActivity {
 
 
         messageContainer.addView(messageLayout);
+    }
+
+    private void reportUser(String userId) {
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/warn";
+        Log.d(TAG, "Reporting user: " + userId);
+
+        JsonObjectRequest reportRequest = new JsonObjectRequest(Request.Method.PUT, url, null,
+                response -> Toast.makeText(this, "User reported successfully", Toast.LENGTH_SHORT).show(),
+                error -> {
+                    Log.e(TAG, "Error reporting user", error);
+                    Toast.makeText(this, "Failed to report user", Toast.LENGTH_SHORT).show();
+                });
+
+        requestQueue.add(reportRequest);
     }
 
     private void fetchAndDisplayFoodItems(int mealPlanId, LinearLayout messageLayout) {
