@@ -47,7 +47,7 @@ public class ChatSocket {
 	@OnOpen
 	public void onOpen(Session session, @PathParam("username") String username) throws IOException {
 		logger.info("Entered into Open");
-
+        System.out.println("OPEN MEALPLAN");
 		// Check if the user is already connected
 		if (usernameSessionMap.containsKey(username)) {
 			session.getBasicRemote().sendText("You are already connected.");
