@@ -31,7 +31,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         notifyItemInserted(imageUrls.size() - 1); // Notify RecyclerView to add the item
     }
 
-
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
