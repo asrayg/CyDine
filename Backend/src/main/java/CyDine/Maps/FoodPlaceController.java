@@ -69,30 +69,31 @@ public class FoodPlaceController {
     public String generateImageUrl(String address, String name) {
         String imageUrl = "https://example.com/default-image.jpg"; // Default image URL
         try {
-            String encodedAddress = URLEncoder.encode(address + ", " + name, StandardCharsets.UTF_8.toString());
-            // Use Nominatim API to get coordinates for the address
+            // Encode the address and name into a search query
+            String encodedAddress = URLEncoder.encode(name + " " + address, StandardCharsets.UTF_8.toString());
+
+            // Use Nominatim API to get coordinates for the place
             String nominatimUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodedAddress + "&limit=1";
             String response = restTemplate.getForObject(nominatimUrl, String.class);
-            // Parse the JSON response to get latitude and longitude
+
+            // Parse the JSON response to extract the latitude and longitude
             JSONArray jsonArray = new JSONArray(response);
             if (jsonArray.length() > 0) {
                 JSONObject firstResult = jsonArray.getJSONObject(0);
                 double lat = firstResult.getDouble("lat");
                 double lon = firstResult.getDouble("lon");
 
-                // Generate the OpenStreetMap URL to display the address
+                // Generate the OpenStreetMap URL using the retrieved coordinates
                 imageUrl = String.format(
                         "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=15/%f/%f",
                         lat, lon, lat, lon
                 );
-                System.out.println("Generated map URL: " + imageUrl); // Log the generated URL
             } else {
-                System.out.println("No results found for the given address: " + address); // Log if no results are found
-                // Provide a generic map centered on Ames, Iowa
-                imageUrl = "https://www.openstreetmap.org/search?query=Mcdonald%27s%20Ames#map=19/42.021858/-93.611026";
+                // Provide a generic map centered on Ames, Iowa as a fallback
+                imageUrl = "https://www.openstreetmap.org/search?query=Ames%2C%20Iowa#map=15/42.0220/-93.6110";
             }
         } catch (Exception e) {
-            System.out.println("Error generating map URL: " + e.getMessage()); // Log any exceptions
+            System.out.println("Error generating map URL: " + e.getMessage());
             e.printStackTrace();
         }
         return imageUrl;
