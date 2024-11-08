@@ -201,22 +201,7 @@ public class Scraper {
             e.printStackTrace();
         }
 
-
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
 }
 
 
+//you can choose udcc, fily,seanson and then you can choose breakfast lunch or dinner,

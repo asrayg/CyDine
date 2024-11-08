@@ -246,7 +246,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="32dp" />
 
-    <!-- Save Changes Button -->
+    <!-- Discord Username Label -->
+    <TextView
+        android:id="@+id/discord_username_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Discord Username:"
+        android:textColor="#BD2031"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_age" />
+
+    <!-- Discord Username EditText -->
+    <EditText
+        android:id="@+id/edit_discord_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Discord Username"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/discord_username_label"
+        app:layout_constraintBottom_toBottomOf="@id/discord_username_label"
+        app:layout_constraintStart_toEndOf="@id/discord_username_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Adjust Save Changes Button Constraint -->
     <Button
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
@@ -258,7 +285,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_age" />
+        app:layout_constraintTop_toBottomOf="@id/edit_discord_username" />
 
     <!-- Delete Account Button -->
     <Button

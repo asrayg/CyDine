@@ -130,6 +130,15 @@ public class UserController {
     }
 
 
+    @PutMapping("/users/{id}/warn/")
+    String changePassword(@RequestBody int id){
+        User user = userRepository.findById(id);
+        if(user == null) {
+            return failure;
+        }
+        user.setWarned(!user.isWarned());
+        return success;
+    }
 
 
 }

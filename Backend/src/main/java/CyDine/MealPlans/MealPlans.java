@@ -48,6 +48,9 @@ public class MealPlans {
     private CyDine.Users.User user;
 
 //    @OneToMany
+//    private CyDine.MealPlanChat.MealPlanMessage mealPlanMessage;
+
+//    @OneToMany
 //    @JsonIgnore
 //    private CyDine.Posts.Posts post;
 

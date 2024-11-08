@@ -40,4 +40,14 @@ public class Message {
     public boolean canDelete(String username) {
         return this.userName.equals(username);
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
 }
+

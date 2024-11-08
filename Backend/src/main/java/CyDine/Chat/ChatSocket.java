@@ -22,16 +22,16 @@ import org.springframework.stereotype.Controller;
 @ServerEndpoint(value = "/chat/{username}")  // this is Websocket url
 public class ChatSocket {
 
-  // cannot autowire static directly (instead we do it by the below
-  // method
+	// cannot autowire static directly (instead we do it by the below
+	// method
 	private static MessageRepository msgRepo;
 
 	/*
-   * Grabs the MessageRepository singleton from the Spring Application
-   * Context.  This works because of the @Controller annotation on this
-   * class and because the variable is declared as static.
-   * There are other ways to set this. However, this approach is
-   * easiest.
+	 * Grabs the MessageRepository singleton from the Spring Application
+	 * Context.  This works because of the @Controller annotation on this
+	 * class and because the variable is declared as static.
+	 * There are other ways to set this. However, this approach is
+	 * easiest.
 	 */
 	@Autowired
 	public void setMessageRepository(MessageRepository repo) {
@@ -47,7 +47,7 @@ public class ChatSocket {
 	@OnOpen
 	public void onOpen(Session session, @PathParam("username") String username) throws IOException {
 		logger.info("Entered into Open");
-
+        System.out.println("OPEN MEALPLAN");
 		// Check if the user is already connected
 		if (usernameSessionMap.containsKey(username)) {
 			session.getBasicRemote().sendText("You are already connected.");
@@ -59,11 +59,20 @@ public class ChatSocket {
 		usernameSessionMap.put(username, session);
 
 		// Send chat history to the newly connected user
-		sendMessageToPArticularUser(username, getChatHistory());
+		sendChatHistory(username);
 
 		// Broadcast that new user joined, but only once
 		String message = "User: " + username + " has Joined the CyDine.Chat!";
 		broadcast(message);
+	}
+
+	private void sendChatHistory(String username) {
+		List<Message> messages = msgRepo.findAll();
+		StringBuilder sb = new StringBuilder();
+		for (Message message : messages) {
+			sb.append(message.getUserName()).append(": ").append(message.getContent()).append("\n");
+		}
+		sendMessageToPArticularUser(username, sb.toString());
 	}
 
 
@@ -79,15 +88,7 @@ public class ChatSocket {
 			deleteMessage(messageIdStr, username);
 			return; // Exit after handling delete command
 		}
-
-		// Direct message to a user using the format "@username <message>"
-		if (message.startsWith("@")) {
-			String destUsername = message.split(" ")[0].substring(1);
-			sendMessageToPArticularUser(destUsername, "[DM] " + username + ": " + message);
-			sendMessageToPArticularUser(username, "[DM] " + username + ": " + message);
-		} else { // Broadcast
-			broadcast(username + ": " + message);
-		}
+		broadcast(username + ": " + message);
 
 		// Saving chat history to repository
 		msgRepo.save(new Message(username, message));
@@ -98,12 +99,12 @@ public class ChatSocket {
 	public void onClose(Session session) throws IOException {
 		logger.info("Entered into Close");
 
-    // remove the user connection information
+		// remove the user connection information
 		String username = sessionUsernameMap.get(session);
 		sessionUsernameMap.remove(session);
 		usernameSessionMap.remove(username);
 
-    // broadcase that the user disconnected
+		// broadcase that the user disconnected
 		String message = username + " disconnected";
 		broadcast(message);
 	}
@@ -121,7 +122,7 @@ public class ChatSocket {
 		try {
 			usernameSessionMap.get(username).getBasicRemote().sendText(message);
 		}
-    catch (IOException e) {
+		catch (IOException e) {
 			logger.info("Exception: " + e.getMessage().toString());
 			e.printStackTrace();
 		}
@@ -133,7 +134,7 @@ public class ChatSocket {
 			try {
 				session.getBasicRemote().sendText(message);
 			}
-      catch (IOException e) {
+			catch (IOException e) {
 				logger.info("Exception: " + e.getMessage().toString());
 				e.printStackTrace();
 			}
@@ -143,11 +144,11 @@ public class ChatSocket {
 	}
 
 
-  // Gets the CyDine.Chat history from the repository
+	// Gets the CyDine.Chat history from the repository
 	private String getChatHistory() {
 		List<Message> messages = msgRepo.findAll();
 
-    // convert the list to a string
+		// convert the list to a string
 		StringBuilder sb = new StringBuilder();
 		if(messages != null && messages.size() != 0) {
 			for (Message message : messages) {

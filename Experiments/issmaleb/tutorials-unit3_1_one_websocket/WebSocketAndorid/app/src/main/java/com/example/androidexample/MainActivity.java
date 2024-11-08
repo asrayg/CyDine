@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements WebSocketListener
 
         /* connect button listener */
         connectBtn.setOnClickListener(view -> {
-            String serverUrl = serverEtx.getText().toString() + usernameEtx.getText().toString();
+            String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss";
 
             // Establish WebSocket connection and set listener
             WebSocketManager.getInstance().connectWebSocket(serverUrl);

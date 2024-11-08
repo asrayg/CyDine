@@ -1,5 +1,7 @@
 package com.example.androidexample;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +43,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private String userId = "1";  // Replace this with the actual user ID
     private SimpleDateFormat serverDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault());
     private SimpleDateFormat comparisonDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private TextView textViewStreak;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,8 @@ public class ExerciseActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        textViewStreak = findViewById(R.id.textViewStreak);
 
         textViewCalorieCounter = findViewById(R.id.textViewCalorieCounter);
         editTextExerciseName = findViewById(R.id.editTextExerciseName);
@@ -69,6 +75,8 @@ public class ExerciseActivity extends AppCompatActivity {
         recyclerViewExercises.setAdapter(exerciseAdapter);
 
         // Load existing exercises for today
+        loadUserStreak();
+
         loadExercisesForToday();
 
         // Add Exercise Button Click Listener
@@ -76,6 +84,28 @@ public class ExerciseActivity extends AppCompatActivity {
 
         updateCalorieCounter();
     }
+
+    private void loadUserStreak() {
+        String url = BASE_URL + "/users/" + userId + "/streak";
+        Log.d(TAG, url);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        int streak = response.getInt("streak");
+                        textViewStreak.setText("Streak: " + streak + " days");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    textViewStreak.setText("Streak: 0 days");
+                }
+        );
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
 
 
     private void loadExercisesForToday() {
@@ -210,3 +240,4 @@ public class ExerciseActivity extends AppCompatActivity {
         editTextCaloriesBurned.setText("");
     }
 }
+

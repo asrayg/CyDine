@@ -16,6 +16,15 @@
         android:padding="8dp"
         android:textColor="#333" />
 
+    <TextView
+        android:id="@+id/textViewStreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Streak: 0 days"
+        android:textSize="18sp"
+        android:layout_margin="16dp"
+        android:gravity="center"/>
+
     <!-- Input Fields for New Exercise -->
     <EditText
         android:id="@+id/editTextExerciseName"
@@ -80,3 +89,4 @@
         android:layout_marginBottom="16dp" />
 
 </LinearLayout>
+
