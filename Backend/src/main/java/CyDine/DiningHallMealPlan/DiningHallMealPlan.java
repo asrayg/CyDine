@@ -3,6 +3,7 @@ package CyDine.DiningHallMealPlan;
 
 import CyDine.DiningHall.DiningHall;
 import CyDine.FoodItems.FoodItems;
+import CyDine.MealPlanChat.MealPlanMessage;
 import CyDine.Users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -33,9 +34,9 @@ public class DiningHallMealPlan {
     @JsonIgnore
     private User user;
 
-//    @OneToMany
-//    @JsonIgnore
-//    private CyDine.Posts.Posts post;
+    @OneToMany
+    @JsonIgnore
+    private List<CyDine.MealPlanChat.MealPlanMessage> mealPlanMessage;
 
     public DiningHallMealPlan(User user) {
         date = LocalDate.now();
@@ -170,4 +171,15 @@ public class DiningHallMealPlan {
         protein+=i;
     }
 
+    public void setFoodItems(List<DiningHall> foodItems) {
+        this.foodItems = foodItems;
+    }
+
+    public List<MealPlanMessage> getMealPlanMessage() {
+        return mealPlanMessage;
+    }
+
+    public void setMealPlanMessage(List<MealPlanMessage> mealPlanMessage) {
+        this.mealPlanMessage = mealPlanMessage;
+    }
 }

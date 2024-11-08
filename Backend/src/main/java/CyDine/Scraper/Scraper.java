@@ -4,8 +4,7 @@ import org.json.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -126,9 +125,8 @@ public class Scraper {
 
     @Scheduled(cron = " 0 10-22 * * *")
     public void waterPing() {
-        String usersUrl = "http://127.0.0.1:8080/users";
-        JSONObject json1 = new JSONObject("{ }");
 
+        String usersUrl = "http://127.0.0.1:8080/users";
         try {
             URL url = new URL(usersUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -174,23 +172,9 @@ public class Scraper {
                 int goal = json3.getInt("goal");
                 int total = json3.getInt("total");
                 if ((goal / 14) * timeLeftInToday < total) {
-                    String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
-                    JSONObject json = new JSONObject("{ \"content\" : \"" + "<@" + json2.getJSONObject(i).getString("discordUsername") + "> Drink water" + "\"  }");
+                    tmp("<@" + json2.getJSONObject(i).getString("discordUsername") + ">");
+//                    tmp("<@" + "757272914633425027" + ">");
 
-                    try {
-                        url = new URL(webhookUrl);
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("POST");
-                        conn.setRequestProperty("Content-Type", "application/json");
-                        conn.setDoOutput(true);
-
-                        try (OutputStream os = conn.getOutputStream()) {
-                            byte[] input = json.toString().getBytes("utf-8");
-                            os.write(input, 0, input.length);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 
@@ -200,6 +184,28 @@ public class Scraper {
         }
 
     }
+
+    public void tmp(String message) throws IOException {
+        String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
+
+        URL url = new URL(webhookUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        String jsonPayload = "{\"content\":\"" + message + "\"}";
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+    }
+
+
+
 }
 
 

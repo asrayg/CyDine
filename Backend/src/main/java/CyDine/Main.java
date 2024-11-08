@@ -32,7 +32,8 @@ class Main {
     public static void main(String[] args) throws IOException {
 
         SpringApplication.run(Main.class, args);
-        new Scraper().waterPing();
+//        new Scraper().waterPing();
+//        new Scraper().tmp("test");
 //        new Scraper().getEachFood();
     }
 
