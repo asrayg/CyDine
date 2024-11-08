@@ -33,7 +33,7 @@ class Main {
 
         SpringApplication.run(Main.class, args);
 //        new Scraper().waterPing();
-//        new Scraper().tmp("test");
+//        new Scraper().tmp("<@" + "757272914633425027" + ">");
 //        new Scraper().getEachFood();
     }
 

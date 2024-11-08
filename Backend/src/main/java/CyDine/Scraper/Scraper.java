@@ -4,7 +4,8 @@ import org.json.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class Scraper {
                         String nutrients = pt3.getJSONObject(k).getString("nutrients");
                         JSONArray nutrients2 = new JSONArray(nutrients);
                         if (!nutrients2.isEmpty()) {
-                            String url = "http://127.0.0.1:8080/Dininghall";
+                            String url2 = "http://127.0.0.1:8080/Dininghall";
                             String jsonInputString = "{" +
                                     "\"name\": \"" + name.replace(" ", "_") + "\"," +
                                     " \"protein\": " + nutrients2.getJSONObject(1).getString("qty") + "," +
@@ -103,16 +104,20 @@ public class Scraper {
                                     " \"time\": \"" + pt1.getJSONObject(i).getString("section") + "\"" +
                                     "}";
 
-                            URL obj = new URL(url);
-                            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                            con.setRequestMethod("POST");
-                            con.setRequestProperty("Content-Type", "application/json");
-                            con.setDoOutput(true);
+                            URL url = new URL(url2);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setRequestMethod("POST");
+                            connection.setRequestProperty("Content-Type", "application/json");
+                            connection.setDoOutput(true);
 
-                            try (OutputStream os = con.getOutputStream()) {
-                                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+//                            String jsonPayload = "{\"content\":\"" + message + "\"}";
+
+                            try (OutputStream os = connection.getOutputStream()) {
+                                byte[] input = jsonInputString.getBytes("utf-8");
                                 os.write(input, 0, input.length);
                             }
+
+                            int responseCode = connection.getResponseCode();
                         }
                     }
                 }
@@ -171,8 +176,9 @@ public class Scraper {
                 int timeLeftInToday = 9 - LocalTime.now().getHour();
                 int goal = json3.getInt("goal");
                 int total = json3.getInt("total");
-                if ((goal / 14) * timeLeftInToday < total) {
+                if ((goal / 14) * timeLeftInToday < total || true) {
                     tmp("<@" + json2.getJSONObject(i).getString("discordUsername") + ">");
+//                    System.out.println("test");
 //                    tmp("<@" + "757272914633425027" + ">");
 
                 }
