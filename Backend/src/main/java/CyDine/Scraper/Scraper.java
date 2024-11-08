@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -70,7 +71,7 @@ public class Scraper {
 
     }
 
-    @Scheduled(cron = "0 7 0 * * ?")
+    @Scheduled(cron = "0 7 0 * * *")
     public void getEachFood() throws IOException {
         HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
         String[] places = {"seasons-marketplace-2-2","friley-windows-2-2","union-drive-marketplace-2-2"};
@@ -120,26 +121,100 @@ public class Scraper {
             }
         }
 
-        String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
 
-        JSONObject json = new JSONObject("{ \"content\" : \"" + "<@849437503181815878> hello" + "\"  }");
+
+    }
+
+    @Scheduled(cron = " 0 10-22 * * *")
+    public void waterPing(){
+        String usersUrl = "http://127.0.0.1:8080/users";
+        JSONObject json1 = new JSONObject("{ }");
 
         try {
-            URL url = new URL(webhookUrl);
+            URL url = new URL(usersUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = json.toString().getBytes("utf-8");
-                os.write(input, 0, input.length);
+            int responseCode = conn.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
+            in.close();
+
+            System.out.println("Response Code: " + responseCode);
+            System.out.println("Response: " + response.toString());
+            JSONArray json2 = new JSONArray(response.toString());
+
+            for (int i = 0; i < json2.length(); i++) {
+                int tmp = json2.getJSONObject(i).getInt("id");
+                URL url2 = new URL(usersUrl+"/"+tmp+"/water/today");
+                conn = (HttpURLConnection) url2.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                responseCode = conn.getResponseCode();
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine2;
+                response = new StringBuilder();
+
+                while ((inputLine2 = in.readLine()) != null) {
+                    response.append(inputLine2);
+                }
+                in.close();
+
+
+                JSONObject json3 = new JSONObject(response.toString());
+                int timeLeftInToday = 9-LocalTime.now().getHour();
+                int goal = json3.getInt("goal");
+                int total = json3.getInt("total");
+                if ((goal/14)*timeLeftInToday < total){
+                    String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
+                    JSONObject json = new JSONObject("{ \"content\" : \"" + "<@"+ json2.getJSONObject(i).getString("discordUsername")+"> Drink water" + "\"  }");
+
+                    try {
+                        url = new URL(webhookUrl);
+                        conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        conn.setDoOutput(true);
+
+                        try (OutputStream os = conn.getOutputStream()) {
+                            byte[] input = json.toString().getBytes("utf-8");
+                            os.write(input, 0, input.length);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
 
 
 }
