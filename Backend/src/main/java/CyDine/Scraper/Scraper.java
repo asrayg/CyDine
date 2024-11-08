@@ -21,28 +21,28 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Scraper {
-    public String[] getSlugs(){
+    public String[] getSlugs() {
         String urlString = "https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-all-locations"; // Replace with your URL
         JSONArray json = getJson(urlString);
         String[] slugs = new String[json.length()];
-        for(int i = 0; i < json.length();i++){
+        for (int i = 0; i < json.length(); i++) {
             slugs[i] = json.getJSONObject(i).getString("slug");
         }
         System.out.println(Arrays.toString(slugs));
         return slugs;
     }
 
-    public HashMap<String,JSONArray> getPlaces(){
+    public HashMap<String, JSONArray> getPlaces() {
         String[] slugs = getSlugs();
-        HashMap<String,JSONArray> places = new HashMap<>();
-        for(int i = 0; i < slugs.length;i++){
-            places.put(slugs[i],getJson("https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=" + slugs[i]));
+        HashMap<String, JSONArray> places = new HashMap<>();
+        for (int i = 0; i < slugs.length; i++) {
+            places.put(slugs[i], getJson("https://www.dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=" + slugs[i]));
         }
         return places;
     }
 
 
-    private JSONArray getJson(String urlstr){
+    private JSONArray getJson(String urlstr) {
         try {
             URL url = new URL(urlstr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -74,7 +74,7 @@ public class Scraper {
     @Scheduled(cron = "0 7 0 * * *")
     public void getEachFood() throws IOException {
         HashMap<String, JSONArray> tmp = new Scraper().getPlaces();
-        String[] places = {"seasons-marketplace-2-2","friley-windows-2-2","union-drive-marketplace-2-2"};
+        String[] places = {"seasons-marketplace-2-2", "friley-windows-2-2", "union-drive-marketplace-2-2"};
 //       what the indexes in getJbj calls that are after get array calls can be
 //        1: must be 0
 //        2: can be multiple based on how many sections the dining hall has
@@ -122,11 +122,10 @@ public class Scraper {
         }
 
 
-
     }
 
     @Scheduled(cron = " 0 10-22 * * *")
-    public void waterPing(){
+    public void waterPing() {
         String usersUrl = "http://127.0.0.1:8080/users";
         JSONObject json1 = new JSONObject("{ }");
 
@@ -153,7 +152,7 @@ public class Scraper {
 
             for (int i = 0; i < json2.length(); i++) {
                 int tmp = json2.getJSONObject(i).getInt("id");
-                URL url2 = new URL(usersUrl+"/"+tmp+"/water/today");
+                URL url2 = new URL(usersUrl + "/" + tmp + "/water/today");
                 conn = (HttpURLConnection) url2.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -171,12 +170,12 @@ public class Scraper {
 
 
                 JSONObject json3 = new JSONObject(response.toString());
-                int timeLeftInToday = 9-LocalTime.now().getHour();
+                int timeLeftInToday = 9 - LocalTime.now().getHour();
                 int goal = json3.getInt("goal");
                 int total = json3.getInt("total");
-                if ((goal/14)*timeLeftInToday < total){
+                if ((goal / 14) * timeLeftInToday < total) {
                     String webhookUrl = "https://canary.discord.com/api/webhooks/1303302400148508672/cuqOBt05Q7Wqfw85_C17wot97VY4nF5DPUKyhe1ofdo8hJeMFa-A5bPFMQpPHqkQ0OJx";
-                    JSONObject json = new JSONObject("{ \"content\" : \"" + "<@"+ json2.getJSONObject(i).getString("discordUsername")+"> Drink water" + "\"  }");
+                    JSONObject json = new JSONObject("{ \"content\" : \"" + "<@" + json2.getJSONObject(i).getString("discordUsername") + "> Drink water" + "\"  }");
 
                     try {
                         url = new URL(webhookUrl);
@@ -196,11 +195,11 @@ public class Scraper {
             }
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
 }
 
 
