@@ -82,4 +82,12 @@ public class FitnessController {
         request.setId(id);
         return fitnessRepository.save(request);
     }
+
+    public List<CyDine.Fitness.Fitness> getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(FitnessController fitness) {
+        Fitness = fitness;
+    }
 }

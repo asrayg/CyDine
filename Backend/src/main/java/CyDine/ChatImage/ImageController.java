@@ -70,7 +70,8 @@ public class ImageController {
         }
     }
 
-
-
+    public ImageController getImagesHere() {
+        return imagesHere;
+    }
 
 }

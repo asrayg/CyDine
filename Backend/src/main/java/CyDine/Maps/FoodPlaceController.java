@@ -128,4 +128,8 @@ public class FoodPlaceController {
     FoodPlace getFoodPlaceById(@PathVariable int id) {
         return foodPlaceRepository.findById(id);
     }
+
+    public List<CyDine.Maps.FoodPlace> getFoodPlace() {
+        return foodPlace;
+    }
 }
