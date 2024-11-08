@@ -1,11 +1,23 @@
 package CyDine.Fitness;
 
+import CyDine.Maps.FoodPlace;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 public class FitnessController {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fitness_id")
+    private List<Fitness> fitness;
+
+    @ManyToOne
+    private CyDine.Fitness.FitnessController Fitness;
 
     @Autowired
     FitnessRepository fitnessRepository;

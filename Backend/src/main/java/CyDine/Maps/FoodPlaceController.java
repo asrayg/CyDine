@@ -1,5 +1,10 @@
 package CyDine.Maps;
 
+import CyDine.FoodItems.FoodItems;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/foodplaces")
 public class FoodPlaceController {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "foodPlace_id")
+    private List<FoodPlace> foodPlace;
+
+    @ManyToOne
+    private CyDine.Maps.FoodPlaceController FoodPlace;
 
     @Autowired
     private FoodPlaceRepository foodPlaceRepository;

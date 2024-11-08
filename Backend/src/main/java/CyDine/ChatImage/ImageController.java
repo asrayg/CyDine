@@ -1,5 +1,10 @@
 package CyDine.ChatImage;
 
+import CyDine.Fitness.Fitness;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +18,13 @@ import org.springframework.core.io.*;
 
 @RestController
 public class ImageController {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private List<Image> images;
+
+    @ManyToOne
+    private CyDine.ChatImage.ImageController imagesHere;
 
     // replace this! careful with the operating system in use
     private static String directory = "lo/";
