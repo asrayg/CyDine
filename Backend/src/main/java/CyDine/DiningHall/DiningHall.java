@@ -1,10 +1,14 @@
 package CyDine.DiningHall;
 
+import CyDine.DiningHallMealPlan.DiningHallMealPlan;
+import CyDine.FoodItems.FoodItems;
 import CyDine.MealPlans.MealPlans;
+import CyDine.Users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class DiningHall {
@@ -22,13 +26,14 @@ public class DiningHall {
     private String time;
     private Date date;
 
-    //    @ManyToOne
-//    @JsonIgnore
-//    private onetoone.Users.User user;
-
     @ManyToOne
     @JsonIgnore
-    private MealPlans mealPlans;
+    private User user;
+
+    @ManyToMany
+    @JsonIgnore
+    private List<DiningHallMealPlan> diningHallMealPlan;
+
 
     public DiningHall(){
         this.date = new Date();
@@ -110,14 +115,6 @@ public class DiningHall {
         this.time = time;
     }
 
-    public MealPlans getMealPlans() {
-        return mealPlans;
-    }
-
-    public void setMealPlans(MealPlans mealPlans) {
-        this.mealPlans = mealPlans;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -126,4 +123,20 @@ public class DiningHall {
         this.date = date;
     }
 
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<DiningHallMealPlan> getDiningHallMealPlan() {
+        return diningHallMealPlan;
+    }
+
+    public void setDiningHallMealPlan(List<DiningHallMealPlan> diningHallMealPlan) {
+        this.diningHallMealPlan = diningHallMealPlan;
+    }
 }

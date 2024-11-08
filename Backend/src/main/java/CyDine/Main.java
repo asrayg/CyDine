@@ -4,6 +4,7 @@ import CyDine.FoodItems.FoodItems;
 import CyDine.FoodItems.FoodItemsRepository;
 import CyDine.Scraper.Scraper;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +19,9 @@ import CyDine.Users.UserRepository;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -27,8 +31,9 @@ class Main {
 
     public static void main(String[] args) throws IOException {
 
-       SpringApplication.run(Main.class, args);
-
+        SpringApplication.run(Main.class, args);
+//        new Scraper().waterPing();
+//        new Scraper().tmp("test");
 //        new Scraper().getEachFood();
     }
 

@@ -69,6 +69,7 @@ public class User {
         this.discordUsername = discordUsername;
         mealPlans = new ArrayList<>();
         foodItems = new ArrayList<>();
+        isWarned = false;
     }
 
     public User() {

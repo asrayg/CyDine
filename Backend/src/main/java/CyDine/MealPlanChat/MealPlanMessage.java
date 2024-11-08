@@ -1,6 +1,7 @@
 package CyDine.MealPlanChat;
 
 import java.util.Date;
+import java.util.List;
 
 import CyDine.MealPlans.MealPlans;
 import jakarta.persistence.*;
@@ -27,7 +28,7 @@ public class MealPlanMessage {
     private boolean reported;
 
     @ManyToOne
-    private CyDine.MealPlans.MealPlans mealPlans;
+    private MealPlans mealPlans;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent")
@@ -85,6 +86,22 @@ public class MealPlanMessage {
                                     " \"id\": " + id +
                                     "}";
         return json;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getMealplanId() {
+        return mealplanId;
+    }
+
+    public void setMealplanId(Integer mealplanId) {
+        this.mealplanId = mealplanId;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
     }
 
 

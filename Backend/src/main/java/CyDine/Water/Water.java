@@ -1,14 +1,29 @@
 package CyDine.Water;
 
+import CyDine.MealPlanChat.MealPlanMessage;
 import CyDine.MealPlans.MealPlans;
+import CyDine.Scraper.Scraper;
+import CyDine.Users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 import java.util.Date;
 
 @Entity
 public class Water {
 
+    @ManyToOne
+    @JsonIgnore
+    private User users;
+
+    @ManyToMany
+    @JsonIgnore
+    private List<MealPlanMessage> mealPlanMessages;
+
+    @OneToMany
+    @JsonIgnore
+    private List<MealPlans> mealPlans;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -78,5 +93,29 @@ public class Water {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public User getUser() {
+        return users;
+    }
+
+    public void setUser(User user) {
+        this.users = user;
+    }
+//
+    public List<MealPlanMessage> getMealPlanMessages() {
+        return mealPlanMessages;
+    }
+
+    public void setMealPlanMessages(List<MealPlanMessage> mealPlanMessages) {
+        this.mealPlanMessages = mealPlanMessages;
+    }
+
+    public List<MealPlans> getMealPlans() {
+        return mealPlans;
+    }
+
+    public void setMealPlans(List<MealPlans> mealPlans) {
+        this.mealPlans = mealPlans;
     }
 }
