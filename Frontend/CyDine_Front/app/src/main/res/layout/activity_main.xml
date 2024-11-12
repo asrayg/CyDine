@@ -20,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
-        android:fontFamily="cursive"
         android:letterSpacing="0.1"
         android:text="CyDine"
         android:textColor="#BD2031"
@@ -35,7 +34,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:fontFamily="cursive"
         android:text="Welcome"
         android:textColor="#BD2031"
         android:textSize="25sp"
@@ -76,7 +74,6 @@
             android:text="Sign In"
             android:textSize="30sp"
             android:textColor="#EFBF04"
-            android:fontFamily="cursive"
             android:layout_marginEnd="8dp"/>
 
         <Button
@@ -88,7 +85,6 @@
             android:text="Sign Up"
             android:textSize="30sp"
             android:textColor="#EFBF04"
-            android:fontFamily="cursive"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 
