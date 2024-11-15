@@ -7,10 +7,19 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * UserModAdminActivity allows users to choose their role (User, Admin, or Moderator)
+ * and redirects them to the appropriate login screen.
+ */
 public class UserModAdminActivity extends AppCompatActivity {
 
     private Button user, admin, mod;
 
+    /**
+     * Initializes the activity and sets up button click listeners.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

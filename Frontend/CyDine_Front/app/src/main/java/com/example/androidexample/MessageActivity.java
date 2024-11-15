@@ -26,6 +26,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+/**
+ * Activity for managing messages and meal plans using WebSocket and REST APIs.
+ * Users can send messages linked to selected meal plans, view live messages, and report inappropriate content.
+ */
 public class MessageActivity extends AppCompatActivity {
     private static final String TAG = "MessageActivity";
     private WebSocketClient webSocketClient;
@@ -36,6 +40,12 @@ public class MessageActivity extends AppCompatActivity {
 
     private int selectedMealPlanId = -1;
 
+    /**
+     * Initializes the activity, connects to WebSocket, and sets up UI components.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied. Null otherwise.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,11 @@ public class MessageActivity extends AppCompatActivity {
         connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/mpchat/"+userId);
     }
 
+    /**
+     * Establishes a WebSocket connection.
+     *
+     * @param url The WebSocket server URL.
+     */
     private void connectWebSocket(String url) {
         try {
             URI uri = new URI(url);
@@ -99,6 +114,10 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sends a message through the WebSocket connection.
+     * The message is linked to the selected meal plan.
+     */
     private void sendMessage() {
         if (selectedMealPlanId == -1) {
             Toast.makeText(this, "Please select a meal plan first.", Toast.LENGTH_SHORT).show();
@@ -150,7 +169,11 @@ public class MessageActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-
+    /**
+     * Handles incoming messages by fetching the username and displaying the message.
+     *
+     * @param message The incoming JSON-formatted message.
+     */
     private void handleIncomingMessage(String message) {
         try {
             JSONObject jsonMessage = new JSONObject(message);
@@ -165,7 +188,11 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Fetches available meal plans for the user and displays a selection dialog.
+     *
+     * @param userId The user's ID.
+     */
     private void fetchAndShowMealPlans(String userId) {
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/mealplans";
         Log.d(TAG, "Fetching meal plans for userId: " + userId);
@@ -177,6 +204,11 @@ public class MessageActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    /**
+     * Displays a dialog for selecting a meal plan from the available options.
+     *
+     * @param mealPlans The JSON array of meal plans.
+     */
     private void showMealPlanSelectionDialog(JSONArray mealPlans) {
         ArrayList<String> mealPlanDescriptions = new ArrayList<>();
         ArrayList<Integer> mealPlanIds = new ArrayList<>();
@@ -289,6 +321,12 @@ public class MessageActivity extends AppCompatActivity {
         requestQueue.add(reportRequest);
     }
 
+    /**
+     * Fetches and displays food items for a selected meal plan.
+     *
+     * @param mealPlanId     The selected meal plan ID.
+     * @param messageLayout The layout where the food items will be displayed.
+     */
     private void fetchAndDisplayFoodItems(int mealPlanId, LinearLayout messageLayout) {
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + mealPlanId;
         Log.d(TAG, "Fetching food items for mealPlanId: " + mealPlanId);

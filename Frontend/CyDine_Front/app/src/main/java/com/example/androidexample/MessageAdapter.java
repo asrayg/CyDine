@@ -9,14 +9,29 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+/**
+ * Adapter for displaying messages in a RecyclerView with actions for reporting, liking, and disliking.
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     private List<String> messageList;
 
+    /**
+     * Constructor for the MessageAdapter.
+     *
+     * @param messageList A list of strings representing the messages.
+     */
     public MessageAdapter(List<String> messageList) {
         this.messageList = messageList;
     }
 
+    /**
+     * Called when a new ViewHolder is created.
+     *
+     * @param parent   The parent ViewGroup into which the new View will be added.
+     * @param viewType The view type of the new View.
+     * @return A new instance of {@link MessageViewHolder}.
+     */
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,7 +51,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Log.d("MessageAdapter", "dislikeButton: " + dislikeButton);
     }
 
-
+    /**
+     * Binds data to the ViewHolder at the specified position.
+     *
+     * @param holder   The ViewHolder to bind data to.
+     * @param position The position of the item within the data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         String message = messageList.get(position);
@@ -64,17 +84,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         });
     }
 
+    /**
+     * Returns the total number of items in the data set.
+     *
+     * @return The size of the message list.
+     */
     @Override
     public int getItemCount() {
         return messageList.size();
     }
 
+    /**
+     * ViewHolder class for individual message items.
+     * Holds references to the views for displaying and interacting with messages.
+     */
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMessage;
         TextView reportText;
         TextView likeButton;
         TextView dislikeButton;
 
+        /**
+         * Constructor for the MessageViewHolder.
+         *
+         * @param itemView The root view of the individual list item.
+         */
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMessage = itemView.findViewById(R.id.textViewMessage);
