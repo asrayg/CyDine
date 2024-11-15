@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for moderators to manage reports and live message feeds.
+ * Provides functionality to approve, dismiss, or ban users based on reports.
+ */
 public class ModActivity extends AppCompatActivity {
 
     private TextView messageDetails;
@@ -23,6 +27,12 @@ public class ModActivity extends AppCompatActivity {
     private TableAdapter tableAdapter;
     private MessageFeedAdapter messageFeedAdapter;
 
+    /**
+     * Initializes the activity, sets up the UI components, and populates data.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied. Null otherwise.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +80,12 @@ public class ModActivity extends AppCompatActivity {
         });
     }
 
-    // Sample data for the table, replace with data from backend later
+    /**
+     * Provides sample data for the reports table.
+     * Replace with backend data integration in production.
+     *
+     * @return A list of {@link TableItem} representing the sample reported items.
+     */
     private List<TableItem> getSampleTableData() {
         List<TableItem> items = new ArrayList<>();
         items.add(new TableItem(true, "Asray", "Ish"));
@@ -78,7 +93,12 @@ public class ModActivity extends AppCompatActivity {
         return items;
     }
 
-    // Sample data for the message feed, replace with data from backend later
+    /**
+     * Provides sample data for the live message feed.
+     * Replace with backend data integration in production.
+     *
+     * @return A list of strings representing sample messages.
+     */
     private List<String> getSampleMessageFeedData() {
         List<String> messages = new ArrayList<>();
         messages.add("This is a sample message");

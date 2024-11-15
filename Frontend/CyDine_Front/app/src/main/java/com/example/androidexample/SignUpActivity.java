@@ -20,6 +20,10 @@ import com.example.androidexample.VolleySingleton;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * SignUpActivity handles the user registration process by collecting user details,
+ * validating input, and sending the data to a server for account creation.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText firstName, lastName, email, password, confirmPassword;
@@ -27,6 +31,11 @@ public class SignUpActivity extends AppCompatActivity {
     // Server POST URL for sign-up
     private static final String SIGNUP_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
 
+    /**
+     * Initializes the activity, setting up input fields, buttons, and event listeners.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +70,23 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates if the given email is in a valid format.
+     *
+     * @param email The email string to validate.
+     * @return True if the email is valid, false otherwise.
+     */
     private boolean isValidEmail(String email) {
         // Basic regex for email validation
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         return email.matches(emailPattern);
     }
 
+    /**
+     * Validates user input fields for sign-up.
+     *
+     * @return True if all inputs are valid, false otherwise.
+     */
     private boolean validateInput() {
         String firstNameStr = firstName.getText().toString().trim();
         String lastNameStr = lastName.getText().toString().trim();
@@ -90,6 +110,9 @@ public class SignUpActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Sends a POST request to the server to create a new user account.
+     */
     private void makeSignUpRequest() {
         // Create a POST request for sign-up
         StringRequest signUpRequest = new StringRequest(

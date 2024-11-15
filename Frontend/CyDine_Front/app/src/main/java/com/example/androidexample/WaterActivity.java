@@ -15,6 +15,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * WaterActivity is an Android activity for tracking and managing daily water intake.
+ * It allows users to set a water consumption goal, add water intake, and view progress.
+ * The activity communicates with a backend server to store and retrieve water intake data.
+ */
 public class WaterActivity extends AppCompatActivity {
     private static final String TAG = "WaterActivity";
     private int waterGoal = 2000;
@@ -28,6 +33,10 @@ public class WaterActivity extends AppCompatActivity {
 
     private final String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080";  // Replace with your backend URL
 
+    /**
+     * Initializes the activity, setting up views and fetching data from the backend.
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +115,9 @@ public class WaterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches water intake data for the last 5 days from the backend and displays it.
+     */
     private void fetchLast5DaysWaterIntake() {
         String url = BASE_URL + "/users/" + userId + "/water/last5days";
         Log.d(TAG, "Fetching last 5 days water intake from URL: " + url);
@@ -143,7 +155,9 @@ public class WaterActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Posts a new water entry for the current day to the backend.
+     */
     private void postNewWaterEntry() {
         String url = BASE_URL + "/water";  // Use /water as per the backend endpoint
         Log.d(TAG, "Posting a new water entry to URL: " + url);
@@ -177,7 +191,9 @@ public class WaterActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-
+    /**
+     * Fetches today's water intake data from the backend and updates the UI.
+     */
     private void fetchTodayWaterIntake() {
         String url = BASE_URL + "/users/" + userId + "/water/today";
         Log.d(TAG, "Fetching today's water intake from URL: " + url);
@@ -209,7 +225,10 @@ public class WaterActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Adds a specified amount of water intake and updates the backend.
+     * @param amount The amount of water to add in milliliters.
+     */
     private void addWaterIntake(int amount) {
         String url = BASE_URL + "/users/" + userId + "/water/today/drank/" + amount;
         Log.d(TAG, "Adding water intake. URL: " + url + ", Amount: " + amount);
@@ -234,7 +253,10 @@ public class WaterActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
     }
-
+    /**
+     * Sets a new water intake goal and updates the backend.
+     * @param newGoal The new goal in milliliters.
+     */
     private void setWaterGoal(int newGoal) {
         String url = BASE_URL + "/users/" + userId + "/water/today/goal/" + newGoal;
         Log.d(TAG, "Setting new water goal. URL: " + url + ", New Goal: " + newGoal);
@@ -259,6 +281,9 @@ public class WaterActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Hides the keyboard if a view is currently focused.
+     */
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -270,8 +295,9 @@ public class WaterActivity extends AppCompatActivity {
         }
     }
 
-
-
+    /**
+     * Updates the progress bar and text views to reflect the current water intake.
+     */
     private void updateProgress() {
         Log.d(TAG, "Updating progress bar and texts");
         waterProgress.setProgress(currentWaterIntake);

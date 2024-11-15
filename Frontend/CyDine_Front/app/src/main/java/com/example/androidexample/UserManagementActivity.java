@@ -32,6 +32,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * UserManagementActivity provides functionality for managing user data.
+ * Admins can view, search, and delete users through a RecyclerView-based interface.
+ */
 public class UserManagementActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -44,6 +48,11 @@ public class UserManagementActivity extends AppCompatActivity {
 
     private static final String USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users"; // Replace with your actual user URL
 
+    /**
+     * Initializes the activity, setting up views, fetching user data, and setting up listeners.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +88,9 @@ public class UserManagementActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(v -> deleteSelectedUsers());
     }
 
-    // Function to fetch users from the server
+    /**
+     * Fetches the list of users from the backend server.
+     */
     private void fetchUsers() {
         JsonArrayRequest userRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -103,7 +114,13 @@ public class UserManagementActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(userRequest);
     }
 
-    // Parse user data and populate the user list
+
+
+    /**
+     * Parses the JSON response to populate the user list.
+     *
+     * @param response The JSON array response containing user data.
+     */
     private void parseUserData(JSONArray response) {
         try {
             userList.clear();
@@ -125,7 +142,9 @@ public class UserManagementActivity extends AppCompatActivity {
         }
     }
 
-    // Filter users based on search input
+    /**
+     * Filters the user list based on the search input.
+     */
     private void filterUsers() {
         String searchText = searchBar.getText().toString().trim();
         filteredUserList.clear();
@@ -144,7 +163,9 @@ public class UserManagementActivity extends AppCompatActivity {
         checkForSelectedUsers();
     }
 
-    // Check if any users are selected
+    /**
+     * Checks if any users are selected and updates the visibility of the delete button.
+     */
     private void checkForSelectedUsers() {
         boolean hasSelectedUsers = false;
         for (Map<String, Object> user : filteredUserList) {
@@ -156,7 +177,9 @@ public class UserManagementActivity extends AppCompatActivity {
         deleteButton.setVisibility(hasSelectedUsers ? View.VISIBLE : View.GONE);
     }
 
-    // Delete selected users
+    /**
+     * Deletes all selected users from the backend and updates the UI.
+     */
     private void deleteSelectedUsers() {
         Iterator<Map<String, Object>> iterator = filteredUserList.iterator();
         while (iterator.hasNext()) {
@@ -172,7 +195,11 @@ public class UserManagementActivity extends AppCompatActivity {
         Toast.makeText(this, "Selected users deleted.", Toast.LENGTH_SHORT).show();
     }
 
-    // Function to delete a user from the server
+    /**
+     * Sends a request to the backend to delete a user by ID.
+     *
+     * @param userId The ID of the user to delete.
+     */
     private void deleteUserFromServer(String userId) {
         String deleteUrl = USER_URL + "/" + userId;
 

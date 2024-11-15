@@ -9,6 +9,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Activity for moderator login.
+ * Provides a simple login screen where moderators can enter their credentials.
+ * On successful login, navigates to the {@link ModActivity}.
+ */
 public class ModLoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
@@ -16,6 +21,12 @@ public class ModLoginActivity extends AppCompatActivity {
     private static final String ADMIN_EMAIL = "a@a.a"; // Change this to your admin email
     private static final String ADMIN_PASSWORD = "a"; // Change this to your admin password
 
+    /**
+     * Initializes the activity, sets up the UI components, and handles the login process.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied. Null otherwise.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +56,13 @@ public class ModLoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates the provided email and password against hardcoded credentials.
+     *
+     * @param email    The entered email.
+     * @param password The entered password.
+     * @return True if the credentials are valid, false otherwise.
+     */
     private boolean isValidCredentials(String email, String password) {
         // Simple validation logic
         return email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD);

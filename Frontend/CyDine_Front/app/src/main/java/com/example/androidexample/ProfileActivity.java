@@ -25,6 +25,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ProfileActivity allows users to view, edit, and update their profile information.
+ * Users can also delete their account from this activity.
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText name, email, password, discordUsername;
@@ -35,6 +39,11 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String UPDATE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String DELETE_USER_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
 
+    /**
+     * Initializes the activity and sets up input fields, spinners, and button actions.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +104,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Function to fetch user details from the server
+    /**
+     * Fetches user details from the server and populates the input fields.
+     *
+     * @param userId The ID of the user whose details are to be fetched.
+     */
     private void fetchUserDetails(String userId) {
         String userUrl = USER_DETAILS_URL + "/" + userId;
 
@@ -146,7 +159,11 @@ public class ProfileActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(userRequest);
     }
 
-    // Function to update user information
+    /**
+     * Updates the user information on the server with the edited fields.
+     *
+     * @param userId The ID of the user whose information is to be updated.
+     */
     private void updateUserInformation(String userId) {
         StringRequest updateRequest = new StringRequest(
                 Request.Method.PUT,
@@ -207,6 +224,11 @@ public class ProfileActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(updateRequest);
     }
 
+    /**
+     * Deletes the user account from the server.
+     *
+     * @param userId The ID of the user whose account is to be deleted.
+     */
     private void deleteUserAccount(String userId) {
         String deleteUrl = DELETE_USER_URL + "/" + userId;
 
