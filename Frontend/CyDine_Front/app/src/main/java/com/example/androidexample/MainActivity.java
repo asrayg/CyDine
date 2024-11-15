@@ -11,9 +11,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * MainActivity is the entry point of the app. It displays two buttons:
+ * one for signing up and another for logging in. Clicking on either
+ * button navigates the user to the corresponding activity.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private Button signupButton, loginButton;
+
+    /**
+     * Called when the activity is first created.
+     * Sets up the UI components and defines the click behavior for the buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized, this
+     *                           bundle contains the data it most recently supplied.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

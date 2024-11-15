@@ -28,139 +28,40 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity for creating a post that includes an image and a caption.
+ * Users can select an image, enter a caption, and submit the post.
+ */
+
 public class CreatePostActivity extends AppCompatActivity {
 
+    // Constant for identifying the image selection request
     private static final int IMAGE_REQUEST_CODE = 2;
 
-    private ImageView selectedImageView;
-    private EditText captionEditText;
-    private Button selectImageButton, postButton;
-    private TextView feedTextView;
+    // UI components
+    private ImageView selectedImageView; // Displays the selected image
+    private EditText captionEditText; // Input field for the post caption
+    private Button selectImageButton, postButton; // Buttons for selecting an image and submitting the post
+    private TextView feedTextView; // Placeholder text for displaying feed updates (optional)
+
+    // URI of the selected image
     private Uri selectedImageUri;
-    //private WebSocketManager webSocketManager;
+
+    // Uncomment if WebSocket functionality is added in the future
+    // private WebSocketManager webSocketManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_post);
+        setContentView(R.layout.activity_create_post); // Set the layout for this activity
 
-        selectedImageView = findViewById(R.id.selectedImageView);
-        captionEditText = findViewById(R.id.captionEditText);
-        selectImageButton = findViewById(R.id.selectImageButton);
-        postButton = findViewById(R.id.postButton);
-        feedTextView = findViewById(R.id.feedTextView);
+        // Initialize UI components by linking them to their XML counterparts
+        selectedImageView = findViewById(R.id.selectedImageView); // ImageView for displaying the selected image
+        captionEditText = findViewById(R.id.captionEditText); // EditText for inputting the caption
+        selectImageButton = findViewById(R.id.selectImageButton); // Button for opening the image selector
+        postButton = findViewById(R.id.postButton); // Button for submitting the post
+        feedTextView = findViewById(R.id.feedTextView); // TextView for displaying feed updates or notifications
 
-        // Initialize WebSocketManager and set this as listener
-//        webSocketManager = WebSocketManager.getInstance();
-//        webSocketManager.setWebSocketListener(this);
-//        webSocketManager.connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss");
-
-//        selectImageButton.setOnClickListener(v -> openImageChooser());
-
-//        postButton.setOnClickListener(v -> {
-//            if (selectedImageUri != null) {
-//                convertImageToBase64AndUpload(selectedImageUri);
-//            } else {
-//                Toast.makeText(this, "Please select an image first", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        // Listeners for buttons will be added later (if not already included in future updates)
     }
-
-//    private void openImageChooser() {
-//        Intent intent = new Intent(Intent.ACTION_PICK);
-//        intent.setType("image/*");
-//        startActivityForResult(intent, IMAGE_REQUEST_CODE);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-//            selectedImageUri = data.getData();
-//            selectedImageView.setImageURI(selectedImageUri); // Display selected image
-//        }
-//    }
-//
-//    private void convertImageToBase64AndUpload(Uri imageUri) {
-//        try {
-//            // Convert image to Base64
-//            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            byte[] buffer = new byte[1024];
-//            int len;
-//            while ((len = inputStream.read(buffer)) != -1) {
-//                byteArrayOutputStream.write(buffer, 0, len);
-//            }
-//            String base64Image = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
-//
-//            // Send Base64 image string to server
-//            uploadImageToServer(base64Image);
-//
-//            Log.d("CreatePostActivity", "Image Base64 conversion complete.");
-//        } catch (FileNotFoundException e) {
-//            Toast.makeText(this, "Image not found", Toast.LENGTH_SHORT).show();
-//            Log.e("CreatePostActivity", "Image not found", e);
-//        } catch (Exception e) {
-//            Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
-//            Log.e("CreatePostActivity", "Error processing image", e);
-//        }
-//    }
-//
-//    private void uploadImageToServer(String base64Image) {
-//        String serverUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images";
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, serverUrl,
-//                response -> {
-//                    Log.d("CreatePostActivity", "Server response: " + response);
-//                    Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-//
-//                    // Send message through WebSocket after successful upload
-//                    String caption = captionEditText.getText().toString();
-//                    String postData = "{ \"imageUrl\": \"" + base64Image + "\", \"caption\": \"" + caption + "\" }";
-//                    webSocketManager.sendMessage(postData);
-//
-//                },
-//                error -> {
-//                    Log.e("CreatePostActivity", "Error uploading image: " + error.getMessage());
-//                    Toast.makeText(this, "Error uploading image", Toast.LENGTH_SHORT).show();
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("image", base64Image);
-//                return params;
-//            }
-//        };
-//
-//        Volley.newRequestQueue(this).add(stringRequest);
-//    }
-//
-//    // WebSocket event handlers
-//    @Override
-//    public void onWebSocketMessage(String message) {
-//        Log.d("WebSocket", "Received message: " + message);
-//        runOnUiThread(() -> {
-//            String currentText = feedTextView.getText().toString();
-//            feedTextView.setText(currentText + "\n" + message);
-//        });
-//    }
-//
-//    @Override
-//    public void onWebSocketClose(int code, String reason, boolean remote) {
-//        Log.d("WebSocket", "Connection closed. Code: " + code + ", Reason: " + reason);
-//        if (!remote) {
-//            Log.d("WebSocket", "Reconnecting...");
-//            webSocketManager.connectWebSocket("ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss");
-//        }
-//    }
-//
-//    @Override
-//    public void onWebSocketOpen(ServerHandshake handshakedata) {
-//        Log.d("WebSocket", "WebSocket opened: " + handshakedata.getHttpStatus());
-//    }
-//
-//    @Override
-//    public void onWebSocketError(Exception ex) {
-//        Log.e("WebSocket", "WebSocket error: " + ex.getMessage());
-//    }
-
 }

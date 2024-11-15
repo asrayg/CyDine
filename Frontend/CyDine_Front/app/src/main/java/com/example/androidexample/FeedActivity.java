@@ -31,8 +31,13 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * feed activity class for posting
+ */
+
 public class FeedActivity extends AppCompatActivity implements WebSocketListener {
 
+    // UI components
     private Button createPostButton;
     private TextView feedTextView;
     private WebSocketManager webSocketManager;
@@ -46,19 +51,17 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     private ImageAdapter imageAdapter;
     private boolean counter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
         // Initialize UI components
-        //createPostButton = findViewById(R.id.createPostButton);
         feedTextView = findViewById(R.id.feedTextView);
-        //messageEditText = findViewById(R.id.messageEditText);
         uploadImageButton = findViewById(R.id.uploadImageButton);
         selectedImageView = findViewById(R.id.selectedImageView);
 
+        // Set up RecyclerView and adapter for feed
         feedRecyclerView = findViewById(R.id.feedRecyclerView);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         imageAdapter = new ImageAdapter(this);
@@ -68,7 +71,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         // Initialize WebSocketManager and set the listener
         webSocketManager = WebSocketManager.getInstance();
 
-        // WebSocket server URL (use the correct URL)
+        // WebSocket server URL
         String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss";
         Log.d("WebSocket", "Connecting to WebSocket: " + serverUrl);
 
@@ -78,37 +81,18 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         // Initiate WebSocket connection
         webSocketManager.connectWebSocket(serverUrl);
 
-        // Handle button click to send message
-//        createPostButton.setOnClickListener(v -> {
-//            // Get the message from the EditText
-//            String message = messageEditText.getText().toString();
-//
-//            // Check if the message is not empty
-//            if (!message.isEmpty()) {
-//                // Send the message over WebSocket
-//                webSocketManager.sendMessage(message);
-//
-//                // Clear the EditText after sending the message
-//                messageEditText.setText("");
-//            }
-//        });
-
-        uploadImageButton = findViewById(R.id.uploadImageButton);
-        selectedImageView = findViewById(R.id.selectedImageView);
-
         // Set up the button to open image picker
-        // Handle uploadImageButton click
         uploadImageButton.setOnClickListener(v -> openImagePicker());
-
-
     }
 
+    // Method to open image picker for selecting an image
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    // Handle result of image selection
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -120,6 +104,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
+    // Method to upload the selected image to the server
     private void uploadImage() {
         counter = true;
         if (selectedImageUri == null) {
@@ -163,19 +148,17 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         Volley.newRequestQueue(this).add(multipartRequest);
     }
 
+    // Fetch uploaded image from server
     private void fetchUploadedImage(String imageName) {
         String imageUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images/gets?image=" + imageName;
         Log.d("FeedActivity", "Fetching image from URL: " + imageUrl);
 
-
-        imageAdapter.addImage(imageUrl); // This adds the new image without removing old ones
+        // Add image to RecyclerView without removing old images
+        imageAdapter.addImage(imageUrl);
         Toast.makeText(FeedActivity.this, "Image fetched and displayed!", Toast.LENGTH_SHORT).show();
-
     }
 
-
-
-
+    // Get file path from URI
     private String getPathFromURI(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
@@ -189,6 +172,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         return null;
     }
 
+    // Convert URI to byte array (file data)
     private byte[] getFileDataFromUri(Uri uri) throws IOException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -202,50 +186,45 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         return byteArrayOutputStream.toByteArray();
     }
 
-
-
-
-
+    // WebSocket callback method to handle incoming messages
     @Override
     public void onWebSocketMessage(String message) {
         // Use runOnUiThread to ensure UI update happens on the main thread
         runOnUiThread(() -> {
-            // Check if the message starts with "@" (indicating an image name)
+            // Check if the message contains "@" indicating an image name
             if (message.contains("@")) {
-                // Find the position of "@" and extract everything after it
+                // Extract image name from message
                 int atIndex = message.indexOf("@");
-
-                // Extract the part after the "@" symbol (the image name)
-                String imageName = message.substring(atIndex + 1).trim();  // +1 to skip '@'
+                String imageName = message.substring(atIndex + 1).trim();
 
                 Log.d("WebSocket", "First fetch");
-                // You can now fetch and display the image with the image name
+                // Fetch and display the image using the extracted name
                 if(counter){
                     fetchUploadedImage(imageName);
                 }
-
-                // Optionally, show a Toast for debugging or user feedbacm
             } else {
-                // Handle other types of messages, if any
+                // Handle other types of messages (non-image)
                 String currentText = feedTextView.getText().toString();
                 feedTextView.setText("\n" + message);
             }
         });
     }
 
-
+    // WebSocket callback for connection closure
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
         // Handle WebSocket connection closure
         Log.d("WebSocket", "Connection closed. Code: " + code + ", Reason: " + reason);
     }
 
+    // WebSocket callback for connection opening
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) {
         // Handle WebSocket connection opened
         Log.d("WebSocket", "WebSocket opened: " + handshakedata.getHttpStatus());
     }
 
+    // WebSocket callback for error handling
     @Override
     public void onWebSocketError(Exception ex) {
         // Handle WebSocket error

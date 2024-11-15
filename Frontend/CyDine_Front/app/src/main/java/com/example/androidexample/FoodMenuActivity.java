@@ -31,6 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * outside food tracker class
+ */
 public class FoodMenuActivity extends AppCompatActivity {
 
     private Spinner diningCenterSpinner;
@@ -76,6 +80,11 @@ public class FoodMenuActivity extends AppCompatActivity {
         fetchUserMealPlan();
     }
 
+
+    /**
+     * Fetches the user's meal plan.
+     * This method retrieves the meal plan associated with the user from the backend or database.
+     */
     private void fetchUserMealPlan() {
         // Construct the URL for the GET request
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId + "/DHmealplans";
@@ -103,7 +112,10 @@ public class FoodMenuActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(mealPlansRequest);
     }
 
-    // Method to parse the fetched meal plans and update the UI
+    /**
+     * Parses the meal plans returned from the backend.
+     * @param mealPlans A JSONArray containing the meal plans to be parsed.
+     */
     private void parseMealPlans(JSONArray mealPlans) {
         try {
             // Clear previous selections
@@ -162,7 +174,10 @@ public class FoodMenuActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Generates available food options for the user to choose from.
+     * This method creates a list of food options based on the user's preferences or meal plan.
+     */
     private void generateFoodOptions() {
         foodOptionsContainer.removeAllViews(); // Clear previous views
 
@@ -199,6 +214,11 @@ public class FoodMenuActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
     }
 
+    /**
+     * Parses food items specific to a meal type (e.g., breakfast, lunch).
+     * @param foodItems A JSONArray containing the food items to be parsed.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     */
     private void parseFoodItems(JSONArray foodItems, String mealType) {
         try {
             for (int i = 0; i < foodItems.length(); i++) {
@@ -221,6 +241,18 @@ public class FoodMenuActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Creates a card view to display the details of a food item.
+     * @param foodName A String representing the name of the food item.
+     * @param calories An integer representing the calorie count of the food item.
+     * @param protein An integer representing the protein content in the food item.
+     * @param carbs An integer representing the carbohydrate content in the food item.
+     * @param fat An integer representing the fat content in the food item.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     * @param id An integer representing the ID of the food item.
+     * @return A CardView object containing the food item's details.
+     */
     private CardView createFoodCard(String foodName, int calories, int protein, int carbs, int fat, String mealType, int id) {
         CardView cardView = new CardView(this);
         cardView.setCardElevation(8);
@@ -265,6 +297,12 @@ public class FoodMenuActivity extends AppCompatActivity {
         return cardView;
     }
 
+
+    /**
+     * Selects a food option to be added to the user's meal plan.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     * @param foodOption A FoodOption object representing the selected food option.
+     */
     private void selectMealOption(String mealType, FoodOption foodOption) {
         // Get the current list of selected meals for this meal type, or create a new list if it doesn't exist
         List<FoodOption> selectedMealList = selectedMeals.get(mealType);
@@ -283,6 +321,11 @@ public class FoodMenuActivity extends AppCompatActivity {
         updateSelectedMealUI(mealType);
     }
 
+
+    /**
+     * Removes a food item from the user's meal plan.
+     * @param foodItemId An integer representing the ID of the food item to be removed.
+     */
     private void removeFoodItem(int foodItemId) {
         // Prepare the URL for the DELETE request
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/" + mealID + "/fooditems/remove/byId";
@@ -331,6 +374,10 @@ public class FoodMenuActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Adds a food item to the user's meal plan.
+     * @param mealPlanID An integer representing the ID of the meal plan to which the food item will be added.
+     */
     private void addFoodItem(int mealPlanID) {
         // Prepare the URL for the PUT request
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/"+mealPlanID+"/fooditems/add/byId";
@@ -374,12 +421,21 @@ public class FoodMenuActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(addFoodRequest);
     }
 
+
+    /**
+     * Creates a request body for adding selected food items to the meal plan.
+     * @return A String representing the request body for adding food items.
+     */
     private String createRequestBodyForFoodItemIds() {
         // Assuming you have a list or collection of food item IDs to add
         List<Integer> foodItemIds = getSelectedFoodItemIds(); // Implement this method to retrieve selected IDs
         return TextUtils.join(",", foodItemIds); // Join the IDs into a comma-separated string
     }
 
+    /**
+     * Gets the list of selected food item IDs.
+     * @return A List of integers representing the IDs of the selected food items.
+     */
     private List<Integer> getSelectedFoodItemIds() {
         List<Integer> ids = new ArrayList<>();
 
@@ -392,6 +448,10 @@ public class FoodMenuActivity extends AppCompatActivity {
         return ids;
     }
 
+    /**
+     * Associates a specific meal plan with the user.
+     * @param mealPlanID An integer representing the ID of the meal plan to be associated with the user.
+     */
     private void associateMealPlanWithUser(int mealPlanID) {
         // Prepare the URL for the PUT request
         String url = "http://coms-3090-020.class.las.iastate.edu:8080/users/" + userId +"/DHmealplan/" +mealPlanID;
@@ -437,6 +497,11 @@ public class FoodMenuActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(associateRequest);
     }
 
+
+    /**
+     * Creates the request body for adding meals to the user's meal plan.
+     * @return A String representing the request body for adding the meals.
+     */
     private String createRequestBodyForMeals() {
         JSONArray foodsArray = new JSONArray();
 
@@ -519,6 +584,12 @@ public class FoodMenuActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Sends a request to the backend to add a meal to the user's meal plan.
+     * @param foodOption A FoodOption object representing the selected meal option to be added.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     */
+
     private void sendAddMealRequest(FoodOption foodOption, String mealType) {
         StringRequest addMealRequest = new StringRequest(
                 Request.Method.POST,
@@ -572,6 +643,10 @@ public class FoodMenuActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(addMealRequest);
     }
 
+    /**
+     * Updates the UI with the selected meal details.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     */
     private void updateSelectedMealUI(String mealType) {
         LinearLayout targetContainer;
 
@@ -611,6 +686,13 @@ public class FoodMenuActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a confirmation dialog to the user before removing a food item from a meal plan.
+     * @param option A FoodOption object representing the food item to be removed.
+     * @param mealType A String representing the type of meal (e.g., "Breakfast", "Lunch").
+     * This method shows a confirmation dialog with 'Yes' and 'No' options. If the user selects 'Yes',
+     * the food item is removed from the meal plan and the UI is updated accordingly.
+     */
     private void showDeleteConfirmation(FoodOption option, String mealType) {
         new AlertDialog.Builder(this)
                 .setTitle("Remove Item")
@@ -627,6 +709,12 @@ public class FoodMenuActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Maps a dining hall name to its corresponding full name or identifier.
+     * @param diningHall A String representing the dining hall name to be mapped.
+     * @return A String representing the full name or identifier of the dining hall.
+     */
+
     private String mapDiningHallName(String diningHall) {
         switch (diningHall) {
             case "Seasons":
@@ -640,6 +728,10 @@ public class FoodMenuActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Static inner class representing a food option that can be added to a meal.
+     */
     private static class FoodOption {
         private String foodName;
         private int calories;

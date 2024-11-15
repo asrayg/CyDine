@@ -2,7 +2,6 @@ package com.example.androidexample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +13,7 @@ import com.google.android.material.navigation.NavigationView;
 
 public class HomeScreenActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    /** DrawerLayout to manage the sliding navigation drawer */
     private DrawerLayout drawerLayout;
 
     @Override
@@ -21,32 +21,40 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        // Set up toolbar
+        /** Set up the toolbar and make it the app's action bar */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Set up drawer layout
+        /** Initialize DrawerLayout and NavigationView */
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Set up drawer toggle
+        /** Set up ActionBarDrawerToggle to handle opening and closing of the navigation drawer */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); // Synchronize the state of the drawer toggle
     }
 
+    /**
+     * Handles navigation item selection and starts the corresponding activity.
+     *
+     * @param item The selected menu item
+     * @return boolean indicating whether the item selection is handled
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Retrieve user details from the intent that started this activity
         String userId = getIntent().getStringExtra("userId");
         String userName = getIntent().getStringExtra("userName");
         String userEmail = getIntent().getStringExtra("userEmail");
         String password = getIntent().getStringExtra("password");
 
+        /** Variable to hold the intent for the selected activity */
         Intent intent = null;
 
-        // Handle each menu item click
+        /** Handle navigation item selection */
         if (item.getItemId() == R.id.nav_meals) {
             intent = new Intent(this, MealPlanActivity.class);
         } else if (item.getItemId() == R.id.nav_food) {
@@ -63,20 +71,30 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
             intent = new Intent(this, FoodMenuActivity.class);
         } else if (item.getItemId() == R.id.feed) {
             intent = new Intent(this, FeedActivity.class);
-        }else if (item.getItemId() == R.id.nav_map) {
+        } else if (item.getItemId() == R.id.nav_map) {
             intent = new Intent(this, MapActivity.class);
         }
 
-        // Pass user details to the target activity if intent is created
+        /** If an intent was created for a menu item, add user details and start the activity */
         if (intent != null) {
             addUserDetailsToIntent(intent, userId, userName, userEmail, password);
             startActivity(intent);
         }
 
+        /** Close the drawer after an item is selected */
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /**
+     * Adds the user details to the intent to pass them to the target activity.
+     *
+     * @param intent     The target activity intent
+     * @param userId     The user's ID
+     * @param userName   The user's name
+     * @param userEmail  The user's email
+     * @param password   The user's password
+     */
     private void addUserDetailsToIntent(Intent intent, String userId, String userName, String userEmail, String password) {
         intent.putExtra("userId", userId);
         intent.putExtra("userName", userName);
@@ -84,6 +102,10 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
         intent.putExtra("password", password);
     }
 
+    /**
+     * Handles the back press event. If the drawer is open, it closes it; otherwise,
+     * it performs the default back press action.
+     */
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {

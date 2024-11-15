@@ -1,5 +1,9 @@
 package com.example.androidexample;
 
+/**
+ * class for excerise
+ */
+
 public class Exercise {
     private int id;
     private String name;

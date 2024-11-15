@@ -30,6 +30,9 @@ import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * adding outside food item class
+ */
 public class FoodMenusActivity extends AppCompatActivity {
 
     private LinearLayout foodListLayout;

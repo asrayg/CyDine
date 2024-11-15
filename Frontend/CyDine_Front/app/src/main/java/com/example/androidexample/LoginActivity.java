@@ -24,6 +24,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * LoginActivity is the activity that handles user login functionality.
+ * It validates user input, makes a login request to the server, and handles login response.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
@@ -31,6 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final String UPDATE_USER_URL = LOGIN_URL; // Same URL base for updates
 
+    /**
+     * Called when the activity is first created.
+     * It sets up UI components, such as the email, password fields, and login button.
+     * Also, it handles navigation to the SignUpActivity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +68,23 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates the email input against a basic email pattern.
+     *
+     * @param email The email address to validate.
+     * @return True if the email matches the pattern, false otherwise.
+     */
     private boolean isValidEmail(String email) {
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         return email.matches(emailPattern);
     }
 
+    /**
+     * Validates the login form inputs (email and password).
+     * Shows a Toast message if inputs are invalid.
+     *
+     * @return True if inputs are valid, false otherwise.
+     */
     private boolean validateInput() {
         String emailStr = email.getText().toString().trim();
         String passwordStr = password.getText().toString().trim();
@@ -80,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Makes a network request to the server to log in the user.
+     * If the login is successful, the user is redirected to the HomeScreenActivity.
+     */
     private void makeLoginRequest() {
         StringRequest loginRequest = new StringRequest(
                 Request.Method.GET,
@@ -109,6 +134,12 @@ public class LoginActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(loginRequest);
     }
 
+    /**
+     * Parses the server's login response to check if the entered email and password match any user.
+     * If successful, it proceeds to update the user's status and navigate to the home screen.
+     *
+     * @param response The response from the server containing the list of users.
+     */
     private void parseResponse(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
@@ -153,6 +184,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Fetches the current data of the user and updates the 'ifActive' status to true.
+     *
+     * @param userId The ID of the user whose status will be updated.
+     */
     private void updateUserStatus(String userId) {
         // Step 1: Fetch current user data
         StringRequest fetchRequest = new StringRequest(
@@ -187,6 +223,12 @@ public class LoginActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(fetchRequest);
     }
 
+    /**
+     * Sends the updated user data (with 'ifActive' set to true) back to the server.
+     *
+     * @param userId The ID of the user whose data is being updated.
+     * @param updatedData The updated user data.
+     */
     private void sendUpdateRequest(String userId, JSONObject updatedData) {
         StringRequest updateRequest = new StringRequest(
                 Request.Method.PUT,

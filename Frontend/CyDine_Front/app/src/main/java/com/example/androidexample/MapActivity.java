@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * healthy food recommendation maps
+ */
 public class MapActivity extends AppCompatActivity {
 
     private static final String TAG = "MapActivity";
@@ -39,6 +42,10 @@ public class MapActivity extends AppCompatActivity {
     private LinearLayout restaurantListLayout;
     private RequestQueue requestQueue;
 
+    /**
+     * Called when the activity is created.
+     * Initializes the views and fetches restaurant data and map image.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,12 +64,18 @@ public class MapActivity extends AppCompatActivity {
         fetchRestaurantData();
     }
 
+    /**
+     * Sets up the WebView to display map images.
+     */
     private void setupWebView() {
         WebSettings webSettings = mapWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         mapWebView.setWebViewClient(new WebViewClient());
     }
 
+    /**
+     * Loads a map image URL from the backend or uses a default URL.
+     */
     private void loadMapImage() {
         // Set a default URL in case the backend does not return a valid image URL
         String defaultImageUrl = "https://ibb.c`o/f80PxcF";
@@ -112,6 +125,9 @@ public class MapActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Fetches restaurant data from the backend.
+     */
     private void fetchRestaurantData() {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET, BASE_URL, null,
@@ -132,6 +148,10 @@ public class MapActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Processes the restaurant data to remove duplicates and calculate the average rating.
+     * @param restaurantArray The array of restaurant data retrieved from the backend.
+     */
     private void processRestaurantData(JSONArray restaurantArray) {
         Map<String, RestaurantData> restaurantDataMap = new HashMap<>();
 
@@ -163,6 +183,10 @@ public class MapActivity extends AppCompatActivity {
         populateRestaurantList(restaurantDataMap);
     }
 
+    /**
+     * Populates the restaurant list layout with restaurant cards.
+     * @param restaurantDataMap The map of restaurant data to be displayed.
+     */
     private void populateRestaurantList(Map<String, RestaurantData> restaurantDataMap) {
         restaurantListLayout.removeAllViews();
 
@@ -185,6 +209,10 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays the reviews dialog for a restaurant.
+     * @param data The restaurant data to show in the dialog.
+     */
     private void showReviewsDialog(RestaurantData data) {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reviews, null);
         TextView restaurantNameView = dialogView.findViewById(R.id.dialogRestaurantName);
@@ -209,6 +237,10 @@ public class MapActivity extends AppCompatActivity {
         reviewsDialog.show();
     }
 
+    /**
+     * Displays the rating dialog to allow a user to submit a review.
+     * @param restaurantName The name of the restaurant being rated.
+     */
     private void showRatingDialog(String restaurantName) {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_ratings, null);
         RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
@@ -234,6 +266,12 @@ public class MapActivity extends AppCompatActivity {
         ratingDialog.show();
     }
 
+    /**
+     * Submits a review for a restaurant to the backend.
+     * @param restaurantName The name of the restaurant being reviewed.
+     * @param rating The rating given by the user.
+     * @param reviewText The review text entered by the user.
+     */
     private void submitReview(String restaurantName, float rating, String reviewText) {
         String url = BASE_URL;
         JSONObject requestBody = new JSONObject();
@@ -271,6 +309,9 @@ public class MapActivity extends AppCompatActivity {
         requestQueue.add(postRequest);
     }
 
+    /**
+     * Represents a restaurant's data, including its name, ratings, and reviews.
+     */
     private class RestaurantData {
         private final String name;
         private double totalRating;

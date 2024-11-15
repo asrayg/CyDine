@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,28 +29,37 @@ import java.util.HashMap;
 
 import java.util.Map;
 
+/**
+ * This activity handles exercise tracking functionality.
+ * Users can log exercises, view their daily calorie burn, and maintain a streak of activity.
+ */
 public class ExerciseActivity extends AppCompatActivity {
 
-    private TextView textViewCalorieCounter;
-    private EditText editTextExerciseName, editTextTimeSpent, editTextCaloriesBurned;
-    private Button buttonAddExercise;
-    private RecyclerView recyclerViewExercises;
-    private ExerciseAdapter exerciseAdapter;
-    private List<Exercise> exerciseList;
-    private int caloriesRemaining = 500;
-    private String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080";
-    private String userId = "1";  // Replace this with the actual user ID
+    // UI components for displaying and managing exercises
+    private TextView textViewCalorieCounter; // Displays remaining calories
+    private EditText editTextExerciseName, editTextTimeSpent, editTextCaloriesBurned; // Input fields for exercise details
+    private Button buttonAddExercise; // Button to add a new exercise
+    private RecyclerView recyclerViewExercises; // List of exercises
+    private ExerciseAdapter exerciseAdapter; // Adapter for the RecyclerView
+    private List<Exercise> exerciseList; // List to store exercise data
+
+    // Variables for calorie tracking
+    private int caloriesRemaining = 500; // Initial calories remaining
+    private String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080"; // Base URL for backend API
+    private String userId = "1"; // Placeholder for user ID, replace as necessary
+
+    // Date formatting for server and local date parsing
     private SimpleDateFormat serverDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault());
     private SimpleDateFormat comparisonDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private TextView textViewStreak;
 
+    private TextView textViewStreak; // Displays the user's exercise streak
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
 
-        // Retrieve the userId from the intent
+        // Retrieve userId passed via intent
         userId = getIntent().getStringExtra("userId");
         if (userId == null) {
             Toast.makeText(this, "User ID not provided", Toast.LENGTH_SHORT).show();
@@ -59,8 +67,8 @@ public class ExerciseActivity extends AppCompatActivity {
             return;
         }
 
+        // Initialize UI components
         textViewStreak = findViewById(R.id.textViewStreak);
-
         textViewCalorieCounter = findViewById(R.id.textViewCalorieCounter);
         editTextExerciseName = findViewById(R.id.editTextExerciseName);
         editTextTimeSpent = findViewById(R.id.editTextTimeSpent);
@@ -68,23 +76,26 @@ public class ExerciseActivity extends AppCompatActivity {
         buttonAddExercise = findViewById(R.id.buttonAddExercise);
         recyclerViewExercises = findViewById(R.id.recyclerViewExercises);
 
-        // Set up RecyclerView
+        // Setup RecyclerView for displaying exercises
         exerciseList = new ArrayList<>();
         exerciseAdapter = new ExerciseAdapter(exerciseList, ExerciseActivity.this);
         recyclerViewExercises.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewExercises.setAdapter(exerciseAdapter);
 
-        // Load existing exercises for today
+        // Load user streak and exercises for today
         loadUserStreak();
-
         loadExercisesForToday();
 
-        // Add Exercise Button Click Listener
+        // Set up button click listener for adding exercises
         buttonAddExercise.setOnClickListener(v -> addExercise());
 
+        // Update calorie counter based on initial values
         updateCalorieCounter();
     }
 
+    /**
+     * Fetches the user's exercise streak from the backend and displays it.
+     */
     private void loadUserStreak() {
         String url = BASE_URL + "/users/" + userId + "/streak";
         Log.d(TAG, url);
@@ -103,23 +114,26 @@ public class ExerciseActivity extends AppCompatActivity {
                 }
         );
 
+        // Add request to the Volley request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-
-
+    /**
+     * Loads exercises logged for the current day and updates the UI.
+     */
     private void loadExercisesForToday() {
         String url = BASE_URL + "/users/" + userId + "/fitness";
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET, url, null,
                 response -> {
-                    exerciseList.clear();
+                    exerciseList.clear(); // Clear existing list
                     int totalCaloriesBurned = 0;
-                    String today = comparisonDateFormat.format(new Date());
+                    String today = comparisonDateFormat.format(new Date()); // Get today's date
 
-                    // Map to hold calories burned for each day
+                    // Map to store calories burned for each day
                     Map<String, Integer> dailyCalories = new HashMap<>();
 
+                    // Parse response to extract exercise data
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject exerciseJson = response.getJSONObject(i);
@@ -129,15 +143,15 @@ public class ExerciseActivity extends AppCompatActivity {
                             int caloriesBurned = exerciseJson.getInt("calories");
                             String dateString = exerciseJson.getString("date");
 
-                            // Parse the date from the server
+                            // Parse server date format
                             Date exerciseDate = serverDateFormat.parse(dateString);
                             String exerciseDateOnly = comparisonDateFormat.format(exerciseDate);
 
-                            // Track calories burned for each day
+                            // Update daily calories burned
                             dailyCalories.put(exerciseDateOnly,
                                     dailyCalories.getOrDefault(exerciseDateOnly, 0) + caloriesBurned);
 
-                            // Check if the exercise date is today
+                            // If exercise is from today, add it to the list
                             if (exerciseDateOnly.equals(today)) {
                                 Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);
                                 exerciseList.add(exercise);
@@ -149,11 +163,12 @@ public class ExerciseActivity extends AppCompatActivity {
                         }
                     }
 
+                    // Update the UI with the fetched data
                     exerciseAdapter.notifyDataSetChanged();
-                    caloriesRemaining = 500 - totalCaloriesBurned;
+                    caloriesRemaining = 500 - totalCaloriesBurned; // Update remaining calories
                     updateCalorieCounter();
 
-                    // Calculate the calories burned for the last 5 days and display them
+                    // Update daily calorie burns for the last 5 days
                     updateDailyCalories(dailyCalories);
                 },
                 error -> Toast.makeText(ExerciseActivity.this, "Failed to load exercises", Toast.LENGTH_SHORT).show()
@@ -162,9 +177,11 @@ public class ExerciseActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-
+    /**
+     * Displays the daily calorie burns for the last 5 days.
+     */
     private void updateDailyCalories(Map<String, Integer> dailyCalories) {
-        // Get the last 5 days as a list of formatted date strings
+        // Generate a list of the last 5 days
         List<String> lastFiveDays = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         for (int i = 0; i < 5; i++) {
@@ -172,27 +189,33 @@ public class ExerciseActivity extends AppCompatActivity {
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
 
-        // Build a string to display the last 5 days' calorie burns
+        // Build a summary string for daily calorie burns
         StringBuilder dailyCalorieText = new StringBuilder("Daily Calories Burned:\n");
         for (String date : lastFiveDays) {
             int calories = dailyCalories.getOrDefault(date, 0);
             dailyCalorieText.append(date).append(": ").append(calories).append(" kcal\n");
         }
 
-        // Update the TextView with daily calorie burns
+        // Display the daily calorie burns in the TextView
         TextView textViewDailyCalories = findViewById(R.id.textViewDailyCalories);
         textViewDailyCalories.setText(dailyCalorieText.toString());
     }
 
+    /**
+     * Handles adding a new exercise entry.
+     */
     private void addExercise() {
+        // Get input values
         String name = editTextExerciseName.getText().toString().trim();
         String timeSpentText = editTextTimeSpent.getText().toString().trim();
         String caloriesBurnedText = editTextCaloriesBurned.getText().toString().trim();
 
+        // Validate input
         if (!name.isEmpty() && !timeSpentText.isEmpty() && !caloriesBurnedText.isEmpty()) {
             int timeSpent = Integer.parseInt(timeSpentText);
             int caloriesBurned = Integer.parseInt(caloriesBurnedText);
 
+            // Create JSON object for the new exercise
             JSONObject exerciseJson = new JSONObject();
             try {
                 exerciseJson.put("name", name);
@@ -202,17 +225,18 @@ public class ExerciseActivity extends AppCompatActivity {
 
                 String url = BASE_URL + "/fitness";
 
+                // Send POST request to add the exercise
                 JsonObjectRequest request = new JsonObjectRequest(
                         Request.Method.POST, url, exerciseJson,
                         response -> {
                             try {
-                                int id = response.getInt("id"); // Retrieve the id from the response
+                                int id = response.getInt("id"); // Retrieve ID from the response
                                 Exercise exercise = new Exercise(id, name, timeSpent, caloriesBurned);
-                                exerciseList.add(exercise);
+                                exerciseList.add(exercise); // Add exercise to the list
                                 exerciseAdapter.notifyItemInserted(exerciseList.size() - 1);
-                                caloriesRemaining -= caloriesBurned;
-                                updateCalorieCounter();
-                                clearInputFields();
+                                caloriesRemaining -= caloriesBurned; // Update remaining calories
+                                updateCalorieCounter(); // Update the calorie counter UI
+                                clearInputFields(); // Clear input fields
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -220,6 +244,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         error -> Toast.makeText(ExerciseActivity.this, "Failed to add exercise", Toast.LENGTH_SHORT).show()
                 );
 
+                // Add request to the Volley request queue
                 VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
 
             } catch (JSONException e) {
@@ -230,14 +255,19 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
 
-    private void updateCalorieCounter() {
-        textViewCalorieCounter.setText("Calories Remaining: " + caloriesRemaining);
-    }
-
+    /**
+     * Clears the input fields for adding a new exercise.
+     */
     private void clearInputFields() {
         editTextExerciseName.setText("");
         editTextTimeSpent.setText("");
         editTextCaloriesBurned.setText("");
     }
-}
 
+    /**
+     * Updates the calorie counter TextView with the remaining calories.
+     */
+    private void updateCalorieCounter() {
+        textViewCalorieCounter.setText("Calories Remaining: " + caloriesRemaining);
+    }
+}

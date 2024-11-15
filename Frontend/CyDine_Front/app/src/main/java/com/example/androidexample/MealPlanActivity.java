@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Activity for managing meal plans, including fetching, adding, updating, and deleting meal plans.
+ */
 public class MealPlanActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users/";
@@ -40,6 +43,11 @@ public class MealPlanActivity extends AppCompatActivity {
     private LinearLayout mealPlanContainer;
     private Button addMealPlanButton;
 
+
+    /**
+     * Called when the activity is created.
+     * Initializes the view and sets up the necessary requests and event listeners.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +68,10 @@ public class MealPlanActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches the list of food items from the server.
+     * Populates the foodItemMap with the food names as keys and the JSON objects as values.
+     */
     private void fetchFoodItems() {
         String FOOD_ITEM_URL = BASE_URL + userId + "/FoodItems";
         StringRequest foodItemRequest = new StringRequest(
@@ -92,6 +104,10 @@ public class MealPlanActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(foodItemRequest);
     }
 
+    /**
+     * Adds a new meal plan by making a POST request to the server.
+     * Sends a basic JSON request to create the meal plan and then associates it with the user.
+     */
     private void addNewMealPlan() {
         // Create a POST request to add a new meal plan
         StringRequest addMealPlanRequest = new StringRequest(
@@ -142,7 +158,10 @@ public class MealPlanActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(addMealPlanRequest);
     }
 
-    // Method to make a PUT request to associate the meal plan with the user
+    /**
+     * Makes a PUT request to associate a new meal plan with the user.
+     * @param mealPlanID The ID of the meal plan to associate with the user.
+     */
     private void associateMealPlanWithUser(int mealPlanID) {
         String url = BASE_URL + userId + "/mealplan/" + mealPlanID;
 
@@ -171,6 +190,9 @@ public class MealPlanActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Fetches the user's meal plans from the server.
+     */
     private void fetchUserMealPlans() {
         String url = BASE_URL + userId + "/mealplans";
 
@@ -198,6 +220,10 @@ public class MealPlanActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(jsonArrayRequest);
     }
 
+    /**
+     * Displays the fetched meal plans in the UI.
+     * @param mealPlans The JSONArray containing the meal plans.
+     */
     private void displayMealPlans(JSONArray mealPlans) {
         mealPlanContainer.removeAllViews(); // Clear previous views
 
@@ -231,6 +257,15 @@ public class MealPlanActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Adds a new meal item to the meal plan display.
+     * @param id The ID of the meal plan.
+     * @param foodItemName A comma-separated list of food names in the meal plan.
+     * @param protein The total protein value for the meal.
+     * @param carbs The total carbs value for the meal.
+     * @param fat The total fat value for the meal.
+     * @param calories The total calorie value for the meal.
+     */
     private void addMealItemView(int id, String foodItemName, int protein, int carbs, int fat, int calories) {
         View mealPlanView = LayoutInflater.from(this).inflate(R.layout.meal_plan_item, null);
         TextView mealPlanHeader = mealPlanView.findViewById(R.id.meal_plan_header);
@@ -297,6 +332,11 @@ public class MealPlanActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Updates the meal plan with a new food item.
+     * @param id The ID of the meal plan to update.
+     * @param foodItemName A comma-separated list of food items to add to the meal plan.
+     */
     private void updateMealPlanWithFoodItem(int id, String foodItemName) {
         String updateUrl = "http://coms-3090-020.class.las.iastate.edu:8080/mealplans/" + id + "/fooditems/add/byName/" + userId;
 
@@ -357,6 +397,11 @@ public class MealPlanActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(updateRequest);
     }
 
+    /**
+     * Deletes a meal plan.
+     * @param mealPlanId The ID of the meal plan to delete.
+     * @param mealPlanView The view associated with the meal plan that will be removed from the UI.
+     */
     private void deleteMealPlan(int mealPlanId, final View mealPlanView) {
         String deleteUrl = BASE_URL + userId + "/mealplan/" + mealPlanId;
 
