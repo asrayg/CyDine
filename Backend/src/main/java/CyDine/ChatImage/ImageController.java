@@ -16,7 +16,15 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import org.springframework.core.io.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "Images", description = "Image management APIs")
 public class ImageController {
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -33,26 +41,24 @@ public class ImageController {
     private ImageRepository imageRepository;
 
     @GetMapping(value = "/images/gets", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    Resource getImageById(@RequestParam ("image") String image) throws IOException {
-
+    @Operation(summary = "Get image by name", description = "Retrieves an image file by its name.")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(mediaType = "image/jpeg, image/png"))
+    @ApiResponse(responseCode = "404", description = "Image not found")
+    Resource getImageById(@Parameter(description = "Name of the image file") @RequestParam("image") String image) throws IOException {
         File file = new File(directory + image);
-
         Resource resource = new FileSystemResource(file);
-
         return resource;
-
-        //Image image = imageRepository.findById(id);
-        //File imageFile = new File(image.getFilePath());
-        //return Files.readAllBytes(imageFile.toPath());
     }
 
     @PostMapping("/images")
-    public int handleFileUpload(@RequestParam("image") MultipartFile imageFile)  {
-
+    @Operation(summary = "Upload an image", description = "Uploads a new image file.")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(schema = @Schema(type = "integer")))
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    public int handleFileUpload(@Parameter(description = "Image file to upload") @RequestParam("image") MultipartFile imageFile) {
         try {
-
             File uploadir = new File(directory);
-
             if(!uploadir.exists()){
                 uploadir.mkdirs();
             }
@@ -60,10 +66,6 @@ public class ImageController {
             File destinationFile = new File(directory + filename);
             Files.copy(imageFile.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             imageFile.transferTo(destinationFile);  // save file to disk
-
-            // Save the image in the repository
-
-            //imageRepository.save(image);
             return 1;
         } catch (IOException e) {
             return -1;
@@ -73,5 +75,4 @@ public class ImageController {
     public ImageController getImagesHere() {
         return imagesHere;
     }
-
 }

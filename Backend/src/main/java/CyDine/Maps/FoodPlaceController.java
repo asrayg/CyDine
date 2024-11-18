@@ -15,8 +15,16 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/foodplaces")
+@Tag(name = "Food Places", description = "Food Places management APIs")
 public class FoodPlaceController {
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -35,6 +43,9 @@ public class FoodPlaceController {
     private RestTemplate restTemplate = new RestTemplate();
 
     @PostMapping
+    @Operation(summary = "Create a new food place", description = "Creates a new food place entry.")
+    @ApiResponse(responseCode = "200", description = "Food place created successfully",
+            content = @Content(schema = @Schema(type = "string")))
     String createFoodPlace(@RequestBody FoodPlace foodPlace) {
         if (foodPlace.getRating() < 0 || foodPlace.getRating() > 5) {
             return "{\"message\":\"Rating must be between 0 and 5\"}";
@@ -47,11 +58,15 @@ public class FoodPlaceController {
         foodPlace.setImageUrl(imageUrl);
 
         foodPlaceRepository.save(foodPlace);
-        return success;
-    }
+        return success;    }
 
     @PutMapping("/{id}")
-    String updateFoodPlace(@PathVariable int id, @RequestBody FoodPlace updatedFoodPlace) {
+    @Operation(summary = "Update a food place", description = "Updates an existing food place entry.")
+    @ApiResponse(responseCode = "200", description = "Food place updated successfully",
+            content = @Content(schema = @Schema(type = "string")))
+    @ApiResponse(responseCode = "404", description = "Food place not found")
+    String updateFoodPlace(@Parameter(description = "ID of the food place to update") @PathVariable int id,
+                           @RequestBody FoodPlace updatedFoodPlace) {
         FoodPlace foodPlace = foodPlaceRepository.findById(id);
         if (foodPlace == null) {
             return failure;
@@ -76,6 +91,35 @@ public class FoodPlaceController {
         updatedFoodPlace.setId(id);
         foodPlaceRepository.save(updatedFoodPlace);
         return success;
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a food place", description = "Deletes a food place entry by its ID.")
+    @ApiResponse(responseCode = "200", description = "Food place deleted successfully",
+            content = @Content(schema = @Schema(type = "string")))
+    @ApiResponse(responseCode = "404", description = "Food place not found")
+    String deleteFoodPlace(@Parameter(description = "ID of the food place to delete") @PathVariable int id) {
+        if (foodPlaceRepository.existsById(id)) {
+            foodPlaceRepository.deleteById(id);
+            return success;
+        }
+        return failure;    }
+
+    @GetMapping
+    @Operation(summary = "Get all food places", description = "Retrieves a list of all food places.")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = FoodPlace.class)))
+    List<FoodPlace> getAllFoodPlaces() {
+        return foodPlaceRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a food place by ID", description = "Retrieves a food place by its ID.")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = FoodPlace.class)))
+    @ApiResponse(responseCode = "404", description = "Food place not found")
+    FoodPlace getFoodPlaceById(@Parameter(description = "ID of the food place to retrieve") @PathVariable int id) {
+        return foodPlaceRepository.findById(id);
     }
 
     public String generateImageUrl(String address, String name) {
@@ -109,24 +153,6 @@ public class FoodPlaceController {
             e.printStackTrace();
         }
         return imageUrl;
-    }
-    @DeleteMapping("/{id}")
-    String deleteFoodPlace(@PathVariable int id) {
-        if (foodPlaceRepository.existsById(id)) {
-            foodPlaceRepository.deleteById(id);
-            return success;
-        }
-        return failure;
-    }
-
-    @GetMapping
-    List<FoodPlace> getAllFoodPlaces() {
-        return foodPlaceRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    FoodPlace getFoodPlaceById(@PathVariable int id) {
-        return foodPlaceRepository.findById(id);
     }
 
     public List<CyDine.Maps.FoodPlace> getFoodPlace() {
