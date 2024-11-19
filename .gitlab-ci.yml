@@ -8,7 +8,7 @@ stages:              # these stages (jobs) form the CICD pipeline
 maven-build:         
   stage: mavenbuild  # Stage for building the Spring Boot app
   tags:             
-    - main_backend   # Runner tag for backend jobs
+    - springboot_tag   # Runner tag for backend jobs
   script:             
     - cd Backend     # Navigate to the backend directory where the pom.xml is located
     - mvn package    # Run Maven to package the Spring Boot application
@@ -24,7 +24,7 @@ maven-build:
 maven-test:          
   stage: maventest    # Stage for running tests on the Spring Boot app
   tags:             
-    - main_backend   # Runner tag for backend jobs
+    - springboot_tag   # Runner tag for backend jobs
   script:
     - cd Backend     # Navigate to the backend directory where the pom.xml is located
     - mvn test       # Run Maven tests
@@ -37,7 +37,7 @@ maven-test:
 auto-deploy:         
   stage: mavendeploy  # Stage for deploying the Spring Boot app
   tags:             
-    - main_backend   # Runner tag for backend jobs
+    - springboot_tag   # Runner tag for backend jobs
   script:
     - cd Backend     # Navigate to the backend directory where the pom.xml is located
     - sudo mv target/*.jar /target/web-demo.jar 
