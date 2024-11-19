@@ -25,7 +25,7 @@
 
 
         <activity
-            android:name=".user.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,76 +34,75 @@
         </activity>
 
         <activity
-            android:name=".user.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="false"/>
 
         <!-- SignUpActivity Declaration -->
         <activity
-            android:name=".user.SignUpActivity"
+            android:name=".SignUpActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".user.ProfileActivity"
+            android:name=".ProfileActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".main.UserModAdminActivity"
+            android:name=".UserModAdminActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".admin.AdminActivity"
+            android:name=".AdminActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".mod.ModActivity"
+            android:name=".ModActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".outsideFood.MealPlanActivity"
+            android:name=".MealPlanActivity"
             android:exported="false"/>
 
-        <activity android:name=".water.WaterActivity"
+        <activity android:name=".WaterActivity"
             android:exported="false"/>
 
-        <activity android:name=".admin.AdminLoginActivity"
+        <activity android:name=".AdminLoginActivity"
             android:exported="false"/>
 
         <activity android:name=".DiningHallDataActivity"
             android:exported="false"/>
 
-        <activity android:name=".admin.PendingReportsActivity"
+        <activity android:name=".PendingReportsActivity"
             android:exported="false"/>
 
-        <activity android:name=".admin.UserManagementActivity"
+        <activity android:name=".UserManagementActivity"
             android:exported="false"/>
 
-        <activity android:name=".user.UserAdapterActivity"
+        <activity android:name=".UserAdapterActivity"
             android:exported="false"/>
 
-        <activity android:name=".dhmeals.FoodMenuActivity"
+        <activity android:name=".FoodMenuActivity"
             android:exported="false"/>
 
-        <activity android:name=".feed.FeedActivity"
+        <activity android:name=".FeedActivity"
             android:exported="false"/>
-        <activity android:name=".feed.CreatePostActivity"
+        <activity android:name=".CreatePostActivity"
             android:exported="false"/>
 
 
-        <activity android:name=".main.HomeScreenActivity" />
-        <activity android:name=".outsideFood.FoodMenusActivity" />
-        <activity android:name=".message.MessageActivity" />
-        <activity android:name=".exercise.ExerciseActivity" />
+        <activity android:name=".HomeScreenActivity" />
+        <activity android:name=".FoodMenusActivity" />
+        <activity android:name=".MessageActivity" />
+        <activity android:name=".ExerciseActivity" />
         <activity android:name=".CreateActivity" />
-<<<<<<< HEAD
-        <activity android:name=".mod.ModLoginActivity" />
-        <activity android:name=".map.MapActivity" />
-=======
         <activity android:name=".ModLoginActivity" />
         <activity android:name=".MapActivity" />
-        <activity android:name=".SleepActivity" />
-        <activity android:name=".WeightActivity" />
 
->>>>>>> c6d7edaa219c2418d6ff6ca2b8249fece8bd274d
+        <activity android:name=".SleepActivity"
+            android:exported="false"/>
+        <activity android:name=".WeightActivity"
+            android:exported="false"/>
+
+
     </application>
 
 </manifest>

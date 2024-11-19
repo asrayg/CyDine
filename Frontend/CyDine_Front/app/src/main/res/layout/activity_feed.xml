@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
     android:padding="8dp"
-    tools:context=".feed.FeedActivity">
+    tools:context=".FeedActivity">
 
     <!-- ConstraintLayout as the child of NestedScrollView -->
     <androidx.constraintlayout.widget.ConstraintLayout
