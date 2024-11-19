@@ -60,6 +60,7 @@ android-build:
   script:
     - cd Frontend
     - cd CyDine_Front  # Navigate to the folder where both gradlew and the gradle wrapper are
+    - gradle wrapper
     - ./gradlew build           # Use the gradle wrapper to build the project
   only:
     refs:
