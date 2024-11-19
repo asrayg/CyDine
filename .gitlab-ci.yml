@@ -49,25 +49,20 @@ auto-deploy:
     changes:
       - Backend/**/* # Trigger when changes are made inside the Backend folder
 
-android-build:       
+android-build:
   image: afirefly/android-ci:java17
   stage: androidbuild
   tags:                
     - main_frontend
   before_script:       
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradlew
-  script:
     - cd Frontend/CyDine_Front
-    - ./gradlew build
-  artifacts:
-    paths:
-      - Frontend/CyDine_Front/app/build/outputs/apk/**/*.apk
-  only:
-    refs:
-      - main
-    changes:
-      - Frontend/**/*
+    - ls -la
+    - ls -la gradle/wrapper
+    - cat gradle/wrapper/gradle-wrapper.properties
+    - chmod +x ./gradlew
+  script:
+    - ./gradlew build --stacktrace --info
 
 android-test:        
   image: afirefly/android-ci:java17
