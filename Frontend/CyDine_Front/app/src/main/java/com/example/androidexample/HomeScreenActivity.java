@@ -73,6 +73,8 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
             intent = new Intent(this, FeedActivity.class);
         } else if (item.getItemId() == R.id.nav_map) {
             intent = new Intent(this, MapActivity.class);
+         }else if (item.getItemId() == R.id.nav_sleep) {
+            intent = new Intent(this, SleepActivity.class);
         }
 
         /** If an intent was created for a menu item, add user details and start the activity */

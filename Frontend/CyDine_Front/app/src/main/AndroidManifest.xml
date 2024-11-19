@@ -96,6 +96,9 @@
         <activity android:name=".CreateActivity" />
         <activity android:name=".ModLoginActivity" />
         <activity android:name=".MapActivity" />
+        <activity android:name=".SleepActivity" />
+        <activity android:name=".WeightActivity" />
+
     </application>
 
 </manifest>
