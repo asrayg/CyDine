@@ -59,7 +59,7 @@ android-build:
     - chmod +x ./Frontend/CyDine_Front/gradle
   script:
     - cd Frontend/CyDine_Front/gradle                # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
-    - ./gradlew build               # gradle build
+    - ./gradlew.bat build               # gradle build
   only:
     refs:
       - main                        # only to trigger the pipeline when changes are pushed to 'main'
