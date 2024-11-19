@@ -56,7 +56,7 @@ android-build:
    - main_frontend                    # change to your runner's tag
   before_script:                    # enable gradlew, change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradlew
+    - chmod +x ./Frontend/CyDine_Front/gradle
   script:
     - cd Frontend/CyDine_Front                  # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
     - ./gradlew build               # gradle build
