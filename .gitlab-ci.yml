@@ -50,38 +50,38 @@ auto-deploy:
       - Backend/**/* # Trigger when changes are made inside the Backend folder
 
 android-build:       
-  image: afirefly/android-ci:java17 # Docker image with Android environment
-  stage: androidbuild  # Stage for building the Android app
+  image: afirefly/android-ci:java17
+  stage: androidbuild
   tags:                
-    - main_frontend   # Runner tag for frontend jobs
+    - main_frontend
   before_script:       
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradlew  # Make gradlew executable
+    - chmod +x ./Frontend/CyDine_Front/gradlew
   script:
-    - cd Frontend      # Navigate to the frontend directory where gradlew is located
-    - ./gradlew build  # Run Gradle to build the Android app
+    - cd Frontend/CyDine_Front
+    - ./gradlew build
   artifacts:
     paths:
-      - Frontend/CyDine_Front/build/**/*.apk
+      - Frontend/CyDine_Front/app/build/outputs/apk/**/*.apk
   only:
     refs:
-      - main           # Trigger the pipeline only when changes are pushed to 'main' branch
+      - main
     changes:
-      - Frontend/**/*  # Trigger when changes are made inside the Frontend folder
+      - Frontend/**/*
 
 android-test:        
-  image: afirefly/android-ci:java17 # Docker image with Android environment
-  stage: androidtest   # Stage for running tests on the Android app
+  image: afirefly/android-ci:java17
+  stage: androidtest
   tags:                
-    - main_frontend   # Runner tag for frontend jobs
+    - main_frontend
   before_script:       
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradlew  # Make gradlew executable
+    - chmod +x ./Frontend/CyDine_Front/gradlew
   script:
-    - cd Frontend      # Navigate to the frontend directory where gradlew is located
-    - ./gradlew test   # Run Gradle tests for the Android app
+    - cd Frontend/CyDine_Front
+    - ./gradlew test
   only:
     refs:
-      - main           # Trigger the pipeline only when changes are pushed to 'main' branch
+      - main
     changes:
-      - Frontend/**/*  # Trigger when changes are made inside the Frontend folder
+      - Frontend/**/*
