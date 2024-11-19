@@ -57,10 +57,9 @@ android-build:
   before_script:       
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - cd Frontend/CyDine_Front
-    - ls -la
-    - ls -la gradle/wrapper
-    - cat gradle/wrapper/gradle-wrapper.properties
+    - gradle wrapper --gradle-version 8.0
     - chmod +x ./gradlew
+    - ls -la gradle/wrapper
   script:
     - ./gradlew build --stacktrace --info
 
