@@ -50,16 +50,22 @@ auto-deploy:
       - Backend/**/*    # more specifically - only when changes are made inside the 'Backend' folder
 
 android-build:
-  image: afirefly/android-ci:java17
+  image: afirefly/android-ci:java17 # Docker image that has Android environments installed
   stage: androidbuild
   tags:
-   - main_frontend
+    - main_frontend
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradlew  # Fix the path to gradlew
+    - chmod +x ./Frontend/CyDine_Front/gradlew  # Update path to gradlew inside CyDine_Front
   script:
-    - cd Frontend/CyDine_Front
-    - ./gradlew build
+    - cd Frontend/CyDine_Front/gradle/wrapper  # Navigate to the folder where both gradlew and the gradle wrapper are
+    - ./gradlew build           # Use the gradle wrapper to build the project
+  only:
+    refs:
+      - main
+    changes:
+      - Frontend/**/*  # Only trigger when changes are made inside the Frontend folder
+
 
 android-test:
   image: afirefly/android-ci:java17
