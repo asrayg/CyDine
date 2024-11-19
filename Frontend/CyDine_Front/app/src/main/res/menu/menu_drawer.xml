@@ -6,6 +6,8 @@
     <item android:id="@+id/nav_message" android:title="Message" />
     <item android:id="@+id/nav_exercise" android:title="Exercise Tracking" />
     <item android:id="@+id/nav_food_menu" android:title="Food Menu" />
+    <item android:id="@+id/nav_sleep" android:title="Sleep Tracker" />
+
     <item android:id="@+id/feed" android:title="Feed" />
 
     <!-- New menu item for the Map screen -->
