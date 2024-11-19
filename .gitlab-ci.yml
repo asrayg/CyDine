@@ -58,7 +58,8 @@ android-build:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/CyDine_Front/gradlew  # Update path to gradlew inside CyDine_Front
   script:
-    - cd Frontend/CyDine_Front  # Navigate to the folder where both gradlew and the gradle wrapper are
+    - cd Frontend
+    - cd CyDine_Front  # Navigate to the folder where both gradlew and the gradle wrapper are
     - ./gradlew build           # Use the gradle wrapper to build the project
   only:
     refs:
@@ -76,7 +77,8 @@ android-test:
      - export GRADLE_USER_HOME=`pwd`/.gradle
      - chmod +x ./Frontend/CyDine_Front/gradlew
   script:
-     - cd Frontend/CyDine_Front                # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
+     - cd Frontend
+     - cd CyDine_Front                # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
      - ./gradlew test               # gradle test
   only:
     refs:
