@@ -53,13 +53,13 @@ android-build:
   image: afirefly/android-ci:java17 # Docker image that has Android environments installed     gjandres/android-ci:latest
   stage: androidbuild               # one of the stages listed above
   tags:
-   - main_frontend                    # change to your runner's tag
+   - android_tag                    # change to your runner's tag
   before_script:                    # enable gradlew, change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/CyDine_Front/gradle
+    - chmod +x ./Frontend/CyDine/gradlew
   script:
-    - cd Frontend/CyDine_Front/gradle                # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
-    - ./gradlew.bat build               # gradle build
+    - cd Frontend/CyDine                   # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
+    - ./gradlew build               # gradle build
   only:
     refs:
       - main                        # only to trigger the pipeline when changes are pushed to 'main'
