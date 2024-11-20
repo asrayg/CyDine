@@ -56,7 +56,6 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         // Initialize UI components
         feedTextView = findViewById(R.id.feedTextView);
         uploadImageButton = findViewById(R.id.uploadImageButton);
-        selectedImageView = findViewById(R.id.selectedImageView);
 
         // Set up RecyclerView and adapter for feed
         feedRecyclerView = findViewById(R.id.feedRecyclerView);
