@@ -77,8 +77,8 @@
         <activity android:name=".UserManagementActivity"
             android:exported="false"/>
 
-        <activity android:name=".UserAdapterActivity"
-            android:exported="false"/>
+<!--        <activity android:name=".UserAdapterActivity"-->
+<!--            android:exported="false"/>-->
 
         <activity android:name=".FoodMenuActivity"
             android:exported="false"/>
