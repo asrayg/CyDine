@@ -517,7 +517,6 @@ public class FoodMenuActivity extends AppCompatActivity {
                     foodObject.put("calories", foodOption.calories);
                     foodObject.put("dininghall", mapDiningHallName(diningCenterSpinner.getSelectedItem().toString()));
                     foodObject.put("time", entry.getKey()); // The key is the meal type (Breakfast, Lunch, etc.)
-                    foodObject.put("date", java.time.OffsetDateTime.now().toString());
                     foodsArray.put(foodObject);
                 } catch (JSONException e) {
                     e.printStackTrace();
