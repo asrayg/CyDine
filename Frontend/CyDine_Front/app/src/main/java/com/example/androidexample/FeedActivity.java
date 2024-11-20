@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * feed activity class for posting
  */
-
+//
 public class FeedActivity extends AppCompatActivity implements WebSocketListener {
 
     // UI components
