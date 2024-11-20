@@ -620,8 +620,7 @@ public class FoodMenuActivity extends AppCompatActivity {
                         foodOption.fat,
                         foodOption.calories,
                         mapDiningHallName(diningCenterSpinner.getSelectedItem().toString()), // Ensure you map the dining hall name
-                        mealType,
-                        java.time.OffsetDateTime.now().toString() // Add the current timestamp in the required format
+                        mealType
                 );
 
                 Log.d("AddMealRequestBody", requestBody);
