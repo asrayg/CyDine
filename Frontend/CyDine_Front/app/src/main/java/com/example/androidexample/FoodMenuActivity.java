@@ -31,7 +31,7 @@ import java.util.Map;
 
 
 /**
- * outside food tracker class
+ * Outside food tracker class
  */
 public class FoodMenuActivity extends AppCompatActivity {
 
