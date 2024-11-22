@@ -18,6 +18,7 @@ maven-build:
   only:
     refs:
       - main            # only to trigger the pipeline when changes are pushed to 'main'
+      - Arjun_CICD
     changes:
       - Backend/**/*    # more specifically - only when changes are made inside the 'Backend' folder
 
@@ -31,6 +32,7 @@ maven-test:
   only:
     refs:
       - main            # only to trigger the pipeline when changes are pushed to 'main'
+      - Arjun_CICD
     changes:
       - Backend/**/*    # more specifically - only when changes are made inside the 'Backend' folder
 
