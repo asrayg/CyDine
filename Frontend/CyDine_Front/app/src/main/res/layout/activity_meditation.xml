@@ -63,7 +63,7 @@
 
     <!-- Meditation Goal Input -->
     <EditText
-        android:id="@+id/goal_input"
+        android:id="@+id/timer_goal_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -82,7 +82,7 @@
 
         <!-- Start Timer Button -->
         <Button
-            android:id="@+id/start_button"
+            android:id="@+id/start_timer_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -94,7 +94,7 @@
 
         <!-- Reset Timer Button -->
         <Button
-            android:id="@+id/reset_button"
+            android:id="@+id/reset_timer_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -102,6 +102,17 @@
             android:backgroundTint="#F44336"
             android:paddingVertical="12dp"
             android:text="Reset Timer"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/stop_timer_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="#950606"
+            android:paddingVertical="12dp"
+            android:text="Stop Timer"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 </LinearLayout>
