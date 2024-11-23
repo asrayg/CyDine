@@ -10,6 +10,7 @@
     <item android:id="@+id/nav_weight" android:title="Weight Tracker" />
 
     <item android:id="@+id/feed" android:title="Feed" />
+    <item android:id="@+id/nav_meditation" android:title="Meditation" />
 
     <!-- New menu item for the Map screen -->
     <item android:id="@+id/nav_map" android:title="Nearby Healthy Restaurants" />
