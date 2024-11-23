@@ -78,8 +78,6 @@
         <activity android:name=".UserManagementActivity"
             android:exported="false"/>
 
-<!--        <activity android:name=".UserAdapterActivity"-->
-<!--            android:exported="false"/>-->
 
         <activity android:name=".FoodMenuActivity"
             android:exported="false"/>
@@ -100,6 +98,9 @@
         <activity android:name=".SleepActivity"
             android:exported="false"/>
         <activity android:name=".WeightActivity"
+            android:exported="false"/>
+
+        <activity android:name=".MeditationActivity"
             android:exported="false"/>
 
 

@@ -79,6 +79,9 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationV
         } else if (item.getItemId() == R.id.nav_weight) {
             intent = new Intent(this, WeightActivity.class);
         }
+        else if (item.getItemId() == R.id.nav_meditation) {
+            intent = new Intent(this, MeditationActivity.class);
+        }
 
         /** If an intent was created for a menu item, add user details and start the activity */
         if (intent != null) {
