@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,9 +13,15 @@ import android.media.MediaPlayer;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
 public class MeditationActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
+    private LinearLayout recordedSessionsContainer;
     private ProgressBar timerBar;
     private TextView timerTextView;
     private EditText timerGoal;
@@ -23,6 +30,7 @@ public class MeditationActivity extends AppCompatActivity {
     private int totalTime; // in milliseconds
     private int elapsedTime = 0; // in milliseconds
     private boolean isTimerRunning = false;
+    private ArrayList<String> recordedSessions = new ArrayList<>();
 
 
     @Override
@@ -36,6 +44,7 @@ public class MeditationActivity extends AppCompatActivity {
         startBtn = findViewById(R.id.start_timer_button);
         resetBtn = findViewById(R.id.reset_timer_button);
         stopBtn = findViewById(R.id.stop_timer_button);
+        recordedSessionsContainer = findViewById(R.id.recorded_sessions_container);
 
         startBtn.setOnClickListener(v->{
             if (!isTimerRunning) {
@@ -95,9 +104,24 @@ public class MeditationActivity extends AppCompatActivity {
                 handler.postDelayed(this, 1000); // Keep updating every second
             } else {
                 stopTimer();
+                addSessionRecord(totalTime / 60000); // Record the session
             }
         }
     };
+    private void addSessionRecord(int duration) {
+        String currentDate = new SimpleDateFormat("MMM dd, yyyy | HH:mm", Locale.getDefault()).format(new Date());
+        String sessionRecord = "Date: " + currentDate + " | Duration: " + duration + " minutes";
+
+        recordedSessions.add(sessionRecord);
+
+        // Dynamically add the session to the UI
+        TextView sessionTextView = new TextView(this);
+        sessionTextView.setText(sessionRecord);
+        sessionTextView.setTextSize(16f);
+        sessionTextView.setPadding(8, 8, 8, 8);
+
+        recordedSessionsContainer.addView(sessionTextView);
+    }
 
     private void stopTimer() {
         if (isTimerRunning) {
