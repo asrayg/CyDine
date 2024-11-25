@@ -7,12 +7,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MeditationActivity extends AppCompatActivity {
 
+    private MediaPlayer mediaPlayer;
     private ProgressBar timerBar;
     private TextView timerTextView;
     private EditText timerGoal;
@@ -62,8 +64,18 @@ public class MeditationActivity extends AppCompatActivity {
         isTimerRunning = true;
         startBtn.setText("Pause Timer");
 
+        startMeditationMusic();
+
         // Update the progress bar and time every second
         handler.postDelayed(timerRunnable, 1000);
+    }
+    private void startMeditationMusic() {
+        if (mediaPlayer == null) {
+            // Initialize the MediaPlayer to play the audio from the res/raw directory
+            mediaPlayer = MediaPlayer.create(this, R.raw.meditation_music); // Make sure this file is in res/raw
+            mediaPlayer.setLooping(true); // Loop the music
+            mediaPlayer.start(); // Start the music
+        }
     }
 
     private Runnable timerRunnable = new Runnable() {
@@ -94,6 +106,8 @@ public class MeditationActivity extends AppCompatActivity {
             startBtn.setText("Start Timer");
             Toast.makeText(MeditationActivity.this, "Timer stopped!", Toast.LENGTH_SHORT).show();
 
+            stopMeditationMusic();
+
             // Reset the UI
             timerBar.setProgress(0); // Reset the progress bar
             timerTextView.setText("00:00"); // Reset the timer display
@@ -103,11 +117,28 @@ public class MeditationActivity extends AppCompatActivity {
         Toast.makeText(MeditationActivity.this, "Time's up!", Toast.LENGTH_SHORT).show();
     }
 
+    private void stopMeditationMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();  // Stop the music
+            mediaPlayer.release(); // Release the resources
+            mediaPlayer = null;   // Set the media player to null
+        }
+    }
+
     private void resetTimer() {
         isTimerRunning = false;
         elapsedTime = 0;
         timerBar.setProgress(0);
         timerTextView.setText("00:00");
         startBtn.setText("Start Timer");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
