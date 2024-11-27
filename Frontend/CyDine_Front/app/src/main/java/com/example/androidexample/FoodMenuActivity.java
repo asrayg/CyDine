@@ -43,7 +43,7 @@ public class FoodMenuActivity extends AppCompatActivity {
     private LinearLayout dinnerContainer;
     private LinearLayout lateNightContainer;
     private String userId;
-    private Button save;
+    private Button aiMeals;
     private int mealPlanID;
     private int mealID;
 
@@ -73,7 +73,9 @@ public class FoodMenuActivity extends AppCompatActivity {
         selectedMeals = new HashMap<>(); // Initialize the map
 
         Button generateButton = findViewById(R.id.generate_button);
+        aiMeals = findViewById(R.id.generate_ai_button);
         generateButton.setOnClickListener(v -> generateFoodOptions());
+        aiMeals.setOnClickListener(v -> generateAIFoodOptions());
 
         fetchUserMealPlan();
     }
@@ -169,6 +171,40 @@ public class FoodMenuActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void generateAIFoodOptions(){
+        foodOptionsContainer.removeAllViews(); // Clear previous views
+        // Get selected dining center and meal type
+        String diningHall = diningCenterSpinner.getSelectedItem().toString();
+        String mealType = mealTypeSpinner.getSelectedItem().toString();
+        diningHall = mapDiningHallName(diningHall);
+
+        // Construct the URL
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/Dininghall/" + diningHall + "/" + mealType;
+
+        // Create a JSON request
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        parseFoodItems(response, mealType);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FoodMenuActivity.this, "Error fetching food items.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Add the request to the request queue
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
+
     }
 
 

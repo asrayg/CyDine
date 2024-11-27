@@ -69,6 +69,18 @@
                 android:textStyle="bold"
                 android:layout_gravity="center" />
 
+            <!-- Generate AI Options Button -->
+            <Button
+                android:id="@+id/generate_ai_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Generate AI Options"
+                android:backgroundTint="#BD2031"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:layout_gravity="center" />
+
             <!-- Container for Generated Food Options -->
             <LinearLayout
                 android:id="@+id/food_options_container"
@@ -162,8 +174,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
-
-
 
         </LinearLayout>
     </ScrollView>
