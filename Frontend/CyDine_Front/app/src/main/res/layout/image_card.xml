@@ -1,50 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp">
+    android:padding="8dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/cardImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp"
+        android:scaleType="centerCrop" />
 
-        <!-- ImageView for displaying the image -->
-        <ImageView
-            android:id="@+id/cardImageView"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="Uploaded Image"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:gravity="center">
 
-        <!-- Like Button -->
         <Button
             android:id="@+id/likeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:text="Like"
-            app:layout_constraintTop_toBottomOf="@id/cardImageView"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <!-- Comment Button -->
         <Button
             android:id="@+id/commentButton"
+            android:text="Comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Comment"
-            app:layout_constraintTop_toBottomOf="@id/cardImageView"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginLeft="16dp" />
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/commentsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:visibility="gone" /> <!-- Initially hidden, shown when there are comments -->
+</LinearLayout>
