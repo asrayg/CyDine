@@ -25,7 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +37,9 @@ import java.util.Map;
 
 //
 public class FeedActivity extends AppCompatActivity implements WebSocketListener {
+
+    private static final List<String> messageCache = new ArrayList<>(); // Cache for messages
+    private static final List<String> imageCache = new ArrayList<>();
 
     // UI components
     private Button createPostButton;
@@ -66,8 +71,10 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         feedRecyclerView.setAdapter(imageAdapter);
         counter = false;
 
+        restoreMessages();
         // Initialize WebSocketManager and set the listener
         webSocketManager = WebSocketManager.getInstance();
+
 
         // WebSocket server URL
         String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss";
@@ -81,6 +88,20 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
         // Set up the button to open image picker
         uploadImageButton.setOnClickListener(v -> openImagePicker());
+    }
+
+    private void restoreMessages() {
+        // Restore text messages in TextView
+        StringBuilder allMessages = new StringBuilder();
+        for (String message : messageCache) {
+            allMessages.append(message).append("\n");
+        }
+        feedTextView.setText(allMessages.toString());
+
+        // Restore image URLs in RecyclerView
+        for (String imageUrl : imageCache) {
+            imageAdapter.addImage(imageUrl);
+        }
     }
 
     // Method to open image picker for selecting an image
@@ -194,16 +215,19 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
                 // Extract image name from message
                 int atIndex = message.indexOf("@");
                 String imageName = message.substring(atIndex + 1).trim();
+                String imageUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images/gets?image=" + imageName;
 
                 Log.d("WebSocket", "First fetch");
                 // Fetch and display the image using the extracted name
                 if(counter){
+                    imageCache.add(imageUrl);
                     fetchUploadedImage(imageName);
                 }
             } else {
                 // Handle other types of messages (non-image)
+                messageCache.add(message); // Cache the message
                 String currentText = feedTextView.getText().toString();
-                feedTextView.setText("\n" + message);
+                feedTextView.setText(currentText + "\n" + message);
             }
         });
     }
