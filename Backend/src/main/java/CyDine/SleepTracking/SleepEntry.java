@@ -20,13 +20,19 @@ public class SleepEntry {
         this.date = date;
     }
 
-    // Getters and setters
     public int getId() { return id; }
+
     public void setId(int id) { this.id = id; }
+
     public int getUserId() { return userId; }
+
     public void setUserId(int userId) { this.userId = userId; }
+
     public double getHoursSlept() { return hoursSlept; }
+
     public void setHoursSlept(double hoursSlept) { this.hoursSlept = hoursSlept; }
+
     public LocalDate getDate() { return date; }
+
     public void setDate(LocalDate date) { this.date = date; }
 }
