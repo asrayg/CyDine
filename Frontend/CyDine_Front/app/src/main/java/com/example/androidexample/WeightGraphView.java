@@ -29,8 +29,8 @@ public class WeightGraphView extends View {
         if (weightData == null || weightData.isEmpty()) return;
 
         Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
-        paint.setStrokeWidth(5);
+        paint.setColor(Color.GREEN);
+        paint.setStyle(Paint.Style.FILL);
 
         Paint axisPaint = new Paint();
         axisPaint.setColor(Color.BLACK);
@@ -40,18 +40,14 @@ public class WeightGraphView extends View {
         canvas.drawLine(50, 250, 50, 50, axisPaint); // Y-axis
         canvas.drawLine(50, 250, 350, 250, axisPaint); // X-axis
 
-        // Draw line chart
-        float gap = 40;
+        float barWidth = 30;
+        float gap = 20;
         float startX = 70;
-        float previousX = startX;
-        float previousY = 250 - weightData.get(0) * 2; // Scale factor
 
-        for (int i = 1; i < weightData.size(); i++) {
-            float currentX = startX + (i * gap);
-            float currentY = 250 - weightData.get(i) * 2; // Scale factor
-            canvas.drawLine(previousX, previousY, currentX, currentY, paint);
-            previousX = currentX;
-            previousY = currentY;
+        for (int i = 0; i < weightData.size(); i++) {
+            float height = weightData.get(i) * 2; // Scale factor
+            canvas.drawRect(startX, 250 - height, startX + barWidth, 250, paint);
+            startX += barWidth + gap;
         }
     }
 }

@@ -1,72 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#FFFDE7"
     android:padding="16dp">
 
-    <!-- Input Form -->
-    <TextView
-        android:id="@+id/weightPrompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter your weight for a day:"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/weightInput"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:hint="e.g., 70.5 kg"/>
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/dayInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Enter the day (1-7)"
-        android:layout_marginTop="8dp"/>
+        <!-- Weight Graph View -->
+        <com.example.androidexample.WeightGraphView
+            android:id="@+id/weightGraphView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_marginTop="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-    <!-- Feedback Message -->
-    <TextView
-        android:id="@+id/feedbackMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"/>
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Weight (kg)"
+                android:inputType="numberDecimal" />
 
-    <!-- Graph -->
-    <com.example.androidexample.WeightGraphView
-        android:id="@+id/weightGraphView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="16dp"
-        android:background="#EEEEEE"/>
+            <Button
+                android:id="@+id/addWeightButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Weight" />
+        </LinearLayout>
 
-    <!-- Stats -->
-    <TextView
-        android:id="@+id/statsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Average Weight: 0 kg"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"/>
+        <Button
+            android:id="@+id/getProgressButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Progress" />
 
-    <!-- Delete Button -->
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete Weight Data for a Day"
-        android:layout_marginTop="8dp"/>
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/weightHistoryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

@@ -1,132 +1,261 @@
 package com.example.androidexample;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WeightActivity extends AppCompatActivity {
 
-    private EditText weightInput;
-    private EditText dayInput;
-    private TextView feedbackMessage;
-    private TextView statsTextView;
     private WeightGraphView weightGraphView;
-    private List<Float> weightData;
+    private LinearLayout weightHistoryContainer;
+    private EditText weightInput;
+    private Button addWeightButton, getProgressButton;
+
+    private RequestQueue requestQueue;
+    private static final String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080/weight"; // Replace with your backend URL
+    private String userId;
+    private List<Float> weightData; // List to hold weight data for the graph
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weight);
 
-        // Initialize views
+        // Get userId from intent
+        userId = getIntent().getStringExtra("userId");
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "User ID is missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Initialize UI components
+        weightGraphView = findViewById(R.id.weightGraphView); // Initialize the graph view
+        weightHistoryContainer = findViewById(R.id.weightHistoryContainer);
         weightInput = findViewById(R.id.weightInput);
-        dayInput = findViewById(R.id.dayInput);
-        feedbackMessage = findViewById(R.id.feedbackMessage);
-        statsTextView = findViewById(R.id.statsTextView);
-        Button submitButton = findViewById(R.id.submitButton);
-        Button deleteButton = findViewById(R.id.deleteButton);
-        weightGraphView = findViewById(R.id.weightGraphView);
+        addWeightButton = findViewById(R.id.addWeightButton);
+        getProgressButton = findViewById(R.id.getProgressButton);
 
-        // Initialize weight data with fake data
         weightData = new ArrayList<>();
-        initializeFakeData();
+        requestQueue = Volley.newRequestQueue(this);
 
-        // Update graph and stats
-        updateGraphAndStats();
+        // Fetch and display weight history on start
+        fetchWeightHistory();
 
-        // Handle submit button (Add or Edit Weight Data)
-        submitButton.setOnClickListener(v -> {
-            String inputText = weightInput.getText().toString();
-            String dayText = dayInput.getText().toString();
-
-            if (!inputText.isEmpty() && !dayText.isEmpty()) {
-                try {
-                    float weight = Float.parseFloat(inputText);
-                    int day = Integer.parseInt(dayText);
-
-                    if (day < 1 || day > 7) {
-                        feedbackMessage.setText("Invalid day. Enter a day between 1 and 7.");
-                        return;
-                    }
-
-                    editWeightData(day - 1, weight);
-                    showFeedback(weight, day - 1);
-                    updateGraphAndStats();
-                } catch (NumberFormatException e) {
-                    feedbackMessage.setText("Invalid input. Please enter valid numbers.");
-                }
+        addWeightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addWeightEntry();
             }
         });
 
-        // Handle delete button
-        deleteButton.setOnClickListener(v -> {
-            String dayText = dayInput.getText().toString();
-
-            if (!dayText.isEmpty()) {
-                try {
-                    int day = Integer.parseInt(dayText);
-
-                    if (day < 1 || day > 7) {
-                        feedbackMessage.setText("Invalid day. Enter a day between 1 and 7.");
-                        return;
-                    }
-
-                    deleteWeightData(day - 1);
-                    updateGraphAndStats();
-                } catch (NumberFormatException e) {
-                    feedbackMessage.setText("Invalid input. Please enter a valid day.");
-                }
+        getProgressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getWeightProgress();
             }
         });
     }
 
-    private void initializeFakeData() {
-        for (int i = 0; i < 7; i++) {
-            weightData.add(70f + (float) (Math.random() * 5)); // Random weights around 70 kg
+    private void fetchWeightHistory() {
+        String url = BASE_URL + "/" + userId;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            weightHistoryContainer.removeAllViews(); // Clear previous history
+                            weightData.clear(); // Clear existing graph data
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject weightEntry = jsonArray.getJSONObject(i);
+                                String date = weightEntry.getString("date");
+                                double weight = weightEntry.getDouble("weight");
+                                int id = weightEntry.getInt("id");
+
+                                // Add weight data for the graph
+                                weightData.add((float) weight);
+
+                                // Create a card-like view for each entry
+                                View entryView = getLayoutInflater().inflate(R.layout.weight_entry_card, weightHistoryContainer, false);
+                                TextView dateTextView = entryView.findViewById(R.id.dateTextView);
+                                TextView weightTextView = entryView.findViewById(R.id.weightTextView);
+                                Button updateButton = entryView.findViewById(R.id.updateButton);
+                                Button deleteButton = entryView.findViewById(R.id.deleteButton);
+
+                                dateTextView.setText("Date: " + date);
+                                weightTextView.setText("Weight: " + weight + " kg");
+
+                                updateButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        updateWeightEntry(id);
+                                    }
+                                });
+
+                                deleteButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        deleteWeightEntry(id);
+                                    }
+                                });
+
+                                weightHistoryContainer.addView(entryView);
+                            }
+
+                            // Update the graph view
+                            weightGraphView.setWeightData(weightData);
+
+                        } catch (JSONException e) {
+                            Log.e("Volley", e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
+    private void addWeightEntry() {
+        String weight = weightInput.getText().toString();
+
+        if (weight.isEmpty()) {
+            Toast.makeText(this, "Please enter weight", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void editWeightData(int dayIndex, float weight) {
-        weightData.set(dayIndex, weight);
-    }
+        String url = BASE_URL + "/" + userId;
 
-    private void deleteWeightData(int dayIndex) {
-        weightData.set(dayIndex, 0.0f); // Set weight to 0 for the specified day
-    }
-
-    private void updateGraphAndStats() {
-        weightGraphView.setWeightData(weightData);
-        statsTextView.setText("Average Weight: " + calculateAverageWeight() + " kg");
-    }
-
-    private float calculateAverageWeight() {
-        float total = 0;
-        int count = 0;
-
-        for (float weight : weightData) {
-            if (weight > 0) {
-                total += weight;
-                count++;
-            }
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("weight", Double.parseDouble(weight));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
         }
 
-        return count > 0 ? total / count : 0;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(WeightActivity.this, "Weight entry added successfully!", Toast.LENGTH_SHORT).show();
+                        fetchWeightHistory(); // Refresh weight history
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
-    private void showFeedback(float weight, int dayIndex) {
-        float previousWeight = (dayIndex > 0) ? weightData.get(dayIndex - 1) : 0;
-        float change = weight - previousWeight;
+    private void updateWeightEntry(int id) {
+        String weight = weightInput.getText().toString();
 
-        if (dayIndex == 0 || previousWeight == 0) {
-            feedbackMessage.setText("Weight recorded: " + weight + " kg.");
-        } else {
-            feedbackMessage.setText("Weight change since last entry: " + change + " kg.");
+        if (weight.isEmpty()) {
+            Toast.makeText(this, "Please enter weight for update", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        String url = BASE_URL + "/" + userId + "/" + id;
+
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("weight", Double.parseDouble(weight));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(WeightActivity.this, "Weight entry updated successfully!", Toast.LENGTH_SHORT).show();
+                        fetchWeightHistory(); // Refresh weight history
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void deleteWeightEntry(int id) {
+        String url = BASE_URL + "/" + userId + "/" + id;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(WeightActivity.this, "Weight entry deleted successfully!", Toast.LENGTH_SHORT).show();
+                        fetchWeightHistory(); // Refresh weight history
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
+    private void getWeightProgress() {
+        String url = BASE_URL + "/" + userId + "/progress";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(WeightActivity.this, response, Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(stringRequest);
     }
 }
