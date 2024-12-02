@@ -5,12 +5,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,17 +43,11 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
     private static final List<String> messageCache = new ArrayList<>(); // Cache for messages
     private static final List<String> imageCache = new ArrayList<>();
-
-    // UI components
-    private Button createPostButton;
     private TextView feedTextView;
     private WebSocketManager webSocketManager;
-    private AppCompatEditText messageEditText; // Reference to the EditText
     private Button uploadImageButton;
-    private ImageView selectedImageView;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri selectedImageUri;
-
     private RecyclerView feedRecyclerView;
     private ImageAdapter imageAdapter;
     private boolean counter;
