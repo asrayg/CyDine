@@ -1,131 +1,202 @@
 package com.example.androidexample;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SleepActivity extends AppCompatActivity {
 
-    private EditText sleepInput;
-    private EditText dayInput;
-    private TextView feedbackMessage;
-    private TextView statsTextView;
-    private SleepGraphView sleepGraphView;
-    private List<Float> sleepData;
+    private LinearLayout sleepHistoryContainer;
+    private EditText sleepHoursInput;
+    private Button addSleepButton, getAssessmentButton;
+
+    private RequestQueue requestQueue;
+    private static final String BASE_URL = "http://coms-3090-020.class.las.iastate.edu:8080/sleep"; // Replace with your backend URL
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sleep);
 
-        // Initialize views
-        sleepInput = findViewById(R.id.sleepInput);
-        dayInput = findViewById(R.id.dayInput);
-        feedbackMessage = findViewById(R.id.feedbackMessage);
-        statsTextView = findViewById(R.id.statsTextView);
-        Button submitButton = findViewById(R.id.submitButton);
-        Button deleteButton = findViewById(R.id.deleteButton);
-        sleepGraphView = findViewById(R.id.sleepGraphView);
+        // Get userId from intent
+        userId = getIntent().getStringExtra("userId");
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "User ID is missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Initialize sleep data with fake data
-        sleepData = new ArrayList<>();
-        initializeFakeData();
+        // Initialize UI components
+        sleepHistoryContainer = findViewById(R.id.sleepHistoryContainer);
+        sleepHoursInput = findViewById(R.id.sleepHoursInput);
+        addSleepButton = findViewById(R.id.addSleepButton);
+        getAssessmentButton = findViewById(R.id.getAssessmentButton);
 
-        // Update graph and stats
-        updateGraphAndStats();
+        requestQueue = Volley.newRequestQueue(this);
 
-        // Handle submit button (Add or Edit Sleep Hours)
-        submitButton.setOnClickListener(v -> {
-            String inputText = sleepInput.getText().toString();
-            String dayText = dayInput.getText().toString();
+        // Fetch and display sleep history on start
+        fetchSleepHistory();
 
-            if (!inputText.isEmpty() && !dayText.isEmpty()) {
-                try {
-                    float sleepHours = Float.parseFloat(inputText);
-                    int day = Integer.parseInt(dayText);
-
-                    if (day < 1 || day > 7) {
-                        feedbackMessage.setText("Invalid day. Enter a day between 1 and 7.");
-                        return;
-                    }
-
-                    editSleepData(day - 1, sleepHours);
-                    showFeedback(sleepHours);
-                    updateGraphAndStats();
-                } catch (NumberFormatException e) {
-                    feedbackMessage.setText("Invalid input. Please enter valid numbers.");
-                }
+        addSleepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAndAddSleepEntry();
             }
         });
 
-        // Handle delete button
-        deleteButton.setOnClickListener(v -> {
-            String dayText = dayInput.getText().toString();
-
-            if (!dayText.isEmpty()) {
-                try {
-                    int day = Integer.parseInt(dayText);
-
-                    if (day < 1 || day > 7) {
-                        feedbackMessage.setText("Invalid day. Enter a day between 1 and 7.");
-                        return;
-                    }
-
-                    deleteSleepData(day - 1);
-                    updateGraphAndStats();
-                } catch (NumberFormatException e) {
-                    feedbackMessage.setText("Invalid input. Please enter a valid day.");
-                }
+        getAssessmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSleepAssessment();
             }
         });
     }
 
-    private void initializeFakeData() {
-        for (int i = 0; i < 7; i++) {
-            sleepData.add((float) (5 + Math.random() * 3)); // Random hours between 5 and 8
+    private void fetchSleepHistory() {
+        String url = BASE_URL + "/" + userId;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            sleepHistoryContainer.removeAllViews(); // Clear previous history
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject sleepEntry = jsonArray.getJSONObject(i);
+                                String date = sleepEntry.getString("date");
+                                double hoursSlept = sleepEntry.getDouble("hoursSlept");
+
+                                // Create a card-like view for each entry
+                                View entryView = getLayoutInflater().inflate(R.layout.sleep_entry_card, sleepHistoryContainer, false);
+                                TextView dateTextView = entryView.findViewById(R.id.dateTextView);
+                                TextView hoursTextView = entryView.findViewById(R.id.hoursTextView);
+
+                                dateTextView.setText("Date: " + date);
+                                hoursTextView.setText("Hours Slept: " + hoursSlept);
+
+                                sleepHistoryContainer.addView(entryView);
+                            }
+                        } catch (JSONException e) {
+                            Log.e("Volley", e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
+    private void checkAndAddSleepEntry() {
+        String url = BASE_URL + "/" + userId + "/latest";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject latestEntry = new JSONObject(response);
+                            String latestDate = latestEntry.getString("date");
+
+                            if (latestDate.equals(java.time.LocalDate.now().toString())) {
+                                Toast.makeText(SleepActivity.this, "You have already added a sleep entry for today!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                addSleepEntry();
+                            }
+                        } catch (JSONException e) {
+                            addSleepEntry(); // No entry exists for today
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        addSleepEntry(); // Assume no entry exists on error
+                    }
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
+    private void addSleepEntry() {
+        String hoursSlept = sleepHoursInput.getText().toString();
+
+        if (hoursSlept.isEmpty()) {
+            Toast.makeText(this, "Please enter hours slept", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void editSleepData(int dayIndex, float sleepHours) {
-        sleepData.set(dayIndex, sleepHours);
-    }
+        String url = BASE_URL + "/" + userId;
 
-    private void deleteSleepData(int dayIndex) {
-        sleepData.set(dayIndex, 0.0f); // Set sleep hours to 0 for the specified day
-    }
-
-    private void updateGraphAndStats() {
-        sleepGraphView.setSleepData(sleepData);
-        statsTextView.setText("Average Sleep: " + calculateAverageSleep() + " hours");
-    }
-
-    private float calculateAverageSleep() {
-        float total = 0;
-        int count = 0;
-
-        for (float hours : sleepData) {
-            if (hours > 0) {
-                total += hours;
-                count++;
-            }
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("hoursSlept", Double.parseDouble(hoursSlept));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
         }
 
-        return count > 0 ? total / count : 0;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(SleepActivity.this, "Sleep entry added successfully!", Toast.LENGTH_SHORT).show();
+                        fetchSleepHistory(); // Refresh sleep history
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
-    private void showFeedback(float sleepHours) {
-        if (sleepHours >= 6 && sleepHours <= 8) {
-            feedbackMessage.setText("Great job! You're within the healthy range.");
-        } else if (sleepHours < 6) {
-            feedbackMessage.setText("Aim for 6-8 hours of sleep for better health.");
-        } else {
-            feedbackMessage.setText("Good job, but try not to oversleep.");
-        }
+    private void getSleepAssessment() {
+        String url = BASE_URL + "/" + userId + "/assessment";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(SleepActivity.this, response, Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        requestQueue.add(stringRequest);
     }
 }
