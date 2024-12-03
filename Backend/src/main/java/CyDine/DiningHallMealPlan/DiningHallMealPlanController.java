@@ -4,6 +4,7 @@ import CyDine.DiningHall.DiningHall;
 import CyDine.DiningHall.DiningHallRepository;
 import CyDine.FoodItems.FoodItems;
 import CyDine.FoodItems.FoodItemsRepository;
+import CyDine.Scraper.Scraper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +15,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-        import java.time.LocalDate;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +59,39 @@ public class DiningHallMealPlanController {
         DiningHallMealPlan mealPlan = new DiningHallMealPlan();
         DiningHallMealPlan mp = diningHallMealPlanRepository.save(mealPlan);
         return mp.getId();
+    }
+
+
+    @Operation(summary = "Create Dining Hall Meal Plan with AI", description = "Creates a new meal plan using AI")
+    @ApiResponse(responseCode = "201", description = "Meal plan created",
+            content = @Content(schema = @Schema(type = "integer", example = "2")))
+    @PostMapping(path = "/DHmealplans/ai")
+    int AiMealPlan() throws IOException {
+        DiningHallMealPlan mealP = new DiningHallMealPlan();
+        DiningHallMealPlan mp = diningHallMealPlanRepository.save(mealP);
+        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(mp.getId());
+
+        String tmp = new JSONObject(new Scraper().ai()).getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+        if(tmp.charAt(0) == '`'){
+            tmp = tmp.substring(7, tmp.length() - 3);
+        }
+        System.out.println(tmp);
+        JSONObject foods = new JSONObject(tmp);
+        System.out.println(foods);
+        for(int i =0; i < foods.getJSONArray("Breakfast").length(); i++){
+            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray("Breakfast").getJSONObject(i).getInt("id"));
+            mealPlan.addFoodItem(tmp2);
+        }
+        for(int i =0; i < foods.getJSONArray("Lunch").length(); i++){
+            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray("Breakfast").getJSONObject(i).getInt("id"));
+            mealPlan.addFoodItem(tmp2);
+        }
+        for(int i =0; i < foods.getJSONArray("Dinner").length(); i++){
+            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray("Breakfast").getJSONObject(i).getInt("id"));
+            mealPlan.addFoodItem(tmp2);
+        }
+        DiningHallMealPlan mp2 = diningHallMealPlanRepository.save(mealPlan);
+        return mp2.getId();
     }
 
     @Operation(summary = "Get Date of Meal Plan", description = "Retrieves the date associated with a specific meal plan.")

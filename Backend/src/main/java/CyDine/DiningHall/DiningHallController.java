@@ -52,6 +52,20 @@ public class DiningHallController {
         return ret;
     }
 
+    @GetMapping(path = "/Dininghall/today")
+    @Operation(summary = "Get dining hall foods for today", description = "Retrieves dining hall foods for a all halls and times on the current date.")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = DiningHall.class)))
+    List<DiningHall> getAllDiningHallFoods() {
+        List<DiningHall> ret = new ArrayList<>();
+        for(DiningHall t: diningHallRepository.findAll()){
+            if (t.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())){
+                ret.add(t);
+            }
+        }
+        return ret;
+    }
+
     @GetMapping(path = "/Dininghall/{id}")
     @Operation(summary = "Get dining hall food by ID", description = "Retrieves a specific dining hall food by its ID.")
     @ApiResponse(responseCode = "200", description = "Successful operation",

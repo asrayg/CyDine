@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -212,7 +212,108 @@ public class Scraper {
 
 
 
+
+    public String ai() throws IOException {
+        String foodsUrl = "http://127.0.0.1:8080/Dininghall/today";
+        URL url2 = new URL(foodsUrl);
+        HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
+        conn2.setRequestMethod("GET");
+        conn2.setRequestProperty("Content-Type", "application/json");
+        conn2.setDoOutput(true);
+
+        int responseCode2 = conn2.getResponseCode();
+        BufferedReader in2 = new BufferedReader(new InputStreamReader(conn2.getInputStream()));
+        String inputLine;
+        StringBuilder response2 = new StringBuilder();
+
+        while ((inputLine = in2.readLine()) != null) {
+            response2.append(inputLine);
+        }
+        in2.close();
+
+        System.out.println(response2);
+
+
+
+
+        String foods = "I want you to make a meal plan using the foods i provide. Do not have any other text just the json. Make it in the format of a json object, here is an example of it" +
+                " " +
+                "{\n" +
+                "    \"Breakfast\": [\n" +
+                "      {\n" +
+                "        \"id\": 0\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"id\": 2\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"id\": 7\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"Lunch\": [\n" +
+                "        {\n" +
+                "          \"id\": 5\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"id\": 22\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"id\": 117\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"Dinner\": [\n" +
+                "        {\n" +
+                "          \"id\": 20\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"id\": 12\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"id\": 75\n" +
+                "        }\n" +
+                "      ]\n" +
+                "  }" +
+
+                " " +
+                "These are the foods" + response2;
+
+        String apiKey = "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";
+        String urlString = "https://api.openai.com/v1/chat/completions";
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        // Set up the connection
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer " + apiKey);
+        connection.setDoOutput(true);
+
+        String jsonInputString = "{"
+                + "\"model\": \"gpt-4o\","
+                + "\"messages\": ["
+                + "{\"role\": \"user\", \"content\": \""+ StringEscapeUtils.escapeJava(foods) +"\"}"
+                + "]"
+                + "}";
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = in.readLine()) != null) {
+            response.append(line);
+        }
+        in.close();
+        int responseCode = connection.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
+        System.out.println("Response: " + response.toString());
+        if(response.charAt(0) == '\''){
+            response = new StringBuilder(response.substring(6, response.length() - 3));
+        }
+        return String.valueOf(response);
+    }
+
 }
-
-
-//you can choose udcc, fily,seanson and then you can choose breakfast lunch or dinner,
