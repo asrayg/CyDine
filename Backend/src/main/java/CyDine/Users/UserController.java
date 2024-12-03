@@ -91,6 +91,35 @@ public class UserController {
         return success;
     }
 
+
+    @PutMapping("/users/{userId}/DHmealplan/{mealPlanId}")
+    String assignDHMealPlan(@PathVariable int userId, @PathVariable int mealPlanId){
+        User user = userRepository.findById(userId);
+        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(mealPlanId);
+        if(user == null || mealPlan == null)
+            return failure;
+        mealPlan.setUser(user);
+        user.addDiningHallMealPlan(mealPlan);
+        userRepository.save(user);
+        return success;
+    }
+
+
+    @GetMapping(path = "/users/{id}/mealplans")
+    List<MealPlans> getUserMealplansById( @PathVariable int id){
+        return userRepository.findById(id).getMealPlans();
+    }
+
+    @GetMapping(path = "/users/{id}/DHmealplans")
+    List<DiningHallMealPlan> getUserDHMealplansById(@PathVariable int id){
+        return userRepository.findById(id).getDiningHallMealPlan();
+    }
+
+
+
+
+
+
     @Transactional
     @DeleteMapping("/users/{id}")
     @Operation(summary = "Delete User", description = "Deletes a user.")
