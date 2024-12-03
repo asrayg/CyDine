@@ -28,7 +28,7 @@ public class DiningHallMealPlan {
 
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<DiningHall> foodItems;
+    private List<DiningHall> foodItems = new ArrayList<>();
 
     @ManyToOne
     @JsonIgnore
