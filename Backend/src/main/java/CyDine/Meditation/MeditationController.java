@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Tag(name = "Water", description = "Water intake management APIs")
+@Tag(name = "Meditation", description = "Meditation management APIs")
 public class MeditationController {
 
     @Autowired
@@ -72,13 +72,13 @@ public class MeditationController {
     @Operation(summary = "Get meditation record by ID", description = "Retrieves a specific meditation intake record by its ID.")
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(implementation = Meditation.class)))
-    @ApiResponse(responseCode = "404", description = "Water record not found")
+    @ApiResponse(responseCode = "404", description = "Meditation record not found")
     Meditation getMeditationById(@Parameter(description = "ID of the meditation record") @PathVariable int id) {
         return meditationRepository.findById(id);
     }
 
     @PostMapping(path = "/meditation")
-    @Operation(summary = "Create meditation record", description = "Creates a new meditation intake record.")
+    @Operation(summary = "Create meditation record", description = "Creates a new meditation record.")
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(type = "integer", example = "1")))
     int createMeditation(@RequestBody Meditation meditation) {
@@ -88,7 +88,7 @@ public class MeditationController {
 
     @Transactional
     @DeleteMapping(path = "/meditation/{id}")
-    @Operation(summary = "Delete meditation record", description = "Deletes a meditation intake record by its ID.")
+    @Operation(summary = "Delete meditation record", description = "Deletes a meditation record by its ID.")
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(type = "string", example = "{\"message\":\"success\"}")))
     @ApiResponse(responseCode = "404", description = "meditation record not found")
@@ -104,7 +104,7 @@ public class MeditationController {
     @Operation(summary = "Update meditation record", description = "Updates an existing meditation intake record.")
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(implementation = Meditation.class)))
-    @ApiResponse(responseCode = "404", description = "Water record not found")
+    @ApiResponse(responseCode = "404", description = "Meditation record not found")
     Meditation updateMeditation(@Parameter(description = "ID of the meditation record to update") @PathVariable int id, @RequestBody Meditation request) {
         Meditation foodItem = meditationRepository.findById(id);
         if (foodItem == null) {
