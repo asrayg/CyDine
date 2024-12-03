@@ -1,6 +1,7 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,9 +21,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -42,7 +50,9 @@ import java.util.Map;
 public class FeedActivity extends AppCompatActivity implements WebSocketListener {
 
     private static final List<String> messageCache = new ArrayList<>(); // Cache for messages
+    private static final String USER_DETAILS_URL = "http://coms-3090-020.class.las.iastate.edu:8080/users";
     private static final List<String> imageCache = new ArrayList<>();
+    private final Map<String, List<String>> commentCache = new HashMap<>();
     private TextView feedTextView;
     private WebSocketManager webSocketManager;
     private Button uploadImageButton;
@@ -51,6 +61,7 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     private RecyclerView feedRecyclerView;
     private ImageAdapter imageAdapter;
     private boolean counter;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +79,15 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         feedRecyclerView.setAdapter(imageAdapter);
         counter = false;
 
+        String userId = getIntent().getStringExtra("userId");
+        fetchUserDetails(userId);
+
         restoreMessages();
         // Initialize WebSocketManager and set the listener
         webSocketManager = WebSocketManager.getInstance();
 
-
         // WebSocket server URL
-        String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/ss";
+        String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/" + userName;
         Log.d("WebSocket", "Connecting to WebSocket: " + serverUrl);
 
         // Set the WebSocketListener
@@ -87,6 +100,37 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         uploadImageButton.setOnClickListener(v -> openImagePicker());
     }
 
+    private void fetchUserDetails(String userId) {
+        String userUrl = USER_DETAILS_URL + "/" + userId;
+
+        StringRequest userRequest = new StringRequest(
+                Request.Method.GET,
+                userUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            userName = jsonObject.getString("name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(FeedActivity.this, "Error parsing user data", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("UserDetailsError", error.toString());
+                        Toast.makeText(FeedActivity.this, "Error fetching user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        Volley.newRequestQueue(this).add(userRequest);
+    }
+
+
     private void restoreMessages() {
         // Restore text messages in TextView
         StringBuilder allMessages = new StringBuilder();
@@ -94,12 +138,22 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
             allMessages.append(message).append("\n");
         }
         feedTextView.setText(allMessages.toString());
-
-        // Restore image URLs in RecyclerView
-        for (String imageUrl : imageCache) {
+        // Restore image URLs and their comments in RecyclerView
+        for (int i = 0; i < imageCache.size(); i++) {
+            String imageUrl = imageCache.get(i);
             imageAdapter.addImage(imageUrl);
+
+            // Restore associated comments for this image
+            if (commentCache.containsKey(imageUrl)) { // Check if there are comments cached for this image
+                Log.d("FeedActivity", "Yes!!! ");
+                List<String> comments = commentCache.get(imageUrl);
+                for (String comment : comments) {
+                    imageAdapter.addCommentToImage(imageUrl, comment);
+                }
+            }
         }
     }
+
 
     // Method to open image picker for selecting an image
     private void openImagePicker() {
@@ -202,32 +256,70 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         return byteArrayOutputStream.toByteArray();
     }
 
-    // WebSocket callback method to handle incoming messages
     @Override
     public void onWebSocketMessage(String message) {
-        // Use runOnUiThread to ensure UI update happens on the main thread
         runOnUiThread(() -> {
-            // Check if the message contains "@" indicating an image name
-            if (message.contains("@")) {
-                // Extract image name from message
+            if (message.contains("#")) {
+                // Comment message
+                if(counter) {
+                    int firstColonIndex = message.indexOf(":");
+                    if (firstColonIndex == -1) {
+                        Log.e("FeedActivity", "Invalid message format: " + message);
+                        return;
+                    }
+
+                    // Extract the username
+                    String username = message.substring(0, firstColonIndex).trim();
+
+                    // Extract the rest of the message
+                    String content = message.substring(firstColonIndex + 1).trim();
+
+                    if (content.startsWith("#")) {
+                        content = content.substring(1); // Remove the "#" identifier
+                    }
+
+                    // Find the last colon to isolate the comment
+                    int lastColonIndex = content.lastIndexOf(":");
+                    if (lastColonIndex == -1) {
+                        Log.e("FeedActivity", "Invalid content format: " + content);
+                        return;
+                    }
+
+                    // Extract the image URL and the comment
+                    String imageUrl = content.substring(0, lastColonIndex).trim();
+                    String comment = content.substring(lastColonIndex + 1).trim();
+
+                    Log.d("FeedActivity", "Username: " + username);
+                    Log.d("FeedActivity", "Image URL: " + imageUrl);
+                    Log.d("FeedActivity", "Comment: " + comment);
+
+                    // Update comment in the adapter
+                    imageAdapter.addCommentToImage(imageUrl, comment);
+                    if (!commentCache.containsKey(imageUrl)) {
+                        commentCache.put(imageUrl, new ArrayList<>());
+                    }
+
+                    commentCache.get(imageUrl).add(comment);
+                    messageCache.add(comment);
+                }
+            } else if (message.contains("@")) {
+                // Image upload message
                 int atIndex = message.indexOf("@");
                 String imageName = message.substring(atIndex + 1).trim();
                 String imageUrl = "http://coms-3090-020.class.las.iastate.edu:8080/images/gets?image=" + imageName;
 
-                Log.d("WebSocket", "First fetch");
-                // Fetch and display the image using the extracted name
                 if(counter){
                     imageCache.add(imageUrl);
                     fetchUploadedImage(imageName);
                 }
             } else {
-                // Handle other types of messages (non-image)
-                messageCache.add(message); // Cache the message
-                String currentText = feedTextView.getText().toString();
-                feedTextView.setText(currentText + "\n" + message);
+                Log.d("FeedActivity", "its here now: " + message);
+                messageCache.add(message);
+                //feedTextView.setText(feedTextView.getText().toString() + "\n" + message);
             }
         });
     }
+
 
     // WebSocket callback for connection closure
     @Override
@@ -248,5 +340,15 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
     public void onWebSocketError(Exception ex) {
         // Handle WebSocket error
         Log.e("WebSocket", "WebSocket error: " + ex.getMessage());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Disconnect WebSocket when the activity is destroyed
+        if (webSocketManager != null) {
+            webSocketManager.disconnectWebSocket();
+            Log.d("WebSocket", "WebSocket disconnected in onDestroy.");
+        }
     }
 }

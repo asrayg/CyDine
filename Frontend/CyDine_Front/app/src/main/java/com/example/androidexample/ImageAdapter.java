@@ -2,6 +2,7 @@ package com.example.androidexample;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,20 +73,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         // Add comment when the comment button is clicked
         holder.commentButton.setOnClickListener(v -> {
-            // Show a dialog to allow the user to add a comment
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Add a Comment");
 
-            // Create an EditText for input (not TextView)
-            final EditText input = new EditText(context);  // Use EditText for comment input
+            final EditText input = new EditText(context);
             builder.setView(input);
 
             builder.setPositiveButton("Post", (dialog, which) -> {
                 String comment = input.getText().toString().trim();
                 if (!comment.isEmpty()) {
-                    // Add the comment to the list of comments for the image
-                    imageComments.get(position).add(comment);
-                    notifyItemChanged(position); // Refresh this item's view to show the new comment
+                    String imageUrll = imageUrls.get(position);
+
+                    // Add locally first
+                    //imageComments.get(position).add(comment);
+                    //notifyItemChanged(position);
+
+                    // Send comment via WebSocket
+                    String message = "#" + imageUrll + ":" + comment;
+                    WebSocketManager.getInstance().sendMessage(message);
                 }
             });
 
@@ -93,7 +98,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
             builder.show();
         });
+
     }
+    public void addCommentToImage(String imageUrl, String comment) {
+        int position = imageUrls.indexOf(imageUrl);
+        Log.d("ImageAdapter", "Sent comment via WebSocket: " + position);
+        if (position != -1) {
+            Log.d("ImageAdapter", "Sent comment via WebSocket: " + comment);
+            imageComments.get(position).add(comment);
+            notifyItemChanged(position); // Refresh the view for the updated image
+        }
+    }
+
 
     @Override
     public int getItemCount() {
