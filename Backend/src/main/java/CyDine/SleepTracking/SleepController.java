@@ -69,4 +69,35 @@ public class SleepController {
             return "You slept " + hoursSlept + " hours. This is more than the recommended amount, but occasional oversleeping is generally not a concern.";
         }
     }
+
+    @DeleteMapping("/{userId}/{entryId}")
+    @Operation(summary = "Delete a sleep entry", description = "Deletes a specific sleep entry for a user")
+    @ApiResponse(responseCode = "200", description = "Sleep entry deleted successfully",
+            content = @Content(schema = @Schema(implementation = String.class)))
+    public String deleteSleepEntry(@Parameter(description = "ID of the user") @PathVariable int userId,
+                                   @Parameter(description = "ID of the sleep entry") @PathVariable int entryId) {
+        try {
+            sleepRepository.deleteById(entryId);
+            return success;
+        } catch (Exception e) {
+            return failure;
+        }
+    }
+
+    @PutMapping("/{userId}/{entryId}")
+    @Operation(summary = "Update a sleep entry", description = "Updates a specific sleep entry for a user")
+    @ApiResponse(responseCode = "200", description = "Sleep entry updated successfully",
+            content = @Content(schema = @Schema(implementation = SleepEntry.class)))
+    public String updateSleepEntry(@Parameter(description = "ID of the user") @PathVariable int userId,
+                                   @Parameter(description = "ID of the sleep entry") @PathVariable int entryId,
+                                   @RequestBody SleepEntry updatedEntry) {
+        SleepEntry sleepEntry = sleepRepository.findById(entryId).orElse(null);
+        if (sleepEntry == null || sleepEntry.getUserId() != userId) {
+            return failure;
+        }
+        sleepEntry.setHoursSlept(updatedEntry.getHoursSlept());
+        sleepEntry.setDate(updatedEntry.getDate());
+        sleepRepository.save(sleepEntry);
+        return success;
+    }
 }

@@ -65,4 +65,34 @@ public class WeightController {
         double change = currentWeight - initialWeight;
         return String.format("Weight change: %.1f kg", change);
     }
+    @PutMapping("/{userId}/{entryId}")
+    @Operation(summary = "Update a weight entry", description = "Updates a specific weight entry for a user")
+    @ApiResponse(responseCode = "200", description = "Weight entry updated successfully",
+            content = @Content(schema = @Schema(implementation = WeightEntry.class)))
+    public String updateWeightEntry(@Parameter(description = "ID of the user") @PathVariable int userId,
+                                    @Parameter(description = "ID of the weight entry") @PathVariable int entryId,
+                                    @RequestBody WeightEntry updatedEntry) {
+        WeightEntry weightEntry = weightRepository.findById(entryId).orElse(null);
+        if (weightEntry == null || weightEntry.getUserId() != userId) {
+            return failure;
+        }
+        weightEntry.setWeight(updatedEntry.getWeight());
+        weightEntry.setDate(updatedEntry.getDate());
+        weightRepository.save(weightEntry);
+        return success;
+    }
+
+    @DeleteMapping("/{userId}/{entryId}")
+    @Operation(summary = "Delete a weight entry", description = "Deletes a specific weight entry for a user")
+    @ApiResponse(responseCode = "200", description = "Weight entry deleted successfully",
+            content = @Content(schema = @Schema(implementation = String.class)))
+    public String deleteWeightEntry(@Parameter(description = "ID of the user") @PathVariable int userId,
+                                    @Parameter(description = "ID of the weight entry") @PathVariable int entryId) {
+        WeightEntry weightEntry = weightRepository.findById(entryId).orElse(null);
+        if (weightEntry == null || weightEntry.getUserId() != userId) {
+            return failure;
+        }
+        weightRepository.deleteById(entryId);
+        return success;
+    }
 }
