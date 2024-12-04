@@ -83,18 +83,6 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
         fetchUserDetails(userId);
 
         restoreMessages();
-        // Initialize WebSocketManager and set the listener
-        webSocketManager = WebSocketManager.getInstance();
-
-        // WebSocket server URL
-        String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/" + userName;
-        Log.d("WebSocket", "Connecting to WebSocket: " + serverUrl);
-
-        // Set the WebSocketListener
-        webSocketManager.setWebSocketListener(this);
-
-        // Initiate WebSocket connection
-        webSocketManager.connectWebSocket(serverUrl);
 
         // Set up the button to open image picker
         uploadImageButton.setOnClickListener(v -> openImagePicker());
@@ -112,6 +100,10 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             userName = jsonObject.getString("name");
+
+                            // Initialize WebSocket only after the userName is fetched
+                            initializeWebSocket();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(FeedActivity.this, "Error parsing user data", Toast.LENGTH_SHORT).show();
@@ -129,6 +121,16 @@ public class FeedActivity extends AppCompatActivity implements WebSocketListener
 
         Volley.newRequestQueue(this).add(userRequest);
     }
+
+    private void initializeWebSocket() {
+        String serverUrl = "ws://coms-3090-020.class.las.iastate.edu:8080/chat/" + userName;
+        Log.d("WebSocket", "Connecting to WebSocket: " + serverUrl);
+
+        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager.setWebSocketListener(this);
+        webSocketManager.connectWebSocket(serverUrl);
+    }
+
 
 
     private void restoreMessages() {

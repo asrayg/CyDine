@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
@@ -173,39 +174,119 @@ public class FoodMenuActivity extends AppCompatActivity {
         }
     }
 
-    private void generateAIFoodOptions(){
-        foodOptionsContainer.removeAllViews(); // Clear previous views
-        // Get selected dining center and meal type
-        String diningHall = diningCenterSpinner.getSelectedItem().toString();
-        String mealType = mealTypeSpinner.getSelectedItem().toString();
-        diningHall = mapDiningHallName(diningHall);
+    /**
+     * Sends a POST request to generate AI-based food options and handles the response.
+     */
+    private void generateAIFoodOptions() {
+        // Construct the URL for the AI endpoint
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/ai";
 
-        // Construct the URL
-        String url = "http://coms-3090-020.class.las.iastate.edu:8080/Dininghall/" + diningHall + "/" + mealType;
-
-        // Create a JSON request
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET,
+        // Create a POST request using Volley
+        StringRequest aiMealRequest = new StringRequest(
+                Request.Method.POST,
                 url,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        parseFoodItems(response, mealType);
+                response -> {
+                    try {
+                        // Parse the response as an integer ID
+                        int aiMealPlanId = Integer.parseInt(response.trim());
+
+                        // Keep track of the generated meal plan ID
+                        mealID = aiMealPlanId;
+
+                        // Display a success message
+                        Toast.makeText(FoodMenuActivity.this, "AI meal plan generated successfully! Plan ID: " + aiMealPlanId, Toast.LENGTH_SHORT).show();
+
+                        // Optionally fetch the meal plan details based on the new ID
+                        fetchAIMealPlan(aiMealPlanId);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        Toast.makeText(FoodMenuActivity.this, "Error parsing AI meal plan ID.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(FoodMenuActivity.this, "Error fetching food items.", Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Toast.makeText(FoodMenuActivity.this, "Error generating AI meal plan.", Toast.LENGTH_SHORT).show();
                 }
         );
 
         // Add the request to the request queue
-        VolleySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
-
+        VolleySingleton.getInstance(this).addToRequestQueue(aiMealRequest);
     }
+
+    /**
+     * Fetches the AI-generated meal plan by its ID.
+     * @param aiMealPlanId The ID of the AI-generated meal plan.
+     */
+    private void fetchAIMealPlan(int aiMealPlanId) {
+        // Construct the URL for the AI meal plan
+        String url = "http://coms-3090-020.class.las.iastate.edu:8080/DHmealplans/" + aiMealPlanId;
+
+        // Create a GET request using Volley
+        JsonObjectRequest aiMealPlanRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    try {
+                        // Extract the "foodItems" array from the response
+                        JSONArray foodItems = response.getJSONArray("foodItems");
+
+                        // Clear previous views in the food options container
+                        foodOptionsContainer.removeAllViews();
+
+                        // Parse and display the food items
+                        groupAndParseFoodItemsByTime(foodItems);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(FoodMenuActivity.this, "Error parsing AI meal plan details.", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(FoodMenuActivity.this, "Error fetching AI meal plan details.", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        // Add the request to the request queue
+        VolleySingleton.getInstance(this).addToRequestQueue(aiMealPlanRequest);
+    }
+
+    /**
+     * Groups food items by their "time" field and parses each group.
+     * @param foodItems The array of food items from the API response.
+     */
+    private void groupAndParseFoodItemsByTime(JSONArray foodItems) {
+        try {
+            // Create a map to group food items by "time"
+            Map<String, JSONArray> groupedFoodItems = new HashMap<>();
+
+            for (int i = 0; i < foodItems.length(); i++) {
+                JSONObject foodObject = foodItems.getJSONObject(i);
+
+                // Get the "time" field
+                String mealTime = foodObject.getString("time");
+
+                // Add the food object to the corresponding group
+                if (!groupedFoodItems.containsKey(mealTime)) {
+                    groupedFoodItems.put(mealTime, new JSONArray());
+                }
+                groupedFoodItems.get(mealTime).put(foodObject);
+            }
+
+            // Parse each group of food items
+            for (Map.Entry<String, JSONArray> entry : groupedFoodItems.entrySet()) {
+                String mealTime = entry.getKey();
+                JSONArray itemsForMeal = entry.getValue();
+
+                // Parse the items for the current meal time
+                parseFoodItems(itemsForMeal, mealTime);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(FoodMenuActivity.this, "Error grouping food items by time.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
 
 
     /**
@@ -408,7 +489,7 @@ public class FoodMenuActivity extends AppCompatActivity {
 
 
 
-    /**
+    /**a
      * Adds a food item to the user's meal plan.
      * @param mealPlanID An integer representing the ID of the meal plan to which the food item will be added.
      */
@@ -647,6 +728,7 @@ public class FoodMenuActivity extends AppCompatActivity {
             @Override
             public byte[] getBody() {
                 // Format the request body as required
+                String date = "2024-12-03"; // Provide a date or use a dynamic one, e.g., from a calendar instance
                 String requestBody = String.format(
                         "{\"id\":%d,\"name\":\"%s\",\"protein\":%d,\"carbs\":%d,\"fat\":%d,\"calories\":%d,\"dininghall\":\"%s\",\"time\":\"%s\",\"date\":\"%s\"}",
                         foodOption.id,
@@ -656,12 +738,14 @@ public class FoodMenuActivity extends AppCompatActivity {
                         foodOption.fat,
                         foodOption.calories,
                         mapDiningHallName(diningCenterSpinner.getSelectedItem().toString()), // Ensure you map the dining hall name
-                        mealType
+                        mealType, // mealType
+                        date // Add the missing date argument
                 );
 
                 Log.d("AddMealRequestBody", requestBody);
                 return requestBody.getBytes();
             }
+
 
             @Override
             public Map<String, String> getHeaders() {
