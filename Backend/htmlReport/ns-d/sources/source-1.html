@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SleepController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">CyDine.SleepTracking</a>
+</div>
+
+<h1>Coverage Summary for Class: SleepController (CyDine.SleepTracking)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SleepController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package CyDine.SleepTracking;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/sleep&quot;)
+&nbsp;@Tag(name = &quot;Sleep&quot;, description = &quot;Sleep tracking management APIs&quot;)
+<b class="nc">&nbsp;public class SleepController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private SleepRepository sleepRepository;
+&nbsp;
+<b class="nc">&nbsp;    private String success = &quot;{\&quot;message\&quot;:\&quot;success\&quot;}&quot;;</b>
+<b class="nc">&nbsp;    private String failure = &quot;{\&quot;message\&quot;:\&quot;failure\&quot;}&quot;;</b>
+&nbsp;
+&nbsp;    @PostMapping(&quot;/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Add new sleep entry&quot;, description = &quot;Adds a new sleep entry for the user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Sleep entry added successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = SleepEntry.class)))
+&nbsp;    public String addSleep(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                           @RequestBody SleepEntry sleepEntry) {
+<b class="nc">&nbsp;        sleepEntry.setDate(LocalDate.now());</b>
+<b class="nc">&nbsp;        sleepEntry.setUserId(userId);</b>
+<b class="nc">&nbsp;        sleepRepository.save(sleepEntry);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Get user&#39;s sleep history&quot;, description = &quot;Retrieves all sleep entries for a specific user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = SleepEntry.class)))
+&nbsp;    public List&lt;SleepEntry&gt; getUserSleepHistory(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        return sleepRepository.findByUserIdOrderByDateDesc(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}/latest&quot;)
+&nbsp;    @Operation(summary = &quot;Get user&#39;s latest sleep entry&quot;, description = &quot;Retrieves the most recent sleep entry for a specific user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = SleepEntry.class)))
+&nbsp;    public SleepEntry getLatestSleep(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        return sleepRepository.findTopByUserIdOrderByDateDesc(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}/assessment&quot;)
+&nbsp;    @Operation(summary = &quot;Get sleep assessment&quot;, description = &quot;Assesses if the user&#39;s latest sleep duration is adequate&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;)))
+&nbsp;    public String getSleepAssessment(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        SleepEntry latestEntry = sleepRepository.findTopByUserIdOrderByDateDesc(userId);</b>
+<b class="nc">&nbsp;        if (latestEntry == null) {</b>
+<b class="nc">&nbsp;            return &quot;No sleep data available&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        double hoursSlept = latestEntry.getHoursSlept();</b>
+<b class="nc">&nbsp;        if (hoursSlept &gt;= 6 &amp;&amp; hoursSlept &lt;= 8) {</b>
+<b class="nc">&nbsp;            return &quot;You slept &quot; + hoursSlept + &quot; hours. This is an adequate amount of sleep.&quot;;</b>
+<b class="nc">&nbsp;        } else if (hoursSlept &lt; 6) {</b>
+<b class="nc">&nbsp;            return &quot;You slept &quot; + hoursSlept + &quot; hours. You need to get more sleep for better health.&quot;;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return &quot;You slept &quot; + hoursSlept + &quot; hours. This is more than the recommended amount, but occasional oversleeping is generally not a concern.&quot;;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{userId}/{entryId}&quot;)
+&nbsp;    @Operation(summary = &quot;Delete a sleep entry&quot;, description = &quot;Deletes a specific sleep entry for a user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Sleep entry deleted successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = String.class)))
+&nbsp;    public String deleteSleepEntry(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                                   @Parameter(description = &quot;ID of the sleep entry&quot;) @PathVariable int entryId) {
+&nbsp;        try {
+<b class="nc">&nbsp;            sleepRepository.deleteById(entryId);</b>
+<b class="nc">&nbsp;            return success;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            return failure;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/{userId}/{entryId}&quot;)
+&nbsp;    @Operation(summary = &quot;Update a sleep entry&quot;, description = &quot;Updates a specific sleep entry for a user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Sleep entry updated successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = SleepEntry.class)))
+&nbsp;    public String updateSleepEntry(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                                   @Parameter(description = &quot;ID of the sleep entry&quot;) @PathVariable int entryId,
+&nbsp;                                   @RequestBody SleepEntry updatedEntry) {
+<b class="nc">&nbsp;        SleepEntry sleepEntry = sleepRepository.findById(entryId).orElse(null);</b>
+<b class="nc">&nbsp;        if (sleepEntry == null || sleepEntry.getUserId() != userId) {</b>
+<b class="nc">&nbsp;            return failure;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        sleepEntry.setHoursSlept(updatedEntry.getHoursSlept());</b>
+<b class="nc">&nbsp;        sleepEntry.setDate(updatedEntry.getDate());</b>
+<b class="nc">&nbsp;        sleepRepository.save(sleepEntry);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 12:51</div>
+</div>
+</body>
+</html>

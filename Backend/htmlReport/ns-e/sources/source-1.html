@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > User</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">CyDine.Users</a>
+</div>
+
+<h1>Coverage Summary for Class: User (CyDine.Users)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">User</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/62)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package CyDine.Users;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import CyDine.DiningHallMealPlan.DiningHallMealPlan;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;
+&nbsp;import CyDine.FoodItems.FoodItems;
+&nbsp;import CyDine.MealPlans.MealPlans;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class User {
+&nbsp;
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private int id;
+&nbsp;    private String name;
+&nbsp;    @Column(unique = true)
+&nbsp;    private String emailId;
+&nbsp;    private Date joiningDate;
+&nbsp;    private boolean ifActive;
+&nbsp;    private String password;
+&nbsp;    private int logintoken;
+&nbsp;    private int height;
+&nbsp;    private int weight;
+&nbsp;    private int age;
+&nbsp;    private boolean IsMod;
+&nbsp;    private boolean IsAdmin;
+&nbsp;    private boolean IsBanned;
+&nbsp;    private String dietary_preference;
+&nbsp;    private String dietary_restrictions;
+&nbsp;    private String fitness_goal;
+&nbsp;    private String discordUsername;
+&nbsp;    private boolean isWarned;
+&nbsp;
+&nbsp;
+&nbsp;    @OneToMany(cascade = CascadeType.ALL)
+&nbsp;    @JoinColumn(name = &quot;mealPlans_id&quot;)
+&nbsp;    private List&lt;MealPlans&gt; mealPlans;
+&nbsp;
+&nbsp;    @OneToMany(cascade = CascadeType.ALL)
+&nbsp;    @JoinColumn(name = &quot;diningHallMealPlan_id&quot;)
+&nbsp;    private List&lt;DiningHallMealPlan&gt; diningHallMealPlan;
+&nbsp;
+&nbsp;    @OneToMany(cascade = CascadeType.ALL)
+&nbsp;    @JoinColumn(name = &quot;foodItems_id&quot;)
+&nbsp;    private List&lt;FoodItems&gt; foodItems;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // =============================== Constructors ================================== //
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;    public User(String name, String emailId, String password, int height, int weight, String dietary_preference, String dietary_restrictions, String fitness_goal, String discordUsername) {</b>
+<b class="nc">&nbsp;        this.name = name;</b>
+<b class="nc">&nbsp;        this.emailId = emailId;</b>
+<b class="nc">&nbsp;        this.password = password;</b>
+<b class="nc">&nbsp;        this.ifActive = true;</b>
+<b class="nc">&nbsp;        this.height = height;</b>
+<b class="nc">&nbsp;        this.weight = weight;</b>
+<b class="nc">&nbsp;        this.dietary_preference = dietary_preference;</b>
+<b class="nc">&nbsp;        this.dietary_restrictions = dietary_restrictions;</b>
+<b class="nc">&nbsp;        this.fitness_goal = fitness_goal;</b>
+<b class="nc">&nbsp;        this.discordUsername = discordUsername;</b>
+<b class="nc">&nbsp;        mealPlans = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        foodItems = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        isWarned = false;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public User() {</b>
+<b class="nc">&nbsp;        isWarned = false;</b>
+<b class="nc">&nbsp;        mealPlans = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        foodItems = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public int getId() {
+<b class="nc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(int id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getName() {
+<b class="nc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setName(String name) {
+<b class="nc">&nbsp;        this.name = name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEmailId() {
+<b class="nc">&nbsp;        return emailId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEmailId(String emailId) {
+<b class="nc">&nbsp;        this.emailId = emailId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Date getJoiningDate() {
+<b class="nc">&nbsp;        return joiningDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setJoiningDate(Date joiningDate) {
+<b class="nc">&nbsp;        this.joiningDate = joiningDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isIfActive() {
+<b class="nc">&nbsp;        return ifActive;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setIfActive(boolean ifActive) {
+<b class="nc">&nbsp;        this.ifActive = ifActive;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPassword() {
+<b class="nc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPassword(String password) {
+<b class="nc">&nbsp;        this.password = password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getLogintoken() {
+<b class="nc">&nbsp;        return logintoken;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setLogintoken(int logintoken) {
+<b class="nc">&nbsp;        this.logintoken = logintoken;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getHeight() {
+<b class="nc">&nbsp;        return height;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setHeight(int height) {
+<b class="nc">&nbsp;        this.height = height;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getWeight() {
+<b class="nc">&nbsp;        return weight;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setWeight(int weight) {
+<b class="nc">&nbsp;        this.weight = weight;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getAge() {
+<b class="nc">&nbsp;        return age;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAge(int age) {
+<b class="nc">&nbsp;        this.age = age;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isMod() {
+<b class="nc">&nbsp;        return IsMod;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMod(boolean mod) {
+<b class="nc">&nbsp;        IsMod = mod;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isAdmin() {
+<b class="nc">&nbsp;        return IsAdmin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAdmin(boolean admin) {
+<b class="nc">&nbsp;        IsAdmin = admin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isBanned() {
+<b class="nc">&nbsp;        return IsBanned;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setBanned(boolean banned) {
+<b class="nc">&nbsp;        IsBanned = banned;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getDietary_preference() {
+<b class="nc">&nbsp;        return dietary_preference;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDietary_preference(String dietary_preference) {
+<b class="nc">&nbsp;        this.dietary_preference = dietary_preference;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getDietary_restrictions() {
+<b class="nc">&nbsp;        return dietary_restrictions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDietary_restrictions(String dietary_restrictions) {
+<b class="nc">&nbsp;        this.dietary_restrictions = dietary_restrictions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFitness_goal() {
+<b class="nc">&nbsp;        return fitness_goal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFitness_goal(String fitness_goal) {
+<b class="nc">&nbsp;        this.fitness_goal = fitness_goal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;MealPlans&gt; getMealPlans() {
+<b class="nc">&nbsp;        return mealPlans;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addMealPlans(MealPlans mealPlans) {
+<b class="nc">&nbsp;        this.mealPlans.add(mealPlans);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void removeMealPlans(MealPlans mealPlans) {
+<b class="nc">&nbsp;        this.mealPlans.remove(mealPlans);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addDiningHallMealPlan(DiningHallMealPlan diningHallMealPlan) {
+<b class="nc">&nbsp;        this.diningHallMealPlan.add(diningHallMealPlan);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void removeDiningHallMealPlan(DiningHallMealPlan diningHallMealPlan) {
+<b class="nc">&nbsp;        this.diningHallMealPlan.remove(diningHallMealPlan);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;DiningHallMealPlan&gt; getDiningHallMealPlan() {
+<b class="nc">&nbsp;        return diningHallMealPlan;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;FoodItems&gt; getFoodItems() {
+<b class="nc">&nbsp;        return foodItems;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFoodItems(List&lt;FoodItems&gt; foodItems) {
+<b class="nc">&nbsp;        this.foodItems = foodItems;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getdiscordUsername() {
+<b class="nc">&nbsp;        return discordUsername;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setdiscordUsername(String discordUsername) {
+<b class="nc">&nbsp;        this.discordUsername = discordUsername;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void setWarned(boolean warned) {
+<b class="nc">&nbsp;        isWarned = warned;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isWarned() {
+<b class="nc">&nbsp;        return isWarned;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 12:51</div>
+</div>
+</body>
+</html>

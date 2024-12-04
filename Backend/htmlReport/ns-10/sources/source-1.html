@@ -1,0 +1,214 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WeightController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">CyDine.Weight</a>
+</div>
+
+<h1>Coverage Summary for Class: WeightController (CyDine.Weight)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WeightController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package CyDine.Weight;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/weight&quot;)
+&nbsp;@Tag(name = &quot;Weight&quot;, description = &quot;Weight tracking management APIs&quot;)
+<b class="nc">&nbsp;public class WeightController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private WeightRepository weightRepository;
+&nbsp;
+<b class="nc">&nbsp;    private String success = &quot;{\&quot;message\&quot;:\&quot;success\&quot;}&quot;;</b>
+<b class="nc">&nbsp;    private String failure = &quot;{\&quot;message\&quot;:\&quot;failure\&quot;}&quot;;</b>
+&nbsp;
+&nbsp;    @PostMapping(&quot;/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Add new weight entry&quot;, description = &quot;Adds a new weight entry for the user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Weight entry added successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = WeightEntry.class)))
+&nbsp;    public String addWeight(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                            @RequestBody WeightEntry weightEntry) {
+<b class="nc">&nbsp;        weightEntry.setDate(LocalDate.now());</b>
+<b class="nc">&nbsp;        weightEntry.setUserId(userId);</b>
+<b class="nc">&nbsp;        weightRepository.save(weightEntry);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Get user&#39;s weight history&quot;, description = &quot;Retrieves all weight entries for a specific user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = WeightEntry.class)))
+&nbsp;    public List&lt;WeightEntry&gt; getUserWeightHistory(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        return weightRepository.findByUserIdOrderByDateDesc(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}/latest&quot;)
+&nbsp;    @Operation(summary = &quot;Get user&#39;s latest weight&quot;, description = &quot;Retrieves the most recent weight entry for a specific user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = WeightEntry.class)))
+&nbsp;    public WeightEntry getLatestWeight(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        return weightRepository.findTopByUserIdOrderByDateDesc(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{userId}/progress&quot;)
+&nbsp;    @Operation(summary = &quot;Get user&#39;s weight progress&quot;, description = &quot;Calculates the weight change since the first entry&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;)))
+&nbsp;    public String getWeightProgress(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId) {
+<b class="nc">&nbsp;        List&lt;WeightEntry&gt; entries = weightRepository.findByUserIdOrderByDateAsc(userId);</b>
+<b class="nc">&nbsp;        if (entries.size() &lt; 2) {</b>
+<b class="nc">&nbsp;            return &quot;Not enough data to calculate progress&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        double initialWeight = entries.get(0).getWeight();</b>
+<b class="nc">&nbsp;        double currentWeight = entries.get(entries.size() - 1).getWeight();</b>
+<b class="nc">&nbsp;        double change = currentWeight - initialWeight;</b>
+<b class="nc">&nbsp;        return String.format(&quot;Weight change: %.1f kg&quot;, change);</b>
+&nbsp;    }
+&nbsp;    @PutMapping(&quot;/{userId}/{entryId}&quot;)
+&nbsp;    @Operation(summary = &quot;Update a weight entry&quot;, description = &quot;Updates a specific weight entry for a user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Weight entry updated successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = WeightEntry.class)))
+&nbsp;    public String updateWeightEntry(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                                    @Parameter(description = &quot;ID of the weight entry&quot;) @PathVariable int entryId,
+&nbsp;                                    @RequestBody WeightEntry updatedEntry) {
+<b class="nc">&nbsp;        WeightEntry weightEntry = weightRepository.findById(entryId).orElse(null);</b>
+<b class="nc">&nbsp;        if (weightEntry == null || weightEntry.getUserId() != userId) {</b>
+<b class="nc">&nbsp;            return failure;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        weightEntry.setWeight(updatedEntry.getWeight());</b>
+<b class="nc">&nbsp;        weightEntry.setDate(updatedEntry.getDate());</b>
+<b class="nc">&nbsp;        weightRepository.save(weightEntry);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{userId}/{entryId}&quot;)
+&nbsp;    @Operation(summary = &quot;Delete a weight entry&quot;, description = &quot;Deletes a specific weight entry for a user&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Weight entry deleted successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = String.class)))
+&nbsp;    public String deleteWeightEntry(@Parameter(description = &quot;ID of the user&quot;) @PathVariable int userId,
+&nbsp;                                    @Parameter(description = &quot;ID of the weight entry&quot;) @PathVariable int entryId) {
+<b class="nc">&nbsp;        WeightEntry weightEntry = weightRepository.findById(entryId).orElse(null);</b>
+<b class="nc">&nbsp;        if (weightEntry == null || weightEntry.getUserId() != userId) {</b>
+<b class="nc">&nbsp;            return failure;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        weightRepository.deleteById(entryId);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 12:51</div>
+</div>
+</body>
+</html>

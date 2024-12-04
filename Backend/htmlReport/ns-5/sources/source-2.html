@@ -1,0 +1,354 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DiningHallMealPlanController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">CyDine.DiningHallMealPlan</a>
+</div>
+
+<h1>Coverage Summary for Class: DiningHallMealPlanController (CyDine.DiningHallMealPlan)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DiningHallMealPlanController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/84)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package CyDine.DiningHallMealPlan;
+&nbsp;
+&nbsp;import CyDine.DiningHall.DiningHall;
+&nbsp;import CyDine.DiningHall.DiningHallRepository;
+&nbsp;import CyDine.FoodItems.FoodItems;
+&nbsp;import CyDine.FoodItems.FoodItemsRepository;
+&nbsp;import CyDine.Scraper.Scraper;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.json.JSONObject;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.ZoneId;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@Tag(name = &quot;Dining Hall Meal Plans&quot;, description = &quot;Dining Hall Meal Plan management APIs&quot;)
+<b class="nc">&nbsp;public class DiningHallMealPlanController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private DiningHallMealPlanRepository diningHallMealPlanRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    DiningHallRepository foodItemsRepository;
+&nbsp;
+<b class="nc">&nbsp;    private String success = &quot;{\&quot;message\&quot;:\&quot;success\&quot;}&quot;;</b>
+<b class="nc">&nbsp;    private String failure = &quot;{\&quot;message\&quot;:\&quot;failure\&quot;}&quot;;</b>
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get All Dining Hall Meal Plans&quot;, description = &quot;Retrieves a list of all dining hall meal plans.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = DiningHallMealPlan.class)))
+&nbsp;    @GetMapping(path = &quot;/DHmealplans&quot;)
+&nbsp;    List&lt;DiningHallMealPlan&gt; getAllMealPlans() {
+<b class="nc">&nbsp;        return diningHallMealPlanRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get Dining Hall Meal Plan by ID&quot;, description = &quot;Retrieves a specific meal plan by its ID.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = DiningHallMealPlan.class)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @GetMapping(path = &quot;/DHmealplans/{id}&quot;)
+&nbsp;    DiningHallMealPlan getMealPlanById(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id) {
+<b class="nc">&nbsp;        return diningHallMealPlanRepository.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Create Dining Hall Meal Plan&quot;, description = &quot;Creates a new meal plan with default values.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Meal plan created&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;integer&quot;, example = &quot;2&quot;)))
+&nbsp;    @PostMapping(path = &quot;/DHmealplans&quot;)
+&nbsp;    int createMealPlan() {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = new DiningHallMealPlan();</b>
+<b class="nc">&nbsp;        DiningHallMealPlan mp = diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return mp.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Create Dining Hall Meal Plan with AI&quot;, description = &quot;Creates a new meal plan using AI&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Meal plan created&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;integer&quot;, example = &quot;2&quot;)))
+&nbsp;    @PostMapping(path = &quot;/DHmealplans/ai&quot;)
+&nbsp;    int AiMealPlan() throws IOException {
+<b class="nc">&nbsp;        DiningHallMealPlan mealP = new DiningHallMealPlan();</b>
+<b class="nc">&nbsp;        DiningHallMealPlan mp = diningHallMealPlanRepository.save(mealP);</b>
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(mp.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;        String tmp = new JSONObject(new Scraper().ai()).getJSONArray(&quot;choices&quot;).getJSONObject(0).getJSONObject(&quot;message&quot;).getString(&quot;content&quot;);</b>
+<b class="nc">&nbsp;        if(tmp.charAt(0) == &#39;`&#39;){</b>
+<b class="nc">&nbsp;            tmp = tmp.substring(7, tmp.length() - 3);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(tmp);</b>
+<b class="nc">&nbsp;        JSONObject foods = new JSONObject(tmp);</b>
+<b class="nc">&nbsp;        System.out.println(foods);</b>
+<b class="nc">&nbsp;        for(int i =0; i &lt; foods.getJSONArray(&quot;Breakfast&quot;).length(); i++){</b>
+<b class="nc">&nbsp;            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray(&quot;Breakfast&quot;).getJSONObject(i).getInt(&quot;id&quot;));</b>
+<b class="nc">&nbsp;            mealPlan.addFoodItem(tmp2);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for(int i =0; i &lt; foods.getJSONArray(&quot;Lunch&quot;).length(); i++){</b>
+<b class="nc">&nbsp;            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray(&quot;Breakfast&quot;).getJSONObject(i).getInt(&quot;id&quot;));</b>
+<b class="nc">&nbsp;            mealPlan.addFoodItem(tmp2);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for(int i =0; i &lt; foods.getJSONArray(&quot;Dinner&quot;).length(); i++){</b>
+<b class="nc">&nbsp;            DiningHall tmp2 = foodItemsRepository.findById(foods.getJSONArray(&quot;Breakfast&quot;).getJSONObject(i).getInt(&quot;id&quot;));</b>
+<b class="nc">&nbsp;            mealPlan.addFoodItem(tmp2);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        DiningHallMealPlan mp2 = diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return mp2.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get Date of Meal Plan&quot;, description = &quot;Retrieves the date associated with a specific meal plan.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;2024-11-04T02:06:30.000+00:00&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @GetMapping(path = &quot;/DHmealplans/{id}/date&quot;)
+&nbsp;    String getDate(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id) {
+<b class="nc">&nbsp;        return diningHallMealPlanRepository.findById(id).getDate().toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Add Food Item to Meal Plan by Name&quot;, description = &quot;Adds one or more food items to a meal plan based on their names.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Food items added successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;{\&quot;message\&quot;: \&quot;success\&quot;}&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @PutMapping(path = &quot;/DHmealplans/{id}/fooditems/add/byName&quot;)
+&nbsp;    String addFoodItemToMealPlanByName(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id,
+&nbsp;                                       @RequestBody String Vaibhav) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;??????????????????????????????????&quot;);</b>
+<b class="nc">&nbsp;        if (mealPlan == null)</b>
+<b class="nc">&nbsp;            return failure;</b>
+<b class="nc">&nbsp;        for(String i : Vaibhav.split(&quot;,&quot;)){</b>
+<b class="nc">&nbsp;            System.out.println(i);</b>
+<b class="nc">&nbsp;            for(DiningHall x : foodItemsRepository.findAll()){</b>
+<b class="nc">&nbsp;                if (x.getName().equalsIgnoreCase(i) &amp;&amp; x.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())){</b>
+<b class="nc">&nbsp;                    System.out.println(&quot;SLDKF&quot;);</b>
+<b class="nc">&nbsp;                    System.out.println(&quot;1&quot;);</b>
+<b class="nc">&nbsp;                    mealPlan.addFoodItem(foodItemsRepository.findById(x.getId()));</b>
+&nbsp;                    break;
+&nbsp;
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Remove Food Item from Meal Plan by Name&quot;, description = &quot;Removes one or more food items from a meal plan based on their names.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Food items removed successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;{\&quot;message\&quot;: \&quot;success\&quot;}&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @PutMapping(path = &quot;/DHmealplans/{id}/fooditems/remove/byName&quot;)
+&nbsp;    String removeFoodItemFromMealPlanByName(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id,
+&nbsp;                                            @RequestBody String Vaibhav) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (mealPlan == null)</b>
+<b class="nc">&nbsp;            return failure;</b>
+<b class="nc">&nbsp;        for(String i : Vaibhav.split(&quot;,&quot;)){</b>
+<b class="nc">&nbsp;            for(DiningHall x : foodItemsRepository.findAll()){</b>
+<b class="nc">&nbsp;                if (x.getName().equalsIgnoreCase(i)){</b>
+<b class="nc">&nbsp;                    mealPlan.removeFoodItem(foodItemsRepository.findById(x.getId()));</b>
+&nbsp;                    break;
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Add Food Item to Meal Plan by ID&quot;, description = &quot;Adds one or more food items to a meal plan based on their IDs.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Food items added successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;{\&quot;message\&quot;: \&quot;success\&quot;}&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @PutMapping(path = &quot;/DHmealplans/{id}/fooditems/add/byId&quot;)
+&nbsp;    String addFoodItemToMealPlanById(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id,
+&nbsp;                                     @RequestBody String Vaibhav) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (mealPlan == null)</b>
+<b class="nc">&nbsp;            return failure;</b>
+<b class="nc">&nbsp;        for(String i : Vaibhav.split(&quot;,&quot;)){</b>
+&nbsp;
+<b class="nc">&nbsp;            mealPlan.addFoodItem(foodItemsRepository.findById(Integer.parseInt(i)));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Remove Food Item from Meal Plan by ID&quot;, description = &quot;Removes one or more food items from a meal plan based on their IDs.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Food items removed successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;{\&quot;message\&quot;: \&quot;success\&quot;}&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @PutMapping(path = &quot;/DHmealplans/{id}/fooditems/remove/byId&quot;)
+&nbsp;    String removeFoodItemFromMealPlanById(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id,
+&nbsp;                                          @RequestBody String Vaibhav) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (mealPlan == null)</b>
+<b class="nc">&nbsp;            return failure;</b>
+<b class="nc">&nbsp;        for(String i : Vaibhav.split(&quot;,&quot;)){</b>
+<b class="nc">&nbsp;            mealPlan.removeFoodItem(foodItemsRepository.findById(Integer.parseInt(i)));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return success;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete Dining Hall Meal Plan&quot;, description = &quot;Deletes a dining hall meal plan by its ID.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Meal plan deleted successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(type = &quot;string&quot;, example = &quot;{\&quot;message\&quot;: \&quot;success\&quot;}&quot;)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @DeleteMapping(path = &quot;/DHmealplans/{id}&quot;)
+&nbsp;    String deleteMealPlan(@Parameter(description = &quot;ID of the meal plan to delete&quot;) @PathVariable int id) {
+<b class="nc">&nbsp;        if (diningHallMealPlanRepository.existsById(id)) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;????&quot;);</b>
+<b class="nc">&nbsp;            for (DiningHall fi : diningHallMealPlanRepository.findById(id).getFoodItems()) {</b>
+<b class="nc">&nbsp;                System.out.println(fi.getName());</b>
+<b class="nc">&nbsp;                diningHallMealPlanRepository.findById(id).removeFoodItem(fi);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            diningHallMealPlanRepository.deleteById(id);</b>
+<b class="nc">&nbsp;            return success;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return failure;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update Dining Hall Meal Plan by Repeating Food&quot;, description = &quot;Adds an existing food item to a meal plan, incrementing nutritional values accordingly.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Meal plan updated successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = DiningHallMealPlan.class)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan or food item not found&quot;)
+&nbsp;    @PutMapping(&quot;/DHmealplans/{id}/eatfoodagain/{foodid}&quot;)
+&nbsp;    DiningHallMealPlan updateMealPlan(@Parameter(description = &quot;ID of the meal plan&quot;) @PathVariable int id,
+&nbsp;                                      @Parameter(description = &quot;ID of the food item to repeat&quot;) @PathVariable int foodid) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (mealPlan == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Meal plan id does not exist&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        mealPlan.eatFoodAgain(foodItemsRepository.findById(foodid));</b>
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(mealPlan);</b>
+<b class="nc">&nbsp;        return diningHallMealPlanRepository.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update Meal Plan&quot;, description = &quot;Updates the details of an existing meal plan.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Meal plan updated successfully&quot;,
+&nbsp;            content = @Content(schema = @Schema(implementation = DiningHallMealPlan.class)))
+&nbsp;    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Meal plan not found&quot;)
+&nbsp;    @PutMapping(&quot;/DHmealplans/{id}&quot;)
+&nbsp;    DiningHallMealPlan updateMealPlan(@Parameter(description = &quot;ID of the meal plan to update&quot;) @PathVariable int id,
+&nbsp;                                      @RequestBody DiningHallMealPlan request) {
+<b class="nc">&nbsp;        DiningHallMealPlan mealPlan = diningHallMealPlanRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (mealPlan == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Meal plan id does not exist&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        diningHallMealPlanRepository.save(request);</b>
+<b class="nc">&nbsp;        return diningHallMealPlanRepository.findById(id);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 12:51</div>
+</div>
+</body>
+</html>
