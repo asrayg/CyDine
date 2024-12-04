@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,6 +60,30 @@ class AkhilSystemTest {
     }
 
     @Test
+    void testGetFitnessByUserId() {
+        Fitness fitness1 = new Fitness();
+        fitness1.setName("Running");
+        fitness1.setUserId(1);
+
+        Fitness fitness2 = new Fitness();
+        fitness2.setName("Swimming");
+        fitness2.setUserId(1);
+
+        List<Fitness> fitnessList = Arrays.asList(fitness1, fitness2);
+
+        when(fitnessRepository.findAll()).thenReturn(fitnessList);
+
+        List<Fitness> result = fitnessRepository.findAll();
+        List<Fitness> userFitness = result.stream()
+                .filter(f -> f.getUserId() == 1)
+                .toList();
+
+        assertEquals(2, userFitness.size());
+        assertTrue(userFitness.stream().anyMatch(f -> f.getName().equals("Running")));
+        assertTrue(userFitness.stream().anyMatch(f -> f.getName().equals("Swimming")));
+    }
+
+    @Test
     void testCreateFoodItem() {
         FoodItems foodItem = new FoodItems();
         foodItem.setName("Apple");
@@ -72,6 +98,22 @@ class AkhilSystemTest {
         assertEquals("Apple", savedFoodItem.getName());
         assertEquals(95, savedFoodItem.getCalories());
         assertEquals(1, savedFoodItem.getUserId());
+    }
+
+    @Test
+    void testGetFoodItemById() {
+        FoodItems foodItem = new FoodItems();
+        foodItem.setId(1);
+        foodItem.setName("Banana");
+        foodItem.setCalories(105);
+
+        when(foodItemsRepository.findById(1)).thenReturn(foodItem);
+
+        FoodItems retrievedFoodItem = foodItemsRepository.findById(1);
+
+        assertNotNull(retrievedFoodItem);
+        assertEquals("Banana", retrievedFoodItem.getName());
+        assertEquals(105, retrievedFoodItem.getCalories());
     }
 
     @Test
@@ -93,6 +135,26 @@ class AkhilSystemTest {
     }
 
     @Test
+    void testUpdateWaterIntake() {
+        Water existingWater = new Water();
+        existingWater.setId(1);
+        existingWater.setUserId(1);
+        existingWater.setGoal(2000);
+        existingWater.setTotal(500);
+
+        when(waterRepository.findById(1)).thenReturn(existingWater);
+        when(waterRepository.save(any(Water.class))).thenReturn(existingWater);
+
+        Water waterToUpdate = waterRepository.findById(1);
+        waterToUpdate.setTotal(750);
+
+        Water updatedWater = waterRepository.save(waterToUpdate);
+
+        assertNotNull(updatedWater);
+        assertEquals(750, updatedWater.getTotal());
+    }
+
+    @Test
     void testCreateSleepEntry() {
         SleepEntry sleepEntry = new SleepEntry();
         sleepEntry.setUserId(1);
@@ -105,5 +167,29 @@ class AkhilSystemTest {
         assertNotNull(savedSleepEntry);
         assertEquals(1, savedSleepEntry.getUserId());
         assertEquals(7.5, savedSleepEntry.getHoursSlept());
+    }
+
+    @Test
+    void testGetSleepEntriesByUserId() {
+        SleepEntry entry1 = new SleepEntry();
+        entry1.setUserId(1);
+        entry1.setHoursSlept(7.0);
+
+        SleepEntry entry2 = new SleepEntry();
+        entry2.setUserId(1);
+        entry2.setHoursSlept(8.0);
+
+        List<SleepEntry> sleepEntries = Arrays.asList(entry1, entry2);
+
+        when(sleepRepository.findAll()).thenReturn(sleepEntries);
+
+        List<SleepEntry> result = sleepRepository.findAll();
+        List<SleepEntry> userSleepEntries = result.stream()
+                .filter(s -> s.getUserId() == 1)
+                .toList();
+
+        assertEquals(2, userSleepEntries.size());
+        assertTrue(userSleepEntries.stream().anyMatch(s -> s.getHoursSlept() == 7.0));
+        assertTrue(userSleepEntries.stream().anyMatch(s -> s.getHoursSlept() == 8.0));
     }
 }
