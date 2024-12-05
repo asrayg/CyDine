@@ -18,7 +18,7 @@ import com.example.androidexample.LoginActivity;
 import com.example.androidexample.R;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemTest2 {
+public class IssmaleSystemTest {
 
     @Rule
     public ActivityScenarioRule<LoginActivity> activityScenarioRule =
