@@ -1,166 +1,69 @@
 package com.cs309.testing;
 
-import com.cs309.testing.View.MainActivity;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.filters.LargeTest;
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
+import com.example.androidexample.LoginActivity;
+import com.example.androidexample.R;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.core.StringEndsWith.endsWith;
-
-/**
- * This testing file uses ActivityScenarioRule instead of ActivityTestRule
- * to demonstrate system testings cases
- */
-@RunWith(AndroidJUnit4ClassRunner.class)
-@LargeTest   // large execution time
+@RunWith(AndroidJUnit4.class)
 public class SystemTest2 {
 
-    private static final int SIMULATED_DELAY_MS = 500;
-
     @Rule
-    public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<LoginActivity> activityScenarioRule =
+            new ActivityScenarioRule<>(LoginActivity.class);
 
     /**
-     * Start the server and run this test
-     *
-     * This test uses the default string value specified within the activity
-     * instead of the input string from edittext
-     *
-     * the default string value is set by activityScenarioRule upon activity creation
-     * meanwhile the switch is set to reading the default value
+     * Test 1: Verify that the email and password fields are displayed.
      */
     @Test
-    public void reverseDefaultString(){
-        String testString = "defaultstring";
-        String resultString = "gnirtstluafed";
-
-        activityScenarioRule.getScenario().onActivity(activity -> {
-            activity.defaultString = testString;
-            activity.aSwitch.setChecked(true);
-        });
-
-        onView(withId(R.id.submit)).perform(click());
-        // Put thread to sleep to allow volley to handle the request
-        try {
-            Thread.sleep(SIMULATED_DELAY_MS);
-        } catch (InterruptedException e) {}
-
-        // Verify that volley returned the correct value
-        onView(withId(R.id.myTextView)).check(matches(withText(endsWith(resultString))));
+    public void testFieldsAreDisplayed() {
+        onView(withId(R.id.email)).check(matches(isDisplayed()));
+        onView(withId(R.id.password)).check(matches(isDisplayed()));
+        onView(withId(R.id.login_button)).check(matches(isDisplayed()));
     }
 
     /**
-     * Start the server and run this test
-     *
-     * This test uses the user input string value from edittext
-     * instead of the default string within the activity
-     *
-     * the default string value is set to null by activityScenarioRule upon activity creation
-     * meanwhile the switch is set to reading the user input value
+     * Test 2: Verify that clicking the login button with empty fields does not crash the app.
      */
     @Test
-    public void reverseInputString(){
-
-        String testString = "inputstring";
-        String resultString = "gnirtstupni";
-
-        activityScenarioRule.getScenario().onActivity(activity -> {
-            activity.defaultString = null;
-            activity.aSwitch.setChecked(false);
-        });
-
-        // Type in testString and send request
-        onView(withId(R.id.stringEntry)).perform(typeText(testString), closeSoftKeyboard());
-
-        // Click button to submit
-        onView(withId(R.id.submit)).perform(click());
-
-        // Put thread to sleep to allow volley to handle the request
-        try {
-            Thread.sleep(SIMULATED_DELAY_MS);
-        } catch (InterruptedException e) {}
-
-        // Verify that volley returned the correct value
-        onView(withId(R.id.myTextView)).check(matches(withText(endsWith(resultString))));
+    public void testEmptyFields() {
+        onView(withId(R.id.login_button)).perform(click());
+        // Verify the email and password fields are still displayed (no crash occurred)
+        onView(withId(R.id.email)).check(matches(isDisplayed()));
+        onView(withId(R.id.password)).check(matches(isDisplayed()));
     }
 
     /**
-     * Start the server and run this test
-     *
-     * This test uses the default string value specified within the activity
-     * instead of the input string from edittext
-     *
-     * the default string value is set by activityScenarioRule upon activity creation
-     * meanwhile the switch is set to reading the default value
+     * Test 3: Verify that entering text in the email and password fields works.
      */
     @Test
-    public void capitalizeDefaultString() {
-
-        String testString = "defaultstring";
-        String resultString = "DEFAULTSTRING";
-
-        activityScenarioRule.getScenario().onActivity(activity -> {
-            activity.defaultString = testString;
-            activity.aSwitch.setChecked(true);
-        });
-
-        onView(withId(R.id.submit2)).perform(click());
-
-        // Put thread to sleep to allow volley to handle the request
-        try {
-            Thread.sleep(SIMULATED_DELAY_MS);
-        } catch (InterruptedException e) {
-        }
-
-        // Verify that volley returned the correct value
-        onView(withId(R.id.myTextView)).check(matches(withText(endsWith(resultString))));
+    public void testTypingInFields() {
+        onView(withId(R.id.email)).perform(typeText("test@example.com"), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("password123"), closeSoftKeyboard());
+        // Verify the fields still exist
+        onView(withId(R.id.email)).check(matches(isDisplayed()));
+        onView(withId(R.id.password)).check(matches(isDisplayed()));
     }
 
     /**
-     * Start the server and run this test
-     *
-     * This test uses the user input string value from edittext
-     * instead of the default string within the activity
-     *
-     * the default string value is set to null by activityScenarioRule upon activity creation
-     * meanwhile the switch is set to reading the user input value
+     * Test 4: Verify that clicking the "Sign Up" button navigates to the sign-up page.
      */
     @Test
-    public void capitalizeInputString() {
-
-        String testString = "inputstring";
-        String resultString = "INPUTSTRING";
-
-        activityScenarioRule.getScenario().onActivity(activity -> {
-            activity.defaultString = null;
-            activity.aSwitch.setChecked(false);
-        });
-
-        // Type in testString and send request
-        onView(withId(R.id.stringEntry)).perform(typeText(testString), closeSoftKeyboard());
-
-        // Click button to submit
-        onView(withId(R.id.submit2)).perform(click());
-
-        // Put thread to sleep to allow volley to handle the request
-        try {
-            Thread.sleep(SIMULATED_DELAY_MS);
-        } catch (InterruptedException e) {}
-
-        // Verify that volley returned the correct value
-        onView(withId(R.id.myTextView)).check(matches(withText(endsWith(resultString))));
+    public void testSignUpNavigation() {
+        onView(withId(R.id.sign_up_redirect)).perform(click());
+        // Verify that the SignUpActivity is displayed
+        onView(withId(R.id.first_name)).check(matches(isDisplayed()));
     }
-
 }
-
