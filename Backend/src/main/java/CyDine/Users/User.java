@@ -256,4 +256,20 @@ public class User {
     public boolean isWarned() {
         return isWarned;
     }
+
+    public String getDiscordUsername() {
+        return discordUsername;
+    }
+
+    public void setDiscordUsername(String discordUsername) {
+        this.discordUsername = discordUsername;
+    }
+
+    public void setMealPlans(List<MealPlans> mealPlans) {
+        this.mealPlans = mealPlans;
+    }
+
+    public void setDiningHallMealPlan(List<DiningHallMealPlan> diningHallMealPlan) {
+        this.diningHallMealPlan = diningHallMealPlan;
+    }
 }
