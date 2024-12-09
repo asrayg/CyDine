@@ -13,7 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;    // SBv3
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import io.restassured.http.ContentType;
 
@@ -58,7 +58,7 @@ public class ArjunSystemTest {
 
     @Test
     public void getFoodsByIdTest() {
-        int testId = 1; // Assuming a food item with ID 1 exists
+        int testId = 1;
         Response response = RestAssured.given()
                 .header("Content-Type", "application/json")
                 .when()
@@ -134,7 +134,7 @@ public class ArjunSystemTest {
 
     @Test
     public void getMealPlanByIdTest() {
-        int testId = 1; // Assuming a meal plan with ID 1 exists
+        int testId = 1;
         Response response = RestAssured.given()
                 .header("Content-Type", "application/json")
                 .when()
