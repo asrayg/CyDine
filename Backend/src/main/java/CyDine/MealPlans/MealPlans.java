@@ -67,7 +67,8 @@ public class MealPlans {
     }
 
     public MealPlans() {
-
+        date = LocalDate.now();
+        foodItems = new ArrayList<>();
     }
 
     public void addFoodItem(FoodItems foodItem) {
