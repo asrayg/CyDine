@@ -103,15 +103,6 @@ public class ArjunSystemTest {
         assertTrue(Integer.parseInt(responseBody) > 0);
     }
 
-
-
-
-
-
-
-
-
-
     @Test
     public void getAllMealPlansTest() {
         Response response = RestAssured.given()
