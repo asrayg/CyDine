@@ -277,7 +277,6 @@ public class Scraper {
                 " " +
                 "These are the foods" + response2;
 
-        String apiKey = "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";
         String urlString = "https://api.openai.com/v1/chat/completions";
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
